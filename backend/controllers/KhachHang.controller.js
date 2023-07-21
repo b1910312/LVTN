@@ -1,0 +1,197 @@
+const { BadRequestError } = require("../helpers/errors");
+const config = require("../config");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const handle = require("../helpers/promise");
+const db = require("../models");
+const KhachHang = db.KhachHang;
+const upload = require("../middlewares/upload");
+
+//*-------------Tạo một tài khoản khách hàng
+exports.create = async (req, res) => {
+    // Tạo tài khoản khách hàng
+    const khachhang = new KhachHang({
+        TKKH_Ten: req.body.TKKH_Ten,
+        TKKH_Ma: req.body.TKKH_Ma,
+        TKKH_Email: req.body.TKKH_Email,
+        TKKH_MatKhau: bcrypt.hashSync(req.body.TKKH_MatKhau, 8),
+        TKKH_NgayTao: req.body.TKKH_NgayTao,
+    });
+    // Lưu tài khoản khách hàng vào cơ sở dữ liệu
+    const [error, document] = await handle(khachhang.save());
+
+    if (error) {
+        return res.send(error);
+
+    }
+    return res.send(document);
+}
+
+
+
+//*--------Truy xuất toàn bộ tài khoản khách hàng có trong cơ sở dữ liệu
+exports.findAll = async (req, res, next) => {
+    const condition = { ownerId: req.userId };
+    const TKKH_Email = req.query.TKKH_Email;
+    console.log(req.query.TKKH_Email);
+    if (TKKH_Email) {
+        condition.TKKH_Email = { $regex: new RegExp(TKKH_Email), $options: "i" };
+    }
+    const [error, documents] = await handle(
+        KhachHang.find(condition, '-ownerId')
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất tài khoản khách hàng với Email ${req.params.TKKH_Email}`)
+        );
+    }
+    console.log(documents)
+    return res.send(documents);
+};
+
+//*-------Tìm kiếm một kháchh hàng bằng mã khách hàng
+exports.findOneByID = async (req, res, next) => {
+    const condition = {
+        TKKH_Ma: req.params.TKKH_Ma,
+
+    };
+    const [error, documents] = await handle(
+        KhachHang.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất tài khoản khách hàng!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy tài khoản khách hàng");
+    }
+    return res.send(documents);
+};
+
+
+//*-----Update a customer by the is in the request
+exports.update = async (req, res, next) => {
+    if (!req.body) {
+        return next(
+            new BadRequestError(400, "Dữ liệu cập nhật tài khoản khách hàng không thể trống!")
+        );
+    }
+
+    const condition = {
+        TKKH_Ma: req.params.TKKH_Ma,
+    };
+
+    const [error, document] = await handle(
+        KhachHang.findOneAndUpdate(condition, req.body, {
+            $set: {
+                'TKKH_GioHang': req.body.TKKH_GioHang,
+                'TKKH_NgayCapNhat': req.body.TKKH_NgayCapNhat,
+            }
+        }, {
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật tài khoản khách hàng`)
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy tài khoản khách hàng!"));
+    }
+
+    return res.send({ message: "Cập nhật tài khoản khách hàng thành công." });
+};
+
+//Delete a customer with the specified id in the request
+exports.delete = async (req, res, next) => {
+    const condition = {
+        TKKH_Ma: req.params.TKKH_Ma,
+    };
+
+    const [error, document] = await handle(
+       KhachHang.deleteOne(condition)
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Không xóa được tài khoản khách hàng có mã ${req.params.id}`)
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy tài khoản khách hàng"));
+    }
+
+    return res.send({ message: "Xóa tài khoản khách hàng thành công" });
+
+};
+
+
+exports.signup = async (req, res, next) => {
+    const khachhang = new KhachHang({
+        TKKH_Ma: req.body.TKKH_Ma,
+        TKKH_Ten: req.body.TKKH_Ten,
+        TKKH_Email: req.body.TKKH_Email,
+        TKKH_MatKhau: bcrypt.hashSync(req.body.TKKH_MatKhau, 8),
+        TKKH_NgayTao: req.body.TKKH_NgayTao,
+    });
+
+    const [error] = await handle(khachhang.save());
+
+    if (error) {
+        let statusCode = 400;
+        let { TKKH_Ten = {}, TKKH_Email = {}, TKKH_MatKhau = {} } = error.errors;
+
+        const errorMessage =
+            TKKH_Ten.message || TKKH_Email.message || TKKH_MatKhau.message;
+        if (!errorMessage) {
+            statusCode = 500;
+        }
+
+        return next(new BadRequestError(statusCode, errorMessage));
+    }
+
+    res.send({ message: "Đăng ký tài khoản khách hàng thành công" });
+};
+
+exports.signin = async (req, res, next) => {
+    const [error, khachhang] = await handle(
+        KhachHang.findOne({
+            TKKH_Email: req.body.TKKH_Email,
+        }).exec()
+    );
+
+    if (error) {
+        return next(new BadRequestError(500));
+    }
+    if (!khachhang) {
+        return next(new BadRequestError(401, "Incorrect username"));
+    }
+
+    const passwordIsValid = bcrypt.compareSync(
+        req.body.TKKH_MatKhau,
+        khachhang.TKKH_MatKhau,
+    );
+    console.log(passwordIsValid)
+    if (!passwordIsValid) {
+        return next(new BadRequestError(401, "password"));
+    }
+
+    const token = jwt.sign({ TKKH_Ma: khachhang.TKKH_Ma }, config.jwt.secret, {
+        expiresIn: 86400, // 24 hours
+    });
+
+    res.status(200).send({
+        TKKH_Ma: khachhang._id,
+        TKKH_Ten: khachhang.TKKH_Ten,
+        TKKH_Email: khachhang.TKKH_Email,
+        TKKH_GioHang: khachhang.TKKH_GioHang,
+        accessToken: token,
+    });
+};
+
+

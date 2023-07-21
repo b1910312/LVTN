@@ -1,0 +1,39 @@
+const mongoose = require("mongoose");
+const createSachModel = require("./Sach.model");
+const createKhachHangModel = require("./KhachHang.model");
+const createAvatarModel = require("./Avatar.model");
+const createHinhMinhHoaModel = require("./HinhMinhHoa.model");
+const createNhanVienModel = require("./NhanVien.model");
+const createThongTinKhachHangModel = require("./ThongTinKhachhang.model");
+const createThongTinNhanVienModel = require("./ThongTinNhanVien.model");
+const createTheLoaiModel = require("./TheLoai.model");
+const createDonHangModel = require("./DonHang.model");
+const createChiTietDonHangModel = require("./ChiTietDonHang.model");
+const createGioHangModel = require("./GIoHang.model");
+const createChiTietGioHangModel = require("./ChiTietGioHang.model");
+const createNhaXuatBanModel = require("./NhaXuatBan.model");
+const createBinhLuanModel = require("./BinhLuan.model");
+const createDanhGiaModel = require("./DanhGia.model");
+const createLienHeModel = require("./LienHe.model");
+
+const db = {};
+
+db.mongoose = mongoose;
+db.Sach = createSachModel(mongoose);
+db.TheLoai = createTheLoaiModel(mongoose);
+db.KhachHang = createKhachHangModel(mongoose);
+db.ThongTinKhachHang = createThongTinKhachHangModel(mongoose);
+db.NhanVien = createNhanVienModel(mongoose);
+db.ThongTinNhanVien = createThongTinNhanVienModel(mongoose);
+db.DonHang = createDonHangModel(mongoose);
+db.ChiTietDonHang = createChiTietDonHangModel(mongoose);
+db.Avatar = createAvatarModel(mongoose);
+db.HinhMinhHoa = createHinhMinhHoaModel(mongoose);
+db.GioHang = createGioHangModel(mongoose);
+db.ChiTietGioHang = createChiTietGioHangModel(mongoose);
+db.NhaXuatBan = createNhaXuatBanModel(mongoose);
+db.BinhLuan = createBinhLuanModel(mongoose);
+db.LienHe = createLienHeModel(mongoose);
+db.DanhGia = createDanhGiaModel(mongoose);
+
+module.exports = db;
