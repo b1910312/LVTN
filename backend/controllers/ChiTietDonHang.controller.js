@@ -3,9 +3,6 @@ const handle = require("../helpers/promise");
 const db = require("../models");
 const ChiTietDonHang = db.ChiTietDonHang;
 
-exports.findAllFavorite = async (req, res) => {
-    res.send({ message: "Hello san pham" });
-}
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product

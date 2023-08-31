@@ -10,6 +10,14 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ten cua nha xuat ban sach"],
             },
+            NXB_Email: {
+                type: String,
+                required: [true, "Ten cua nha xuat ban sach"],
+            },
+            NXB_SDT: {
+                type: String,
+                required: [true, "Ten cua nha xuat ban sach"],
+            },
             NXB_NgayTao: {
                 type: String,
                 required: [true, "Ngay tao nha xuat ban sach"],

@@ -1,41 +1,41 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            S_Ma: {
+            SNKD_Ma: {
                 type: String,
                 required: [true, "Ma cua dau sach"],
             },
 
-            S_Ten: {
+            SNKD_Ten: {
                 type: String,
                 required: [true, "Ten sach"],
             },
-            S_TacGia: {
+            SNKD_TacGia: {
                 type: String,
                 required: [true, "Tac gia"],
             },
-            S_SoLuong: {
-                type: Number,
-                required: [true, "So luong sach ton kho"],
-            },
-            S_Gia: {
+            SNKD_Gia: {
                 type: Number,
                 required: [true, "Gia ban ra cua sach"],
             },
-            S_TheLoai: {
+            SNKD_TheLoai: {
                 type: Number,
                 required: [true, "Ma the loai sach"],
             },
-            S_NXB: {
+            SNKD_NXB: {
                 type: String,
                 required: [true, "Ma nha xuat ban"],
             },
-            S_NgayNhap: {
+            SNKD_NgayNhap: {
                 type: String,
                 required: [true, "Ngay nhap sach"],
             },
-            S_NgayCapNhat: {
+            SNKD_NgayCapNhat: {
                 type: String,
+            },
+            SNKD_NgayXoa: {
+                type: String,
+                required: [true, "Ngay ngung kinh doanh"],
             },
             ownerId: {
                 type: mongoose.Schema.Types.ObjectId,

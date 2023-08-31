@@ -11,7 +11,9 @@ const upload = require("../middlewares/upload");
 exports.create = async (req, res) => {
     // Tạo tài khoản khách hàng
     const thongtinkhachhang = new ThongTinKhachHang({
-        KH_Ma: req.body.KH_Ma,
+        KH_MaKH: req.body.KH_MaKH,
+        KH_HoTen: req.body.KH_HoTen,
+        KH_NgaySinh: req.body.KH_NgaySinh,
         KH_SoDienThoai: req.body.KH_SoDienThoai,
         KH_DiaChi: req.body.KH_DiaChi,
         KH_NgayTao: req.body.KH_NgayTao,
@@ -31,17 +33,17 @@ exports.create = async (req, res) => {
 //*--------Truy xuất toàn bộ tài khoản khách hàng có trong cơ sở dữ liệu
 exports.findAll = async (req, res, next) => {
     const condition = { ownerId: req.userId };
-    const KH_Ma = req.query.KH_Ma;
-    console.log(req.query.KH_Ma);
-    if (KH_Ma) {
-        condition.KH_Ma = { $regex: new RegExp(KH_Ma), $options: "i" };
+    const KH_MaKH = req.query.KH_MaKH;
+    console.log(req.query.KH_MaKH);
+    if (KH_MaKH) {
+        condition.KH_MaKH = { $regex: new RegExp(KH_MaKH), $options: "i" };
     }
     const [error, documents] = await handle(
         ThongTinKhachHang.find(condition, '-ownerId')
     );
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất thông tin khách hàng với Email ${req.params.KH_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất thông tin khách hàng với Mã khách hàng ${req.params.KH_MaKH}`)
         );
     }
     console.log(documents)
@@ -51,7 +53,7 @@ exports.findAll = async (req, res, next) => {
 //*-------Tìm kiếm một kháchh hàng bằng mã khách hàng
 exports.findOneByID = async (req, res, next) => {
     const condition = {
-        KH_Ma: req.params.KH_Ma,
+        KH_MaKH: req.params.KH_MaKH,
     };
     const [error, documents] = await handle(
         ThongTinKhachHang.findOne(condition)
@@ -78,7 +80,7 @@ exports.update = async (req, res, next) => {
     }
 
     const condition = {
-        KH_Ma: req.params.KH_Ma,
+        KH_MaKH: req.params.KH_MaKH,
     };
 
     const [error, document] = await handle(
@@ -107,7 +109,7 @@ exports.update = async (req, res, next) => {
 //Delete a customer with the specified id in the request
 exports.delete = async (req, res, next) => {
     const condition = {
-        KH_Ma: req.params.KH_Ma,
+        KH_MaKH: req.params.KH_MaKH,
     };
 
     const [error, document] = await handle(

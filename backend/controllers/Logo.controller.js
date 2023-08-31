@@ -1,21 +1,19 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const BinhLuan = db.BinhLuan;
+const Logo = db.Logo;
+
 
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
-    const binhluan = new BinhLuan({
-        BL_Ma: req.body.BL_Ma,
-        BL_MaKH: req.body.BL_MaKH,
-        BL_MaSach: req.body.BL_MaSach,
-        BL_NoiDung: req.body.BL_NoiDung,
-        BL_Ten: req.body.BL_Ten,
-        BL_NgayTao: req.body.BL_NgayTao,
+    const logo = new Logo({
+        LG_MaNXB: req.body.LG_MaNXB,
+        LG_URL: req.body.LG_URL,
+        LG_NgayTao: req.body.LG_NgayTao,
     });
     // Save product in the DB
-    const [error, document] = await handle(binhluan.save());
+    const [error, document] = await handle(logo.save());
 
     if (error) {
         return console.log(error);
@@ -35,19 +33,19 @@ exports.findAll = async (req, res) => {
     const condition = {
         ownerId: req.userId
     };
-    const BL_MaKH = req.query.ten;
+    const LG_MaNXB = req.query.ten;
 
-    if (BL_MaKH) {
-        condition.BL_MaKH = { $regex: new RegExp(BL_MaKH), $options: "i" };
+    if (LG_MaNXB) {
+        condition.LG_MaNXB = { $regex: new RegExp(LG_MaNXB), $options: "i" };
     }
 
     const [error, documents] = await handle(
-        BinhLuan.find(condition, '-ownerId').sort({ 'BL_MaKH': 1 })
+        Logo.find(condition, '-ownerId').sort({ 'LG_MaNXB': 1 })
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất bình luận với mã ${req.params.BL_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất logo với mã ${req.params.LG_MaNXB}`)
         );
     }
 
@@ -59,19 +57,19 @@ exports.findAll = async (req, res) => {
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
-        BL_Ma: req.params.BL_Ma,
+        LG_MaNXB: req.params.LG_MaNXB,
     };
     const [error, documents] = await handle(
-        BinhLuan.findOne(condition)
+        Logo.findOne(condition)
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, "Lỗi trong quá trình truy xuất bình luận!")
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất logo!")
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy bình luận")
+        return res.send("Không tìm thấy logo")
     }
     return res.send(documents);
 };
@@ -80,13 +78,13 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res, next) => {
 
     const condition = {
-        BL_Ma: req.params.BL_Ma
+        LG_MaNXB: req.params.LG_MaNXB
     };
 
     const [error, document] = await handle(
-        BinhLuan.findOneAndUpdate(condition, req.body,  {
+        Logo.findOneAndUpdate(condition, req.body,  {
             $set: {
-                'BL_NgayCapNhat': req.body.BL_NgayCapNhat,
+                'LG_NgayCapNhat': req.body.LG_NgayCapNhat,
             }
         },{
             new: true,
@@ -95,37 +93,37 @@ exports.update = async (req, res, next) => {
     );
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin logo có mã =${req.params.id}`
             )
         );
     }
 
     if (!document) {
-        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+        return next(new BadRequestError(404, "Không tìm thấy logo"));
     }
 
-    return res.send({ message: "Cập nhật thông tin bình luận thành công." });
+    return res.send({ message: "Cập nhật thông tin logo thành công." });
 };
 
 
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        BL_Ma: req.params.BL_Ma
+        LG_MaNXB: req.params.LG_MaNXB
     };
 
     const [error, document] = await handle(
-        BinhLuan.deleteOne(condition)
+        Logo.deleteOne(condition)
     );
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được bình luận có mã ${req.params.id}`)
+            new BadRequestError(500,`Không xóa được logo có mã ${req.params.id}`)
         );
     }
 
     if (document) {
-        return res.send({ message: "Xóa bình luận thành công" });
+        return res.send({ message: "Xóa logo thành công" });
     }
 
 };

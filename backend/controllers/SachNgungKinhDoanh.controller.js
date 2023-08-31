@@ -3,21 +3,19 @@ const handle = require("../helpers/promise");
 const db = require("../models");
 const Sach = db.Sach;
 
-exports.findAllFavorite = async (req, res) => {
-    res.send({ message: "Hello san pham" });
-}
 //*-------------Thêm sách
 exports.create = async (req, res) => {
     // Create a product
     const sach = new Sach({
-        S_Ma: req.body.S_Ma,
-        S_Ten: req.body.S_Ten,
-        S_TacGia: req.body.S_TacGia,
-        S_NXB: req.body.S_NXB,
-        S_SoLuong: req.body.S_SoLuong,
-        S_Gia: req.body.S_Gia,
-        S_TheLoai: req.body.S_TheLoai,
-        S_NgayNhap: req.body.S_NgayNhap,
+        SNKD_Ma: req.body.SNKD_Ma,
+        SNKD_Ten: req.body.SNKD_Ten,
+        SNKD_TacGia: req.body.SNKD_TacGia,
+        SNKD_NXB: req.body.SNKD_NXB,
+        SNKD_Gia: req.body.SNKD_Gia,
+        SNKD_TheLoai: req.body.SNKD_TheLoai,
+        SNKD_NgayNhap: req.body.SNKD_NgayNhap,
+        SNKD_NgayCapNhat: req.body.SNKD_NgayCapNhat,
+        SNKD_NgayXoa: req.body.SNKD_NgayXoa,
     });
     // Save product in the DB
     const [error, document] = await handle(sach.save());
@@ -40,19 +38,19 @@ exports.findAll = async (req, res) => {
     const condition = {
         ownerId: req.userId
     };
-    const S_Ten = req.query.S_Ma;
+    const SNKD_Ten = req.query.SNKD_Ma;
 
-    if (S_Ten) {
-        condition.S_Ten = { $regex: new RegExp(S_Ten), $options: "i" };
+    if (SNKD_Ten) {
+        condition.SNKD_Ten = { $regex: new RegExp(SNKD_Ten), $options: "i" };
     }
 
     const [error, documents] = await handle(
-        Sach.find(condition, '-ownerId').sort({ 'S_Ma': 1 })
+        Sach.find(condition, '-ownerId').sort({ 'SNKD_Ma': 1 })
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.SNKD_Ma}`)
         );
     }
 
@@ -64,7 +62,7 @@ exports.findAll = async (req, res) => {
 //*----- Truy xuất một sách bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
-        S_Ma: req.params.S_Ma,
+        SNKD_Ma: req.params.SNKD_Ma,
     };
     const [error, documents] = await handle(
         Sach.findOne(condition)
@@ -81,42 +79,10 @@ exports.findOne = async (req, res) => {
     return res.send(documents);
 };
 
-//*--- Cập nhật thông tin sách thông qua mã sách
-exports.update = async (req, res, next) => {
-
-    const condition = {
-        S_Ma: req.params.S_Ma
-    };
-
-    const [error, document] = await handle(
-        Sach.findOneAndUpdate(condition, req.body,  {
-            $set: {
-                'S_NgayCapNhat': req.body.S_NgayCapNhat,
-            }
-        },{
-            new: true,
-            projection: "-ownerId",
-        })
-    );
-    if (error) {
-        return next(
-            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin sách có mã id=${req.params.id}`
-            )
-        );
-    }
-
-    if (!document) {
-        return next(new BadRequestError(404, "Không tìm thấy sách!"));
-    }
-
-    return res.send({ message: "Cập nhật thông tin sách thành công." });
-};
-
-
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        S_Ma: req.params.S_Ma
+        SNKD_Ma: req.params.SNKD_Ma
     };
 
     const [error, document] = await handle(

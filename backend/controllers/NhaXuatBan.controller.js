@@ -3,15 +3,15 @@ const handle = require("../helpers/promise");
 const db = require("../models");
 const NhaXuatBan = db.NhaXuatBan;
 
-exports.findAllFavorite = async (req, res) => {
-    res.send({ message: "Hello san pham" });
-}
+
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
     const nhaxuatban = new NhaXuatBan({
         NXB_Ma: req.body.NXB_Ma,
         NXB_Ten: req.body.NXB_Ten,
+        NXB_Email: req.body.NXB_Email,
+        NXB_SDT: req.body.NXB_SDT,
         NXB_NgayTao: req.body.NXB_NgayTao,
 
     });

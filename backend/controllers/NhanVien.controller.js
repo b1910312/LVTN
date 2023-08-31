@@ -11,10 +11,9 @@ const upload = require("../middlewares/upload");
 exports.create = async (req, res) => {
     // Tạo tài khoản khách hàng
     const nhanvien = new NhanVien({
-        TKNV_Ten: req.body.TKNV_Ten,
-        TKNV_Ma: req.body.TKNV_Ma,
+        TKNV_MaNV: req.body.TKNV_MaNV,
         TKNV_VaiTro: req.body.TKNV_VaiTro,
-        TKNV_MatKhau: bcrypt.hashSync(req.body.TKNV_MatKhau, 8),
+        TKNV_MaNVtKhau: bcrypt.hashSync(req.body.TKNV_MaNVtKhau, 8),
         TKNV_NgayTao: req.body.TKNV_NgayTao,
     });
     // Lưu tài khoản nhân viên vào cơ sở dữ liệu
@@ -32,17 +31,17 @@ exports.create = async (req, res) => {
 //*--------Truy xuất toàn bộ tài khoản nhân viên có trong cơ sở dữ liệu
 exports.findAll = async (req, res, next) => {
     const condition = { ownerId: req.userId };
-    const TKNV_Ma = req.query.TKNV_Ma;
+    const TKNV_MaNV = req.query.TKNV_MaNV;
     console.log(req.query.TKNV_Email);
-    if (TKNV_Ma) {
-        condition.TKNV_Ma = { $regex: new RegExp(TKNV_Ma), $options: "i" };
+    if (TKNV_MaNV) {
+        condition.TKNV_MaNV = { $regex: new RegExp(TKNV_MaNV), $options: "i" };
     }
     const [error, documents] = await handle(
         NhanVien.find(condition, '-ownerId')
     );
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất tài khoản nhân viên với mã nhân viên ${req.params.TKNV_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất tài khoản nhân viên với mã nhân viên ${req.params.TKNV_MaNV}`)
         );
     }
     console.log(documents)
@@ -52,7 +51,7 @@ exports.findAll = async (req, res, next) => {
 //*-------Tìm kiếm một kháchh hàng bằng mã khách hàng
 exports.findOneByID = async (req, res, next) => {
     const condition = {
-        TKNV_Ma: req.params.TKNV_Ma,
+        TKNV_MaNV: req.params.TKNV_MaNV,
 
     };
     const [error, documents] = await handle(
@@ -80,7 +79,7 @@ exports.update = async (req, res, next) => {
     }
 
     const condition = {
-        TKNV_Ma: req.params.TKNV_Ma,
+        TKNV_MaNV: req.params.TKNV_MaNV,
     };
 
     const [error, document] = await handle(
@@ -109,7 +108,7 @@ exports.update = async (req, res, next) => {
 //Delete a customer with the specified id in the request
 exports.delete = async (req, res, next) => {
     const condition = {
-        TKNV_Ma: req.params.TKNV_Ma,
+        TKNV_MaNV: req.params.TKNV_MaNV,
     };
 
     const [error, document] = await handle(
@@ -132,7 +131,7 @@ exports.delete = async (req, res, next) => {
 exports.signin = async (req, res, next) => {
     const [error, nhanvien] = await handle(
         NhanVien.findOne({
-            TKNV_Ma: req.body.TKNV_Ma,
+            TKNV_MaNV: req.body.TKNV_MaNV,
         }).exec()
     );
 
@@ -144,20 +143,20 @@ exports.signin = async (req, res, next) => {
     }
 
     const passwordIsValid = bcrypt.compareSync(
-        req.body.TKNV_MatKhau,
-        nhanvien.TKNV_MatKhau,
+        req.body.TKNV_MaNVtKhau,
+        nhanvien.TKNV_MaNVtKhau,
     );
     console.log(passwordIsValid)
     if (!passwordIsValid) {
         return next(new BadRequestError(401, "password"));
     }
 
-    const token = jwt.sign({ TKNV_Ma: nhanvien.TKNV_Ma }, config.jwt.secret, {
+    const token = jwt.sign({ TKNV_MaNV: nhanvien.TKNV_MaNV }, config.jwt.secret, {
         expiresIn: 86400, // 24 hours
     });
 
     res.status(200).send({
-        TKNV_Ma: nhanvien._id,
+        TKNV_MaNV: nhanvien._id,
         TKNV_Ten: nhanvien.TKNV_Ten,
         accessToken: token,
     });

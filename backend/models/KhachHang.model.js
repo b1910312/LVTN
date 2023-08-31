@@ -1,24 +1,23 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            TKKH_Ma: {
-                type: String,
-                required: [true, "Ma cua khach hang"],
-            },
-            TKKH_Ten: {
-                type: String,
-                required: [true, "Ten cua khach hang"],
-            },
             TKKH_Email: {
                 type: String,
                 required: [true, "Email cua khach hang"],
             },
+            TKKH_MaKH: {
+                type: String,
+                required: [true, "Ma cua khach hang"],
+            },
+         
             TKKH_MatKhau: {
                 type: String,
                 required: [true, "Ten cua khach hang"],
             },
-            TKKH_GioHang: {
+            TKKH_HangMuc: {
                 type: String,
+                required: [true, "Hang muc cua khach hang"],
+                default: "HM0",
             },
             TKKH_NgayTao: {
                 type: String,

@@ -1,23 +1,19 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            TKNV_MaNV: {
+            LG_MaNXB: {
                 type: String,
-                required: [true, "Ma cua nhan vien"],
+                required: [true, "Ma cua logo"],
             },
-            TKNV_MatKhau: {
+            LG_URL: {
                 type: String,
-                required: [true, "Ten cua nhan vien"],
+                required: [true, "Ten cua logo"],
             },
-            TKNV_VaiTro: {
-                type: Number,
-                required: ["true", "Vai tro"],
-            },
-            TKNV_NgayTao: {
+            LG_NgayTao: {
                 type: String,
-                required: [true, "Ngay tao tai khoan nhan vien"],
+                required: [true, "Ngay tao logo"],
             },
-            TKNV_NgayCapNhat: {
+            LG_NgayCapNhat: {
                 type: String,
             },
         });
@@ -29,5 +25,6 @@ module.exports = mongoose => {
         return object;
     });
 
-    return mongoose.model("NhanVien", schema);
-}
+
+    return mongoose.model("Logo", schema);
+};

@@ -1,16 +1,11 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            AVT_Ma: {
-                type: String,
-                required: [true, "Ma cua avatar"],
-            },
-
             AVT_MaKH: {
                 type: String,
                 required: [true, "Ma cua khach hang"],
             },
-            AVT_Ten: {
+            AVT_URL: {
                 type: String,
                 required: [true, "Ten cua avatar"],
             },

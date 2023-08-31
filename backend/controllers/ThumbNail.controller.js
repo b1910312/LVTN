@@ -1,21 +1,19 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const BinhLuan = db.BinhLuan;
+const ThumbNail = db.ThumbNail;
+
 
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
-    const binhluan = new BinhLuan({
-        BL_Ma: req.body.BL_Ma,
-        BL_MaKH: req.body.BL_MaKH,
-        BL_MaSach: req.body.BL_MaSach,
-        BL_NoiDung: req.body.BL_NoiDung,
-        BL_Ten: req.body.BL_Ten,
-        BL_NgayTao: req.body.BL_NgayTao,
+    const thumbnail = new ThumbNail({
+        TB_MaSach: req.body.TB_MaSach,
+        TB_URL: req.body.TB_URL,
+        TB_NgayTao: req.body.TB_NgayTao,
     });
     // Save product in the DB
-    const [error, document] = await handle(binhluan.save());
+    const [error, document] = await handle(ThumbNail.save());
 
     if (error) {
         return console.log(error);
@@ -35,19 +33,19 @@ exports.findAll = async (req, res) => {
     const condition = {
         ownerId: req.userId
     };
-    const BL_MaKH = req.query.ten;
+    const TB_MaSach = req.query.ten;
 
-    if (BL_MaKH) {
-        condition.BL_MaKH = { $regex: new RegExp(BL_MaKH), $options: "i" };
+    if (TB_MaSach) {
+        condition.TB_MaSach = { $regex: new RegExp(TB_MaSach), $options: "i" };
     }
 
     const [error, documents] = await handle(
-        BinhLuan.find(condition, '-ownerId').sort({ 'BL_MaKH': 1 })
+        ThumbNail.find(condition, '-ownerId').sort({ 'TB_MaSach': 1 })
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất bình luận với mã ${req.params.BL_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất ThumbNail với mã ${req.params.TB_MaSach}`)
         );
     }
 
@@ -59,19 +57,19 @@ exports.findAll = async (req, res) => {
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
-        BL_Ma: req.params.BL_Ma,
+        TB_MaSach: req.params.TB_MaSach,
     };
     const [error, documents] = await handle(
-        BinhLuan.findOne(condition)
+        ThumbNail.findOne(condition)
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, "Lỗi trong quá trình truy xuất bình luận!")
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất Thumbnail!")
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy bình luận")
+        return res.send("Không tìm thấy Thumbnail")
     }
     return res.send(documents);
 };
@@ -80,13 +78,13 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res, next) => {
 
     const condition = {
-        BL_Ma: req.params.BL_Ma
+        TB_MaSach: req.params.TB_MaSach
     };
 
     const [error, document] = await handle(
-        BinhLuan.findOneAndUpdate(condition, req.body,  {
+        ThumbNail.findOneAndUpdate(condition, req.body,  {
             $set: {
-                'BL_NgayCapNhat': req.body.BL_NgayCapNhat,
+                'TB_NgayCapNhat': req.body.TB_NgayCapNhat,
             }
         },{
             new: true,
@@ -95,37 +93,37 @@ exports.update = async (req, res, next) => {
     );
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin Thumbnail có mã =${req.params.id}`
             )
         );
     }
 
     if (!document) {
-        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+        return next(new BadRequestError(404, "Không tìm thấy Thumbnail"));
     }
 
-    return res.send({ message: "Cập nhật thông tin bình luận thành công." });
+    return res.send({ message: "Cập nhật thông tin Thumbnail thành công." });
 };
 
 
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        BL_Ma: req.params.BL_Ma
+        TB_MaSach: req.params.TB_MaSach
     };
 
     const [error, document] = await handle(
-        BinhLuan.deleteOne(condition)
+        ThumbNail.deleteOne(condition)
     );
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được bình luận có mã ${req.params.id}`)
+            new BadRequestError(500,`Không xóa được Thumbnail có mã ${req.params.id}`)
         );
     }
 
     if (document) {
-        return res.send({ message: "Xóa bình luận thành công" });
+        return res.send({ message: "Xóa Thumbnail thành công" });
     }
 
 };

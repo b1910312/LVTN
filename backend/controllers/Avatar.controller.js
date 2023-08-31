@@ -3,16 +3,13 @@ const handle = require("../helpers/promise");
 const db = require("../models");
 const Avatar = db.Avatar;
 
-exports.findAllFavorite = async (req, res) => {
-    res.send({ message: "Hello san pham" });
-}
+
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
     const avatar = new Avatar({
-        AVT_Ma: req.body.AVT_Ma,
         AVT_MaKH: req.body.AVT_MaKH,
-        AVT_Ten: req.body.AVT_Ten,
+        AVT_URL: req.body.AVT_URL,
         AVT_NgayTao: req.body.AVT_NgayTao,
     });
     // Save product in the DB
@@ -48,7 +45,7 @@ exports.findAll = async (req, res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất ảnh đại diện với mã ${req.params.AVT_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất ảnh đại diện với mã ${req.params.AVT_MaKH}`)
         );
     }
 
@@ -81,7 +78,7 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res, next) => {
 
     const condition = {
-        AVT_Ma: req.params.AVT_Ma
+        AVT_MaKH: req.params.AVT_MaKH
     };
 
     const [error, document] = await handle(
@@ -112,7 +109,7 @@ exports.update = async (req, res, next) => {
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        AVT_Ma: req.params.AVT_Ma
+        AVT_MaKH: req.params.AVT_MaKH
     };
 
     const [error, document] = await handle(

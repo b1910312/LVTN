@@ -11,8 +11,7 @@ const upload = require("../middlewares/upload");
 exports.create = async (req, res) => {
     // Tạo tài khoản khách hàng
     const khachhang = new KhachHang({
-        TKKH_Ten: req.body.TKKH_Ten,
-        TKKH_Ma: req.body.TKKH_Ma,
+        TKKH_MaKH: req.body.TKKH_MaKH,
         TKKH_Email: req.body.TKKH_Email,
         TKKH_MatKhau: bcrypt.hashSync(req.body.TKKH_MatKhau, 8),
         TKKH_NgayTao: req.body.TKKH_NgayTao,
@@ -52,7 +51,7 @@ exports.findAll = async (req, res, next) => {
 //*-------Tìm kiếm một kháchh hàng bằng mã khách hàng
 exports.findOneByID = async (req, res, next) => {
     const condition = {
-        TKKH_Ma: req.params.TKKH_Ma,
+        TKKH_MaKH: req.params.TKKH_MaKH,
 
     };
     const [error, documents] = await handle(
@@ -80,13 +79,13 @@ exports.update = async (req, res, next) => {
     }
 
     const condition = {
-        TKKH_Ma: req.params.TKKH_Ma,
+        TKKH_MaKH: req.params.TKKH_MaKH,
     };
 
     const [error, document] = await handle(
         KhachHang.findOneAndUpdate(condition, req.body, {
             $set: {
-                'TKKH_GioHang': req.body.TKKH_GioHang,
+                'TKKH_HangMuc': req.body.TKKH_HangMuc,
                 'TKKH_NgayCapNhat': req.body.TKKH_NgayCapNhat,
             }
         }, {
@@ -110,7 +109,7 @@ exports.update = async (req, res, next) => {
 //Delete a customer with the specified id in the request
 exports.delete = async (req, res, next) => {
     const condition = {
-        TKKH_Ma: req.params.TKKH_Ma,
+        TKKH_MaKH: req.params.TKKH_MaKH,
     };
 
     const [error, document] = await handle(
@@ -133,10 +132,10 @@ exports.delete = async (req, res, next) => {
 
 exports.signup = async (req, res, next) => {
     const khachhang = new KhachHang({
-        TKKH_Ma: req.body.TKKH_Ma,
+        TKKH_MaKH: req.body.TKKH_MaKH,
         TKKH_Ten: req.body.TKKH_Ten,
         TKKH_Email: req.body.TKKH_Email,
-        TKKH_MatKhau: bcrypt.hashSync(req.body.TKKH_MatKhau, 8),
+        TKKH_MaKHtKhau: bcrypt.hashSync(req.body.TKKH_MaKHtKhau, 8),
         TKKH_NgayTao: req.body.TKKH_NgayTao,
     });
 
@@ -144,10 +143,10 @@ exports.signup = async (req, res, next) => {
 
     if (error) {
         let statusCode = 400;
-        let { TKKH_Ten = {}, TKKH_Email = {}, TKKH_MatKhau = {} } = error.errors;
+        let { TKKH_Ten = {}, TKKH_Email = {}, TKKH_MaKHtKhau = {} } = error.errors;
 
         const errorMessage =
-            TKKH_Ten.message || TKKH_Email.message || TKKH_MatKhau.message;
+            TKKH_Ten.message || TKKH_Email.message || TKKH_MaKHtKhau.message;
         if (!errorMessage) {
             statusCode = 500;
         }
@@ -173,20 +172,20 @@ exports.signin = async (req, res, next) => {
     }
 
     const passwordIsValid = bcrypt.compareSync(
-        req.body.TKKH_MatKhau,
-        khachhang.TKKH_MatKhau,
+        req.body.TKKH_MaKHtKhau,
+        khachhang.TKKH_MaKHtKhau,
     );
     console.log(passwordIsValid)
     if (!passwordIsValid) {
         return next(new BadRequestError(401, "password"));
     }
 
-    const token = jwt.sign({ TKKH_Ma: khachhang.TKKH_Ma }, config.jwt.secret, {
+    const token = jwt.sign({ TKKH_MaKH: khachhang.TKKH_MaKH }, config.jwt.secret, {
         expiresIn: 86400, // 24 hours
     });
 
     res.status(200).send({
-        TKKH_Ma: khachhang._id,
+        TKKH_MaKH: khachhang._id,
         TKKH_Ten: khachhang.TKKH_Ten,
         TKKH_Email: khachhang.TKKH_Email,
         TKKH_GioHang: khachhang.TKKH_GioHang,

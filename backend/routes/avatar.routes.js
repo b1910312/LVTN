@@ -8,11 +8,11 @@ module.exports = (app) => {
 
     router.get("/", avatar.findAll);
 
-    router.get("/:AVT_Ma", avatar.findOne);
+    router.get("/:AVT_MaKH", avatar.findOne);
 
-    router.put("/:AVT_Ma", avatar.update);
+    router.put("/:AVT_MaKH", avatar.update);
 
-    router.delete("/:AVT_Ma", avatar.delete);
+    router.delete("/:AVT_MaKH", avatar.delete);
 
     app.use("/api/avatar", router);
 };

@@ -1,9 +1,13 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            NV_Ma: {
+            NV_MaNV: {
                 type: String,
                 required: [true, "Ma cua nhan vien"],
+            },
+            NV_HoTen: {
+                type: String,
+                required: [true, "Ho Ten cua nhan vien"],
             },
             NV_SoDienThoai: {
                 type: String,
@@ -11,11 +15,7 @@ module.exports = mongoose => {
             },
             NV_Email: {
                 type: String,
-                required: [true, "Dia chi email cua nhan vien"],
-            },
-            NV_DiaChi: {
-                type: String,
-                required: [true, "Dia chi cua nhan vien"],
+                required: [true, "Email cua nhan vien"],
             },
             NV_NgayTao: {
                 type: String,

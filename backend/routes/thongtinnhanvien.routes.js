@@ -11,13 +11,13 @@ module.exports = (app) => {
     router.get("/", thongtinnhanvien.findAll);
 
     //Retrieve a single customer with id
-    router.get("/:NV_Ma", thongtinnhanvien.findOneByID);
+    router.get("/:NV_MaNV", thongtinnhanvien.findOneByID);
     
     //Update a customer with id
-    router.put("/:NV_Ma", thongtinnhanvien.update);
+    router.put("/:NV_MaNV", thongtinnhanvien.update);
 
     //Delete a customer with id
-    router.delete("/:NV_Ma", thongtinnhanvien.delete);
+    router.delete("/:NV_MaNV", thongtinnhanvien.delete);
 
     // //Delete all customers
     // router.delete("/", khachhang.deleteAll);

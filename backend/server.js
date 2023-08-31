@@ -14,6 +14,7 @@ const today = getToday();
 
 
 const setupSachRoutes = require("./routes/sach.routes");
+const setupSachNgungKinhDoanhRoutes = require("./routes/sachngungkinhdoanh.routes");
 const setupKhachHangRoutes = require("./routes/khachhang.routes");
 const setupNhanVienRoutes = require("./routes/nhanvien.routes");
 const setupThongTinKhachHangRoutes = require("./routes/thongtinkhachhang.routes");
@@ -25,6 +26,7 @@ const setupDonHangRoutes = require("./routes/donhang.routes");
 const setupChiTietDonHangRoutes = require("./routes/chitietdonhang.routes");
 const setupChiTietGioHangRoutes = require("./routes/chitietgiohang.routes");   
 const setupAvatar = require("./routes/avatar.routes");
+const setupLogo = require("./routes/logo.routes");
 const setupHinhMinhHoa = require("./routes/hinhminhhoa.routes");
 const setupBinhLuan = require("./routes/binhluan.routes");
 const setupDanhGia = require("./routes/danhgia.routes");
@@ -71,7 +73,9 @@ setupDonHangRoutes(app);
 setupChiTietDonHangRoutes(app);
 setupChiTietGioHangRoutes(app);
 setupAvatar(app);
+setupLogo(app);
 setupHinhMinhHoa(app);
 setupBinhLuan(app);
 setupDanhGia(app);
 setupLienHe(app);
+setupSachNgungKinhDoanhRoutes(app)

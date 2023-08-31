@@ -11,10 +11,10 @@ const upload = require("../middlewares/upload");
 exports.create = async (req, res) => {
     // Tạo tài khoản khách hàng
     const thongtinnhanvien = new ThongTinNhanVien({
-        NV_Ma: req.body.NV_Ma,
+        NV_MaNV: req.body.NV_MaNV,
+        NV_HoTen: req.body.NV_HoTen,
         NV_SoDienThoai: req.body.NV_SoDienThoai,
         NV_Email: req.body.NV_Email,
-        NV_DiaChi: req.body.NV_DiaChi,
         NV_NgayTao: req.body.NV_NgayTao,
     });
     // Lưu tài khoản khách hàng vào cơ sở dữ liệu
@@ -32,17 +32,17 @@ exports.create = async (req, res) => {
 //*--------Truy xuất toàn bộ tài khoản khách hàng có trong cơ sở dữ liệu
 exports.findAll = async (req, res, next) => {
     const condition = { ownerId: req.userId };
-    const NV_Ma = req.query.NV_Ma;
-    console.log(req.query.NV_Ma);
-    if (NV_Ma) {
-        condition.NV_Ma = { $regex: new RegExp(NV_Ma), $options: "i" };
+    const NV_MaNV = req.query.NV_MaNV;
+    console.log(req.query.NV_MaNV);
+    if (NV_MaNV) {
+        condition.NV_MaNV = { $regex: new RegExp(NV_MaNV), $options: "i" };
     }
     const [error, documents] = await handle(
         ThongTinNhanVien.find(condition, '-ownerId')
     );
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất thông tin khách hàng với Email ${req.params.NV_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất thông tin khách hàng với Email ${req.params.NV_MaNV}`)
         );
     }
     console.log(documents)
@@ -52,7 +52,7 @@ exports.findAll = async (req, res, next) => {
 //*-------Tìm kiếm một kháchh hàng bằng mã khách hàng
 exports.findOneByID = async (req, res, next) => {
     const condition = {
-        NV_Ma: req.params.NV_Ma,
+        NV_MaNV: req.params.NV_MaNV,
     };
     const [error, documents] = await handle(
         ThongTinNhanVien.findOne(condition)
@@ -79,7 +79,7 @@ exports.update = async (req, res, next) => {
     }
 
     const condition = {
-        NV_Ma: req.params.NV_Ma,
+        NV_MaNV: req.params.NV_MaNV,
     };
 
     const [error, document] = await handle(
@@ -108,7 +108,7 @@ exports.update = async (req, res, next) => {
 //Delete a customer with the specified id in the request
 exports.delete = async (req, res, next) => {
     const condition = {
-        NV_Ma: req.params.NV_Ma,
+        NV_MaNV: req.params.NV_MaNV,
     };
 
     const [error, document] = await handle(
