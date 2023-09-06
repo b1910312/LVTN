@@ -22,10 +22,6 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ngay tao danh gia"],
             },
-            DG_NgayCapNhat: {
-                type: String,
-                required: [false, "Ngay cap nhat danh gia"],
-            },
         });
 
     // Replace _id with id and remove __V

@@ -5,10 +5,6 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ma cua don hang"],
             },
-            DH_Email: {
-                type: String,
-                required: [true, "Email cua khach hang"],
-            },
             DH_Ho: {
                 type: String,
                 required: [true, "Ho cua khach hang"],
@@ -25,17 +21,28 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Dia chi cua khach hang"],
             },
-            DH_TongCong: {
-                type: Number,
-                required: [true, "Tong gia tri cua don hangs"],
+            DH_PhuongXa: {
+                type: String,
+                required: [true, "Phuong Xa cua khach hang"],
             },
-            DH_TongSoLuong: {
-                type: Number,
-                required: [true, "Tong so luong cua don hangs"],
+            DH_QuanHuyen: {
+                type: String,
+                required: [true, "Quan Huyenh cua khach hang"],
+            },
+            DH_TinhTP: {
+                type: String,
+                required: [true, "Tinh Thanh Pho cua khach hang"],
             },
             DH_TrangThai: {
                 type: Number,
-                default: 1,
+                default: 0,
+                //Các trạng thái
+                //      - trạng thái 0 khi đơn hàng chưa xác nhận
+                //      - trạng thái 1 khi đơn hàng đã được xác nhận
+                //      - trạng thái 2 khi đơn hàng đã được thanh toán
+                //      - trạng thái 3 khi đơn hàng đang vận chuyển
+                //      - trạng thái 4 khi đơn hàng đang giao 
+                //      - trạng thái 5 khi đơn hàng đã được giao
             },
             DH_NgayTao: {
                 type: String,

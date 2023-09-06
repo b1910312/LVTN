@@ -18,13 +18,28 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ten cua khach hang"],
             },
+            LH_ChuDe: {
+                type: String,
+                required: [true, "Chu de cua lien he"],
+            },
             LH_NoiDung: {
                 type: String,
                 required: [true, "Noi dung cua lien he"],
             },
+            LH_MaNV: {
+                type: String,
+                
+            },
+            LH_NoiDungTraLoi: {
+                type: String,
+       
+            },
             LH_TrangThai: {
                 type: Boolean,
-                default: false,
+                default: 0,
+                //Các trạng thái
+                //      - trạng thái 0 khi liên hệ chưa được trả lời
+                //      - trạng thái 1 khi liên hệ đã được trả lời
             },
             LH_NgayTao: {
                 type: String,

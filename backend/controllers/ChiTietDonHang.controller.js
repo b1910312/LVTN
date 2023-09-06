@@ -12,6 +12,7 @@ exports.create = async (req, res) => {
         CTDH_TenSach: req.body.CTDH_TenSach,
         CTDH_SoLuong: req.body.CTDH_SoLuong,
         CTDH_Gia: req.body.CTDH_Gia,
+        CTDH_ThanhTien: req.body.CTDH_ThanhTien,
         CTDH_NgayTao: req.body.CTDH_NgayTao,
     });
     // Save product in the DB

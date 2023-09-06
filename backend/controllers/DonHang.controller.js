@@ -9,13 +9,13 @@ exports.create = async (req, res) => {
     // Create a product
     const donhang = new DonHang({
         DH_Ma: req.body.DH_Ma,
-        DH_Email: req.body.DH_Email,
         DH_Ho: req.body.DH_Ho,
         DH_Ten: req.body.DH_Ten,
         DH_SoDienThoai: req.body.DH_SoDienThoai,
         DH_DiaChi: req.body.DH_DiaChi,
-        DH_TongCong: req.body.DH_TongCong,
-        DH_TongSoLuong: req.body.DH_TongSoLuong,
+        DH_PhuongXa: req.body.DH_PhuongXa,
+        DH_QuanHuyen: req.body.DH_QuanHuyen,
+        DH_TinhTP: req.body.DH_TinhTP,
         DH_NgayTao: req.body.DH_NgayTao,
     });
     // Save product in the DB
@@ -90,6 +90,7 @@ exports.update = async (req, res, next) => {
     const [error, document] = await handle(
         DonHang.findOneAndUpdate(condition, req.body,  {
             $set: {
+                'DH_TrangThai': req.body.DH_TrangThai,
                 'DH_NgayCapNhat': req.body.DH_NgayCapNhat,
             }
         },{

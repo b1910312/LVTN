@@ -22,8 +22,11 @@ module.exports = mongoose => {
                 type: String,
             },
             BL_TrangThai: {
-                type: Boolean,
-                default: true,
+                type: Number,
+                default: 1,
+                //Các trạng thái
+                //      - trạng thái 0 khi bình luận bị ẩn
+                //      - trạng thái 1 khi bình luận không bị hiện
             },
             BL_NgayTao: {
                 type: String,

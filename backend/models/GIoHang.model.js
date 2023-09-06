@@ -9,14 +9,6 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ma cua khach hang"],
             },
-            GH_TongCong: {
-                type: Number,
-                required: [true, "Tong gia tri cua gio hang"],
-            },
-            GH_TongSoLuong:{
-                type: Number,
-                required: [true, "Tong so luong cua gio hang"],
-            },
             GH_NgayTao: {
                 type: String,
                 required: [true, "Ngay tao gia hang"],

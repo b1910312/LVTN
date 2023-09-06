@@ -12,6 +12,7 @@ exports.create = async (req, res) => {
         LH_Ho: req.body.LH_Ho,
         LH_Ten: req.body.LH_Ten,
         LH_NoiDung: req.body.LH_NoiDung,
+        LH_ChuDe: req.body.LH_ChuDe,
         LH_NgayTao: req.body.LH_NgayTao,
     });
     // Save product in the DB
@@ -86,6 +87,9 @@ exports.update = async (req, res, next) => {
     const [error, document] = await handle(
         LienHe.findOneAndUpdate(condition, req.body,  {
             $set: {
+                'LH_TrangThai': req.body.LH_TrangThai,
+                'LH_MaNV': req.body.LH_MaNV,
+                'LH_NoiDungTraLoi': req.body.LH_NoiDungTraLoi,
                 'LH_NgayCapNhat': req.body.LH_NgayCapNhat,
             }
         },{

@@ -15,12 +15,16 @@ module.exports = mongoose => {
                 required: [true, "Ten cua sach"],
             },
            CTDH_SoLuong: {
-                type: String,
+                type: Number,
                 required: [true, "So luong cua sach"],
             },
            CTDH_Gia: {
-                type: String,
+                type: Number,
                 required: [true, "Gia cua sach"],
+            },
+            CTDH_ThanhTien: {
+                type: Number,
+                required: [true, "Thanh tien cua sach"],
             },
            CTDH_NgayTao: {
                 type: String,

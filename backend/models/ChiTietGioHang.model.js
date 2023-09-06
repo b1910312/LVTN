@@ -10,19 +10,14 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ma cua gio hang"],
             },
-           CTGH_TenSach: {
+           CTGH_MaSach: {
                 type: String,
-                required: [true, "Ten cua sach"],
+                required: [true, "Ma cua sach"],
             },
            CTGH_SoLuong: {
-                type: String,
+                type: Number,
                 required: [true, "So luong cua sach"],
             },
-           CTGH_Gia: {
-                type: String,
-                required: [true, "Gia cua sach"],
-            },
-        
            CTGH_NgayTao: {
                 type: String,
                 required: [true, "Ngay tao chi tiet gio hang"],

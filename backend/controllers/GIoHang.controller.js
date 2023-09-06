@@ -9,8 +9,6 @@ exports.create = async (req, res) => {
     // Create a product
     const giohang = new GioHang({
         GH_Ma: req.body.GH_Ma,
-        GH_TongCong: req.body.GH_TongCong,
-        GH_TongSoLuong: req.body.GH_TongSoLuong,
         GH_MaKH: req.body.GH_MaKH,
         GH_NgayTao: req.body.GH_NgayTao,
     });

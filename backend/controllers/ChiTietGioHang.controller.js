@@ -10,9 +10,8 @@ exports.create = async (req, res) => {
     const chitietgiohang = new ChiTietGioHang({
         CTGH_Ma: req.body.CTGH_Ma,
         CTGH_MaGH: req.body.CTGH_MaGH,
-        CTGH_TenSach: req.body.CTGH_TenSach,
+        CTGH_MaSach: req.body.CTGH_MaSach,
         CTGH_SoLuong: req.body.CTGH_SoLuong,
-        CTGH_Gia: req.body.CTGH_Gia,
         CTGH_NgayTao: req.body.CTGH_NgayTao,
     });
     // Save product in the DB

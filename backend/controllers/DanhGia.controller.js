@@ -75,38 +75,6 @@ exports.findOne = async (req, res) => {
     return res.send(documents);
 };
 
-//*--- Cập nhật thông tin sách thông qua mã sách
-exports.update = async (req, res, next) => {
-
-    const condition = {
-        DG_Ma: req.params.DG_Ma
-    };
-
-    const [error, document] = await handle(
-        DanhGia.findOneAndUpdate(condition, req.body,  {
-            $set: {
-                'DG_NgayCapNhat': req.body.DG_NgayCapNhat,
-            }
-        },{
-            new: true,
-            projection: "-ownerId",
-        })
-    );
-    if (error) {
-        return next(
-            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin đánh giá có mã =${req.params.id}`
-            )
-        );
-    }
-
-    if (!document) {
-        return next(new BadRequestError(404, "Không tìm thấy đánh giá"));
-    }
-
-    return res.send({ message: "Cập nhật thông tin đánh giá thành công." });
-};
-
-
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
