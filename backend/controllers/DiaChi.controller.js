@@ -1,20 +1,22 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const Avatar = db.Avatar;
+const DiaChi = db.DiaChi;
 
 
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
-    const avatar = new Avatar({
-        HMH_Ma: req.body.HMH_Ma,
-        HMH_MaSach: req.body.HMH_MaSach,
-        HMH_URL: req.body.HMH_URL,
-        HMH_NgayTao: req.body.HMH_NgayTao,
+    const diachi = new DiaChi({
+        DC_MaDT: req.body.DC_MaDT,
+        DC_DiaChi: req.body.DC_DiaChi,
+        DC_PhuongXa: req.body.DC_PhuongXa,
+        DC_QuanHuyen: req.body.DC_QuanHuyen,
+        DC_TinhTP: req.body.DC_TinhTP,
+        DC_NgayTao: req.body.DC_NgayTao,
     });
     // Save product in the DB
-    const [error, document] = await handle(avatar.save());
+    const [error, document] = await handle(diachi.save());
 
     if (error) {
         return console.log(error);
@@ -34,19 +36,19 @@ exports.findAll = async (req, res) => {
     const condition = {
         ownerId: req.userId
     };
-    const HMH_MaSach = req.query.ten;
+    const DC_MaDT = req.query.ten;
 
-    if (HMH_MaSach) {
-        condition.HMH_MaSach = { $regex: new RegExp(HMH_MaSach), $options: "i" };
+    if (DC_MaDT) {
+        condition.DC_MaDT = { $regex: new RegExp(DC_MaDT), $options: "i" };
     }
 
     const [error, documents] = await handle(
-        Avatar.find(condition, '-ownerId').sort({ 'HMH_MaSach': 1 })
+        DiaChi.find(condition, '-ownerId').sort({ 'DC_MaDT': 1 })
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất hình minh họa với mã ${req.params.HMH_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất địa chỉ với mã ${req.params.DC_MaDT}`)
         );
     }
 
@@ -58,19 +60,19 @@ exports.findAll = async (req, res) => {
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
-        HMH_Ma: req.params.HMH_Ma,
+        DC_MaDT: req.params.DC_MaDT,
     };
     const [error, documents] = await handle(
-        Avatar.findOne(condition)
+        DiaChi.findOne(condition)
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, "Lỗi trong quá trình truy xuất hình minh họa!")
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất địa chỉ!")
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy hình minh họa")
+        return res.send("Không tìm thấy địa chỉ")
     }
     return res.send(documents);
 };
@@ -79,13 +81,13 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res, next) => {
 
     const condition = {
-        HMH_Ma: req.params.HMH_Ma
+        DC_MaDT: req.params.DC_MaDT
     };
 
     const [error, document] = await handle(
-        Avatar.findOneAndUpdate(condition, req.body,  {
+        DiaChi.findOneAndUpdate(condition, req.body,  {
             $set: {
-                'HMH_NgayCapNhat': req.body.HMH_NgayCapNhat,
+                'DC_NgayCapNhat': req.body.DC_NgayCapNhat,
             }
         },{
             new: true,
@@ -94,37 +96,37 @@ exports.update = async (req, res, next) => {
     );
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin hình minh họa có mã =${req.params.id}`
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin địa chỉ có mã =${req.params.id}`
             )
         );
     }
 
     if (!document) {
-        return next(new BadRequestError(404, "Không tìm thấy hình minh họa"));
+        return next(new BadRequestError(404, "Không tìm thấy địa chỉ"));
     }
 
-    return res.send({ message: "Cập nhật thông tin hình minh họa thành công." });
+    return res.send({ message: "Cập nhật thông tin địa chỉ thành công." });
 };
 
 
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        AVT_Ma: req.params.AVT_Ma
+        DC_MaDT: req.params.DC_MaDT
     };
 
     const [error, document] = await handle(
-        Avatar.deleteOne(condition)
+        DiaChi.deleteOne(condition)
     );
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được hình minh họa có mã ${req.params.id}`)
+            new BadRequestError(500,`Không xóa được địa chỉ có mã ${req.params.id}`)
         );
     }
 
     if (document) {
-        return res.send({ message: "Xóa hình minh họa thành công" });
+        return res.send({ message: "Xóa địa chỉ thành công" });
     }
 
 };

@@ -1,24 +1,19 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            HMH_Ma: {
+            LSTK_Ma: {
                 type: String,
-                required: [true, "Ma cua hinh minh hoa"],
+                required: [true, "Ma cua tim kiem"],
             },
-        
-            HMH_MaSach: {
+            LSTK_MaND: {
                 type: String,
-                required: [true, "Ma cua sach"],
+                required: [true, "Ma cua nguoi dung"],
             },
-            HMH_URL: {
+            LSTK_TuKhoa: {
                 type: String,
-                required: [true, "Ten cua hinh minh hoa"],
+                required: [true, "Tu khoa tim kiem"],
             },
-            HMH_NgayTao: {
-                type: String,
-                required: [true, "Ngay tao hinh minh hoa"],
-            },
-            HMH_NgayCapNhat: {
+            LSTK_NgayTao: {
                 type: String,
             },
         });
@@ -31,5 +26,5 @@ module.exports = mongoose => {
     });
 
 
-    return mongoose.model("HinhMinhHoa", schema);
+    return mongoose.model("LichSuTimKiem", schema);
 };

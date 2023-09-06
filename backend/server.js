@@ -13,24 +13,26 @@ const config = require("./config");
 const today = getToday();
 
 
-const setupSachRoutes = require("./routes/sach.routes");
-const setupSachNgungKinhDoanhRoutes = require("./routes/sachngungkinhdoanh.routes");
-const setupKhachHangRoutes = require("./routes/khachhang.routes");
-const setupNhanVienRoutes = require("./routes/nhanvien.routes");
-const setupThongTinKhachHangRoutes = require("./routes/thongtinkhachhang.routes");
-const setupThongTinNhanVienRoutes = require("./routes/thongtinnhanvien.routes");
-const setupTheLoaiRoutes = require("./routes/theloai.routes");
-const setupNXBRoutes = require("./routes/nxb.routes");
-const setupGioHangRoutes = require("./routes/giohang.routes");
-const setupDonHangRoutes = require("./routes/donhang.routes");
-const setupChiTietDonHangRoutes = require("./routes/chitietdonhang.routes");
-const setupChiTietGioHangRoutes = require("./routes/chitietgiohang.routes");   
-const setupAvatar = require("./routes/avatar.routes");
-const setupLogo = require("./routes/logo.routes");
-const setupHinhMinhHoa = require("./routes/hinhminhhoa.routes");
-const setupBinhLuan = require("./routes/binhluan.routes");
-const setupDanhGia = require("./routes/danhgia.routes");
-const setupLienHe = require("./routes/lienhe.routes");
+const setupSachRoutes                      = require("./routes/sach.routes");
+const setupSachNgungKinhDoanhRoutes        = require("./routes/sachngungkinhdoanh.routes");
+const setupKhachHangRoutes                 = require("./routes/khachhang.routes");
+const setupNhanVienRoutes                  = require("./routes/nhanvien.routes");
+const setupThongTinKhachHangRoutes         = require("./routes/thongtinkhachhang.routes");
+const setupThongTinNhanVienRoutes          = require("./routes/thongtinnhanvien.routes");
+const setupTheLoaiRoutes                   = require("./routes/theloai.routes");
+const setupNXBRoutes                       = require("./routes/nxb.routes");
+const setupGioHangRoutes                   = require("./routes/giohang.routes");
+const setupDonHangRoutes                   = require("./routes/donhang.routes");
+const setupChiTietDonHangRoutes            = require("./routes/chitietdonhang.routes");
+const setupChiTietGioHangRoutes            = require("./routes/chitietgiohang.routes");   
+const setupAvatar                          = require("./routes/avatar.routes");
+const setupLogo                            = require("./routes/logo.routes");
+const setupHinhMinhHoa                     = require("./routes/hinhminhhoa.routes");
+const setupBinhLuan                        = require("./routes/binhluan.routes");
+const setupDanhGia                         = require("./routes/danhgia.routes");
+const setupDanhGiaCuaHang                  = require("./routes/danhgiacuahang.routes");
+const setupLienHe                          = require("./routes/lienhe.routes");
+const setupDiaChi                          = require("./routes/diachi.routes");
 
 function getToday() {
     const today = new Date();
@@ -77,5 +79,7 @@ setupLogo(app);
 setupHinhMinhHoa(app);
 setupBinhLuan(app);
 setupDanhGia(app);
+setupDanhGiaCuaHang(app);
 setupLienHe(app);
 setupSachNgungKinhDoanhRoutes(app)
+setupDiaChi(app)

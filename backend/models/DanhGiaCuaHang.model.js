@@ -10,9 +10,9 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ma cua khach hang"],
             },
-            DG_MaSach: {
+            DG_NoiDung: {
                 type: String,
-                required: [true, "Ma cua sach"],
+                required: [true, "Noi dung cua danh gia"],
             },
             DG_SoSao: {
                 type: Number,
@@ -32,5 +32,5 @@ module.exports = mongoose => {
     });
 
 
-    return mongoose.model("DanhGia", schema);
+    return mongoose.model("DanhGiaCuaHang", schema);
 };

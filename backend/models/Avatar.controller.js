@@ -8,10 +8,9 @@ const Avatar = db.Avatar;
 exports.create = async (req, res) => {
     // Create a product
     const avatar = new Avatar({
-        HMH_Ma: req.body.HMH_Ma,
-        HMH_MaSach: req.body.HMH_MaSach,
-        HMH_URL: req.body.HMH_URL,
-        HMH_NgayTao: req.body.HMH_NgayTao,
+        AVT_MaKH: req.body.AVT_MaKH,
+        AVT_URL: req.body.AVT_URL,
+        AVT_NgayTao: req.body.AVT_NgayTao,
     });
     // Save product in the DB
     const [error, document] = await handle(avatar.save());
@@ -34,19 +33,19 @@ exports.findAll = async (req, res) => {
     const condition = {
         ownerId: req.userId
     };
-    const HMH_MaSach = req.query.ten;
+    const AVT_MaKH = req.query.ten;
 
-    if (HMH_MaSach) {
-        condition.HMH_MaSach = { $regex: new RegExp(HMH_MaSach), $options: "i" };
+    if (AVT_MaKH) {
+        condition.AVT_MaKH = { $regex: new RegExp(AVT_MaKH), $options: "i" };
     }
 
     const [error, documents] = await handle(
-        Avatar.find(condition, '-ownerId').sort({ 'HMH_MaSach': 1 })
+        Avatar.find(condition, '-ownerId').sort({ 'AVT_MaKH': 1 })
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất hình minh họa với mã ${req.params.HMH_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất ảnh đại diện với mã ${req.params.AVT_MaKH}`)
         );
     }
 
@@ -58,7 +57,7 @@ exports.findAll = async (req, res) => {
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
-        HMH_Ma: req.params.HMH_Ma,
+        AVT_Ma: req.params.AVT_Ma,
     };
     const [error, documents] = await handle(
         Avatar.findOne(condition)
@@ -66,11 +65,11 @@ exports.findOne = async (req, res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500, "Lỗi trong quá trình truy xuất hình minh họa!")
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất ảnh đại diện!")
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy hình minh họa")
+        return res.send("Không tìm thấy ảnh đại diện")
     }
     return res.send(documents);
 };
@@ -79,13 +78,13 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res, next) => {
 
     const condition = {
-        HMH_Ma: req.params.HMH_Ma
+        AVT_MaKH: req.params.AVT_MaKH
     };
 
     const [error, document] = await handle(
         Avatar.findOneAndUpdate(condition, req.body,  {
             $set: {
-                'HMH_NgayCapNhat': req.body.HMH_NgayCapNhat,
+                'AVT_NgayCapNhat': req.body.AVT_NgayCapNhat,
             }
         },{
             new: true,
@@ -94,23 +93,23 @@ exports.update = async (req, res, next) => {
     );
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin hình minh họa có mã =${req.params.id}`
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin ảnh đại diện có mã =${req.params.id}`
             )
         );
     }
 
     if (!document) {
-        return next(new BadRequestError(404, "Không tìm thấy hình minh họa"));
+        return next(new BadRequestError(404, "Không tìm thấy ảnh đại diện"));
     }
 
-    return res.send({ message: "Cập nhật thông tin hình minh họa thành công." });
+    return res.send({ message: "Cập nhật thông tin ảnh đại diện thành công." });
 };
 
 
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        AVT_Ma: req.params.AVT_Ma
+        AVT_MaKH: req.params.AVT_MaKH
     };
 
     const [error, document] = await handle(
@@ -119,12 +118,12 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được hình minh họa có mã ${req.params.id}`)
+            new BadRequestError(500,`Không xóa được ảnh đại diện có mã ${req.params.id}`)
         );
     }
 
     if (document) {
-        return res.send({ message: "Xóa hình minh họa thành công" });
+        return res.send({ message: "Xóa ảnh đại diện thành công" });
     }
 
 };
