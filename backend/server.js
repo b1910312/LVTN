@@ -33,6 +33,9 @@ const setupDanhGia                         = require("./routes/danhgia.routes");
 const setupDanhGiaCuaHang                  = require("./routes/danhgiacuahang.routes");
 const setupLienHe                          = require("./routes/lienhe.routes");
 const setupDiaChi                          = require("./routes/diachi.routes");
+const setupDonHoanTra                      = require("./routes/donhoantra.routes");
+const setupChiTietDonHoanTra               = require("./routes/chitietdonhoantra.routes");
+
 
 function getToday() {
     const today = new Date();
@@ -83,3 +86,5 @@ setupDanhGiaCuaHang(app);
 setupLienHe(app);
 setupSachNgungKinhDoanhRoutes(app)
 setupDiaChi(app)
+setupDonHoanTra(app)
+setupChiTietDonHoanTra(app)
