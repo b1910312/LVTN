@@ -50,5 +50,5 @@ module.exports = mongoose => {
         return object;
     });
 
-    return mongoose.model("Sach", schema);
+    return mongoose.model("SachNgungKinhDoanh", schema);
 }

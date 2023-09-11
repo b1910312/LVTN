@@ -9,9 +9,7 @@ module.exports = (app) => {
     router.get("/", danhgia.findAll);
 
     router.get("/:DG_Ma", danhgia.findOne);
-
-    router.put("/:DG_Ma", danhgia.update);
-
+    
     router.delete("/:DG_Ma", danhgia.delete);
 
     app.use("/api/danhgia", router);

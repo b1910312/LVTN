@@ -1,19 +1,20 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            AVT_MaKH: {
+            BN_MaSach: {
                 type: String,
-                required: [true, "Ma cua khach hang"],
+                required: [true, "Ma cua sach"],
             },
-            AVT_URL: {
+            BN_TrangThai: {
+                type: Number,
+                default: 1,
+                //Trang thai banner: (1) đang hiển thị, (0) đẫ ẩn
+            },
+            BN_NgayTao: {
                 type: String,
-                required: [true, "Ten cua avatar"],
+                required: [true, "Ngay tao banner"],
             },
-            AVT_NgayTao: {
-                type: String,
-                required: [true, "Ngay tao avatar"],
-            },
-            AVT_NgayCapNhat: {
+            BN_NgayCapNhat: {
                 type: String,
             },
         });
@@ -26,5 +27,5 @@ module.exports = mongoose => {
     });
 
 
-    return mongoose.model("Avatar", schema);
+    return mongoose.model("Banner", schema);
 };

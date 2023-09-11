@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const createSachModel = require("./Sach.model");
 const createKhachHangModel = require("./KhachHang.model");
 const createAvatarModel = require("./Avatar.model");
@@ -9,12 +10,30 @@ const createThongTinNhanVienModel = require("./ThongTinNhanVien.model");
 const createTheLoaiModel = require("./TheLoai.model");
 const createDonHangModel = require("./DonHang.model");
 const createChiTietDonHangModel = require("./ChiTietDonHang.model");
+const createDonHoanTraModel = require("./DonHoanTra.model");
+const createChiTietDonHoanTraModel = require("./ChiTietDonHoanTra.model");
+const createDiaChiModel = require("./DiaChi.model");
+const createDanhGiaCuaHangModel = require("./DanhGiaCuaHang.model");
+const createLichSuTimKiemModel = require("./LichSuTimKiem.model");
+const createLogoModel = require("./Logo.model");
+const createSachNgungKinhDoanhmodel = require("./SachNgungKinhDoanh.model");
 const createGioHangModel = require("./GIoHang.model");
 const createChiTietGioHangModel = require("./ChiTietGioHang.model");
 const createNhaXuatBanModel = require("./NhaXuatBan.model");
 const createBinhLuanModel = require("./BinhLuan.model");
 const createDanhGiaModel = require("./DanhGia.model");
 const createLienHeModel = require("./LienHe.model");
+const createHangMuc = require("./HangMuc.model");
+const createVaiTro = require("./VaiTro.model");
+const createBanner = require("./Banner.model");
+const createBestSale = require("./BestSale.model");
+const createSachMoi = require("./SachMoi.model");
+const createSachYeuThich = require("./SachYeuThich.model");
+const createThongTinCuaHang = require("./ThongTinCuaHang.model");
+const createNenTang = require("./NenTang.model");
+const createTinNhan = require("./TinNhan.model");
+const createUuDai = require("./UuDai.model");
+const createSachUuDai = require("./SachUuDai.model");
 
 const db = {};
 
@@ -35,5 +54,25 @@ db.NhaXuatBan = createNhaXuatBanModel(mongoose);
 db.BinhLuan = createBinhLuanModel(mongoose);
 db.LienHe = createLienHeModel(mongoose);
 db.DanhGia = createDanhGiaModel(mongoose);
+db.DonHoanTra = createDonHoanTraModel(mongoose);
+db.ChiTietDonHoanTra = createChiTietDonHoanTraModel(mongoose);
+db.DiaChi = createDiaChiModel(mongoose);
+db.DanhGiaCuahang = createDanhGiaCuaHangModel(mongoose);
+db.LichSuTimKiem = createLichSuTimKiemModel(mongoose);
+db.Logo = createLogoModel(mongoose);
+db.SachNgungKinhDoanh = createSachNgungKinhDoanhmodel(mongoose);
+db.HangMuc = createHangMuc(mongoose);
+db.VaiTro = createVaiTro(mongoose);
+db.Banner = createBanner(mongoose);
+db.BestSale = createBestSale(mongoose);
+db.SachMoi = createSachMoi(mongoose);
+db.SachYeuThich = createSachYeuThich(mongoose);
+db.ThongTinCuaHang = createThongTinCuaHang(mongoose);
+db.NenTang = createNenTang(mongoose);
+db.TinNhan = createTinNhan(mongoose);
+db.UuDai = createUuDai(mongoose);
+db.SachUuDai = createSachUuDai(mongoose);
+
+
 
 module.exports = db;

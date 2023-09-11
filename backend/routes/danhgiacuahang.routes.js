@@ -10,8 +10,6 @@ module.exports = (app) => {
 
     router.get("/:DG_Ma", danhgiacuahang.findOne);
 
-    router.put("/:DG_Ma", danhgiacuahang.update);
-
     router.delete("/:DG_Ma", danhgiacuahang.delete);
 
     app.use("/api/danhgiacuahang", router);

@@ -1,12 +1,12 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const Sach = db.Sach;
+const SachNgungKinhDoanh = db.SachNgungKinhDoanhNgungKinhDoanh;
 
 //*-------------Thêm sách
 exports.create = async (req, res) => {
     // Create a product
-    const sach = new Sach({
+    const sachngungkinhdoanh = new SachNgungKinhDoanh({
         SNKD_Ma: req.body.SNKD_Ma,
         SNKD_Ten: req.body.SNKD_Ten,
         SNKD_TacGia: req.body.SNKD_TacGia,
@@ -18,7 +18,7 @@ exports.create = async (req, res) => {
         SNKD_NgayXoa: req.body.SNKD_NgayXoa,
     });
     // Save product in the DB
-    const [error, document] = await handle(sach.save());
+    const [error, document] = await handle(sachngungkinhdoanh.save());
 
     if (error) {
         return console.log(error);
@@ -45,7 +45,7 @@ exports.findAll = async (req, res) => {
     }
 
     const [error, documents] = await handle(
-        Sach.find(condition, '-ownerId').sort({ 'SNKD_Ma': 1 })
+        SachNgungKinhDoanh.find(condition, '-ownerId').sort({ 'SNKD_Ma': 1 })
     );
 
     if (error) {
@@ -65,7 +65,7 @@ exports.findOne = async (req, res) => {
         SNKD_Ma: req.params.SNKD_Ma,
     };
     const [error, documents] = await handle(
-        Sach.findOne(condition)
+        SachNgungKinhDoanh.findOne(condition)
     );
 
     if (error) {
@@ -86,7 +86,7 @@ exports.delete = async (req,res) => {
     };
 
     const [error, document] = await handle(
-        Sach.deleteOne(condition)
+        SachNgungKinhDoanh.deleteOne(condition)
     );
 
     if (error) {

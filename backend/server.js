@@ -84,7 +84,7 @@ setupBinhLuan(app);
 setupDanhGia(app);
 setupDanhGiaCuaHang(app);
 setupLienHe(app);
-setupSachNgungKinhDoanhRoutes(app)
-setupDiaChi(app)
-setupDonHoanTra(app)
-setupChiTietDonHoanTra(app)
+setupSachNgungKinhDoanhRoutes(app);
+setupDiaChi(app);
+setupDonHoanTra(app);
+setupChiTietDonHoanTra(app);

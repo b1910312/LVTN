@@ -1,4 +1,4 @@
-const sach = require("../controllers/SachNgungKinhDoanh.controller");
+const sachngungkinhdoanh = require("../controllers/SachNgungKinhDoanh.controller");
 const express = require("express");
 
 module.exports = (app) => {
@@ -9,8 +9,6 @@ module.exports = (app) => {
     router.get("/", sachngungkinhdoanh.findAll);
 
     router.get("/:SNKD_Ma", sachngungkinhdoanh.findOne);
-
-    router.put("/:SNKD_Ma", sachngungkinhdoanh.update);
 
     router.delete("/:SNKD_Ma", sachngungkinhdoanh.delete);
 

@@ -1,19 +1,19 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const Avatar = db.Avatar;
+const SachUuDai = db.SachUuDai;
 
 
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
-    const avatar = new Avatar({
-        AVT_MaKH: req.body.AVT_MaKH,
-        AVT_URL: req.body.AVT_URL,
-        AVT_NgayTao: req.body.AVT_NgayTao,
+    const sachuudai = new SachUuDai({
+        SUD_MaSach: req.body.SUD_MaSach,
+        SUD_MaUuDai: req.body.SUD_MaUuDai,
+        SUD_NgayTao: req.body.SUD_NgayTao,
     });
     // Save product in the DB
-    const [error, document] = await handle(avatar.save());
+    const [error, document] = await handle(sachuudai.save());
 
     if (error) {
         return console.log(error);
@@ -33,19 +33,19 @@ exports.findAll = async (req, res) => {
     const condition = {
         ownerId: req.userId
     };
-    const AVT_MaKH = req.query.ten;
+    const SUD_MaSach = req.query.ten;
 
-    if (AVT_MaKH) {
-        condition.AVT_MaKH = { $regex: new RegExp(AVT_MaKH), $options: "i" };
+    if (SUD_MaSach) {
+        condition.SUD_MaSach = { $regex: new RegExp(SUD_MaSach), $options: "i" };
     }
 
     const [error, documents] = await handle(
-        Avatar.find(condition, '-ownerId').sort({ 'AVT_MaKH': 1 })
+        SachUuDai.find(condition, '-ownerId').sort({ 'SUD_MaSach': 1 })
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất ảnh đại diện với mã ${req.params.AVT_MaKH}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất ảnh đại diện với mã ${req.params.SUD_MaSach}`)
         );
     }
 
@@ -57,10 +57,10 @@ exports.findAll = async (req, res) => {
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
-        AVT_Ma: req.params.AVT_Ma,
+        SUD_Ma: req.params.SUD_Ma,
     };
     const [error, documents] = await handle(
-        Avatar.findOne(condition)
+        SachUuDai.findOne(condition)
     );
 
     if (error) {
@@ -78,13 +78,13 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res, next) => {
 
     const condition = {
-        AVT_MaKH: req.params.AVT_MaKH
+        SUD_MaSach: req.params.SUD_MaSach
     };
 
     const [error, document] = await handle(
-        Avatar.findOneAndUpdate(condition, req.body,  {
+        SachUuDai.findOneAndUpdate(condition, req.body,  {
             $set: {
-                'AVT_NgayCapNhat': req.body.AVT_NgayCapNhat,
+                'SUD_NgayCapNhat': req.body.SUD_NgayCapNhat,
             }
         },{
             new: true,
@@ -109,11 +109,11 @@ exports.update = async (req, res, next) => {
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        AVT_MaKH: req.params.AVT_MaKH
+        SUD_MaSach: req.params.SUD_MaSach
     };
 
     const [error, document] = await handle(
-        Avatar.deleteOne(condition)
+        SachUuDai.deleteOne(condition)
     );
 
     if (error) {
