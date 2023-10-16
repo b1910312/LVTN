@@ -1,12 +1,12 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const DanhGia = db.DanhGiaCuaHang;
+const DanhGiaCuaHang = db.DanhGiaCuahang;
 
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
-    const danhgia = new DanhGia({
+    const danhgiacuahang = new DanhGiaCuaHang({
         DG_Ma: req.body.DG_Ma,
         DG_MaKH: req.body.DG_MaKH,
         DG_NoiDung: req.body.DG_NoiDung,
@@ -14,7 +14,7 @@ exports.create = async (req, res) => {
         DG_NgayTao: req.body.DG_NgayTao,
     });
     // Save product in the DB
-    const [error, document] = await handle(danhgia.save());
+    const [error, document] = await handle(danhgiacuahang.save());
 
     if (error) {
         return console.log(error);
@@ -41,7 +41,7 @@ exports.findAll = async (req, res) => {
     }
 
     const [error, documents] = await handle(
-        DanhGia.find(condition, '-ownerId').sort({ 'DG_MaKH': 1 })
+        DanhGiaCuaHang.find(condition, '-ownerId').sort({ 'DG_MaKH': 1 })
     );
 
     if (error) {
@@ -61,7 +61,7 @@ exports.findOne = async (req, res) => {
         DG_Ma: req.params.DG_Ma,
     };
     const [error, documents] = await handle(
-        DanhGia.findOne(condition)
+        DanhGiaCuaHang.findOne(condition)
     );
 
     if (error) {
@@ -82,7 +82,7 @@ exports.delete = async (req,res) => {
     };
 
     const [error, document] = await handle(
-        DanhGia.deleteOne(condition)
+        DanhGiaCuaHang.deleteOne(condition)
     );
 
     if (error) {

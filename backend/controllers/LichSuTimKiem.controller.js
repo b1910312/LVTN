@@ -8,7 +8,6 @@ const LichSuTimKiem = db.LichSuTimKiem;
 exports.create = async (req, res) => {
     // Create a product
     const lichsutimkiem = new LichSuTimKiem({
-        LSTK_Ma: req.body.LSTK_Ma,
         LSTK_MaND: req.body.LSTK_MaND,
         LSTK_TuKhoa: req.body.LSTK_TuKhoa,
         LSTK_NgayTao: req.body.LSTK_NgayTao,
@@ -34,19 +33,19 @@ exports.findAll = async (req, res) => {
     const condition = {
         ownerId: req.userId
     };
-    const LSTK_Ma = req.query.ten;
+    const LSTK_MaND = req.query.ten;
 
-    if (LSTK_Ma) {
-        condition.LSTK_Ma = { $regex: new RegExp(LSTK_Ma), $options: "i" };
+    if (LSTK_MaND) {
+        condition.LSTK_MaND = { $regex: new RegExp(LSTK_MaND), $options: "i" };
     }
 
     const [error, documents] = await handle(
-        Avatar.find(condition, '-ownerId').sort({ 'LSTK_Ma': 1 })
+        LichSuTimKiem.find(condition, '-ownerId').sort({ 'LSTK_MaND': 1 })
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất lịch sử tìm kiếm với mã ${req.params.LSTK_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất lịch sử tìm kiếm với mã ${req.params.LSTK_MaND}`)
         );
     }
 
@@ -61,7 +60,7 @@ exports.findOne = async (req, res) => {
         AVT_Ma: req.params.AVT_Ma,
     };
     const [error, documents] = await handle(
-        Avatar.findOne(condition)
+        LichSuTimKiem.findOne(condition)
     );
 
     if (error) {
@@ -78,11 +77,11 @@ exports.findOne = async (req, res) => {
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        LSTK_Ma: req.params.LSTK_Ma
+        LSTK_MaND: req.params.LSTK_MaND
     };
 
     const [error, document] = await handle(
-        Avatar.deleteOne(condition)
+        LichSuTimKiem.deleteOne(condition)
     );
 
     if (error) {

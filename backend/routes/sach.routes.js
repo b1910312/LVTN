@@ -8,6 +8,8 @@ module.exports = (app) => {
 
     router.get("/", sach.findAll);
 
+    router.get('/getid/getlastsma', sach.getLastSMa);
+    
     router.get("/:S_Ma", sach.findOne);
 
     router.put("/:S_Ma", sach.update);

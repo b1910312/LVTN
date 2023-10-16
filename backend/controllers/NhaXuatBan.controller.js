@@ -13,6 +13,7 @@ exports.create = async (req, res) => {
         NXB_Email: req.body.NXB_Email,
         NXB_SDT: req.body.NXB_SDT,
         NXB_NgayTao: req.body.NXB_NgayTao,
+        NXB_NgayCapNhat: req.body.NXB_NgayCapNhat,
 
     });
     // Save product in the DB
@@ -56,6 +57,28 @@ exports.findAll = async (req, res) => {
 };
 
 
+exports.getLastNxbMa = async (req, res) => {
+    const [error, documents] = await handle(
+        NhaXuatBan.findOne().sort({ NXB_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất nhà xuất bản!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy nhà xuất bản")
+    }
+    return res.send(documents.NXB_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {

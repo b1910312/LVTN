@@ -9,6 +9,10 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ho Ten cua nhan vien"],
             },
+            NV_NgaySinh: {
+                type: String,
+                required: [true, "Ngay sinh cua nhan vien"],
+            },
             NV_SoDienThoai: {
                 type: String,
                 required: [true, "So dien thoai cua nhan vien"],

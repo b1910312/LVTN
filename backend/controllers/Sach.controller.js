@@ -18,6 +18,7 @@ exports.create = async (req, res) => {
         S_Gia: req.body.S_Gia,
         S_TheLoai: req.body.S_TheLoai,
         S_NgayNhap: req.body.S_NgayNhap,
+        S_NgayCapNhat: ''
     });
     // Save product in the DB
     const [error, document] = await handle(sach.save());
@@ -59,8 +60,28 @@ exports.findAll = async (req, res) => {
     return res.send(documents);
 };
 
-
-
+exports.getLastSMa = async (req, res) => {
+    const [error, documents] = await handle(
+        Sach.findOne().sort({ S_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy sách")
+    }
+    return res.send(documents.S_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 //*----- Truy xuất một sách bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
@@ -89,11 +110,11 @@ exports.update = async (req, res, next) => {
     };
 
     const [error, document] = await handle(
-        Sach.findOneAndUpdate(condition, req.body,  {
+        Sach.findOneAndUpdate(condition, req.body, {
             $set: {
                 'S_NgayCapNhat': req.body.S_NgayCapNhat,
             }
-        },{
+        }, {
             new: true,
             projection: "-ownerId",
         })
@@ -114,7 +135,7 @@ exports.update = async (req, res, next) => {
 
 
 //Xóa một sách bằng mã sách
-exports.delete = async (req,res) => {    
+exports.delete = async (req, res) => {
     const condition = {
         S_Ma: req.params.S_Ma
     };
@@ -125,7 +146,7 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được sách có mã ${req.params.id}`)
+            new BadRequestError(500, `Không xóa được sách có mã ${req.params.id}`)
         );
     }
 

@@ -8,6 +8,8 @@ module.exports = (app) => {
 
     router.get("/", nxb.findAll);
 
+    router.get('/getid/getlastnxbma', nxb.getLastNxbMa);
+
     router.get("/:NXB_Ma", nxb.findOne);
 
     router.put("/:NXB_Ma", nxb.update);

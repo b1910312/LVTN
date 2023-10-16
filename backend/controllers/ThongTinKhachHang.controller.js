@@ -15,7 +15,6 @@ exports.create = async (req, res) => {
         KH_HoTen: req.body.KH_HoTen,
         KH_NgaySinh: req.body.KH_NgaySinh,
         KH_SoDienThoai: req.body.KH_SoDienThoai,
-        KH_DiaChi: req.body.KH_DiaChi,
         KH_NgayTao: req.body.KH_NgayTao,
     });
     // Lưu tài khoản khách hàng vào cơ sở dữ liệu

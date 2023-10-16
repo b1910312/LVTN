@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     const nhanvien = new NhanVien({
         TKNV_MaNV: req.body.TKNV_MaNV,
         TKNV_VaiTro: req.body.TKNV_VaiTro,
-        TKNV_MaNVtKhau: bcrypt.hashSync(req.body.TKNV_MaNVtKhau, 8),
+        TKNV_MatKhau: bcrypt.hashSync(req.body.TKNV_MatKhau, 8),
         TKNV_NgayTao: req.body.TKNV_NgayTao,
     });
     // Lưu tài khoản nhân viên vào cơ sở dữ liệu

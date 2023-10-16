@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
         TB_NgayTao: req.body.TB_NgayTao,
     });
     // Save product in the DB
-    const [error, document] = await handle(ThumbNail.save());
+    const [error, document] = await handle(thumbnail.save());
 
     if (error) {
         return console.log(error);

@@ -7,11 +7,12 @@ module.exports = mongoose => {
             },
             TKNV_MatKhau: {
                 type: String,
-                required: [true, "Ten cua nhan vien"],
+                required: [true, "Mat khau cua tai nhan vien"],
             },
             TKNV_VaiTro: {
-                type: Number,
+                type: String,
                 required: ["true", "Vai tro"],
+                // Vai tro (1) Admin (2) quản lý cộng đồng (3) Xử lý đôn hàng
             },
             TKNV_NgayTao: {
                 type: String,

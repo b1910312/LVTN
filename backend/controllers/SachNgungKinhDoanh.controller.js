@@ -1,7 +1,7 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const SachNgungKinhDoanh = db.SachNgungKinhDoanhNgungKinhDoanh;
+const SachNgungKinhDoanh = db.SachNgungKinhDoanh;
 
 //*-------------Thêm sách
 exports.create = async (req, res) => {

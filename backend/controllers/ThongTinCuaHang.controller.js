@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
         TenCuaHang: req.body.TenCuaHang,
         SDT: req.body.SDT,
         Email: req.body.TenCuaHang,
-        ngayTao: req.body.ngayTao,
+        NgayTao: req.body.NgayTao,
     });
     // Save product in the DB
     const [error, document] = await handle(thongtincuahang.save());

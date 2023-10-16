@@ -19,11 +19,11 @@ module.exports = mongoose => {
                 required: [true, "Gia tri uu dai"],
             },
             UD_NgayBatDau: {
-                type: Number,
+                type: String,
                 required: [true, "ngay bat dau uu dai"],
             },
             UD_NgayKetThuc: {
-                type: Number,
+                type: String,
                 required: [true, "Ngay ket thuc uu dai"],
             },
             UD_NgayTao: {

@@ -45,7 +45,7 @@ exports.findAll = async (req, res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất ảnh đại diện với mã ${req.params.SUD_MaSach}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách ưu đãi với mã ${req.params.SUD_MaSach}`)
         );
     }
 
@@ -65,11 +65,11 @@ exports.findOne = async (req, res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500, "Lỗi trong quá trình truy xuất ảnh đại diện!")
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách ưu đãi!")
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy ảnh đại diện")
+        return res.send("Không tìm thấy sách ưu đãi")
     }
     return res.send(documents);
 };
@@ -93,16 +93,16 @@ exports.update = async (req, res, next) => {
     );
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin ảnh đại diện có mã =${req.params.id}`
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin sách ưu đãi có mã =${req.params.id}`
             )
         );
     }
 
     if (!document) {
-        return next(new BadRequestError(404, "Không tìm thấy ảnh đại diện"));
+        return next(new BadRequestError(404, "Không tìm thấy sách ưu đãi"));
     }
 
-    return res.send({ message: "Cập nhật thông tin ảnh đại diện thành công." });
+    return res.send({ message: "Cập nhật thông tin sách ưu đãi thành công." });
 };
 
 
@@ -118,12 +118,12 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được ảnh đại diện có mã ${req.params.id}`)
+            new BadRequestError(500,`Không xóa được sách ưu đãi có mã ${req.params.id}`)
         );
     }
 
     if (document) {
-        return res.send({ message: "Xóa ảnh đại diện thành công" });
+        return res.send({ message: "Xóa sách ưu đãi thành công" });
     }
 
 };

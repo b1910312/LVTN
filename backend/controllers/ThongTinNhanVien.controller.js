@@ -13,6 +13,7 @@ exports.create = async (req, res) => {
     const thongtinnhanvien = new ThongTinNhanVien({
         NV_MaNV: req.body.NV_MaNV,
         NV_HoTen: req.body.NV_HoTen,
+        NV_NgaySinh: req.body.NV_NgaySinh,
         NV_SoDienThoai: req.body.NV_SoDienThoai,
         NV_Email: req.body.NV_Email,
         NV_NgayTao: req.body.NV_NgayTao,

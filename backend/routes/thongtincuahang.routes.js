@@ -7,6 +7,8 @@ module.exports = (app) => {
     router.post("/", ThongTinCuaHang.create);
 
     router.get("/", ThongTinCuaHang.findAll);
+    
+    router.get("/:MST", ThongTinCuaHang.findAll);
 
     router.put("/:MST", ThongTinCuaHang.update);
 

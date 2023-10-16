@@ -5,7 +5,7 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ma cua khach hang"],
             },
-            SYT_Sach: {
+            SYT_MaSach: {
                 type: String,
                 required: [true, "Ma cua sach"],
             },

@@ -1,20 +1,20 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const Avatar = db.Avatar;
+const HinhMinhHoa = db.HinhMinhHoa;
 
 
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
-    const avatar = new Avatar({
+    const hinhminhhoa = new HinhMinhHoa({
         HMH_Ma: req.body.HMH_Ma,
         HMH_MaSach: req.body.HMH_MaSach,
         HMH_URL: req.body.HMH_URL,
         HMH_NgayTao: req.body.HMH_NgayTao,
     });
     // Save product in the DB
-    const [error, document] = await handle(avatar.save());
+    const [error, document] = await handle(hinhminhhoa.save());
 
     if (error) {
         return console.log(error);
@@ -41,7 +41,7 @@ exports.findAll = async (req, res) => {
     }
 
     const [error, documents] = await handle(
-        Avatar.find(condition, '-ownerId').sort({ 'HMH_MaSach': 1 })
+        db.HinhMinhHoa.find(condition, '-ownerId').sort({ 'HMH_MaSach': 1 })
     );
 
     if (error) {
@@ -61,7 +61,7 @@ exports.findOne = async (req, res) => {
         HMH_Ma: req.params.HMH_Ma,
     };
     const [error, documents] = await handle(
-        Avatar.findOne(condition)
+        HinhMinhHoa.findOne(condition)
     );
 
     if (error) {
@@ -83,7 +83,7 @@ exports.update = async (req, res, next) => {
     };
 
     const [error, document] = await handle(
-        Avatar.findOneAndUpdate(condition, req.body,  {
+        HinhMinhHoa.findOneAndUpdate(condition, req.body,  {
             $set: {
                 'HMH_NgayCapNhat': req.body.HMH_NgayCapNhat,
             }
@@ -114,7 +114,7 @@ exports.delete = async (req,res) => {
     };
 
     const [error, document] = await handle(
-        Avatar.deleteOne(condition)
+        HinhMinhHoa.deleteOne(condition)
     );
 
     if (error) {

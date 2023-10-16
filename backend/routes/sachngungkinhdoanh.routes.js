@@ -10,7 +10,5 @@ module.exports = (app) => {
 
     router.get("/:SNKD_Ma", sachngungkinhdoanh.findOne);
 
-    router.delete("/:SNKD_Ma", sachngungkinhdoanh.delete);
-
     app.use("/api/sachngungkinhdoanh", router);
 };

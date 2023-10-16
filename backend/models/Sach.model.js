@@ -23,7 +23,7 @@ module.exports = mongoose => {
                 required: [true, "Gia ban ra cua sach"],
             },
             S_TheLoai: {
-                type: Number,
+                type: String,
                 required: [true, "Ma the loai sach"],
             },
             S_NXB: {

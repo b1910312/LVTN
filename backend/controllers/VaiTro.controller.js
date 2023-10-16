@@ -1,7 +1,7 @@
 const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
-const vaitro = db.VaiTro;
+const VaiTro = db.VaiTro;
 
 
 //*-------------Thêm sản phẩm
@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
         VT_NgayTao: req.body.VT_NgayTao,
     });
     // Save product in the DB
-    const [error, document] = await handle(VaiTro.save());
+    const [error, document] = await handle(vaitro.save());
 
     if (error) {
         return console.log(error);

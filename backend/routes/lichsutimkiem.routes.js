@@ -10,8 +10,6 @@ module.exports = (app) => {
 
     router.get("/:LSTK_Ma", lichsutimkiem.findOne);
 
-    router.put("/:LSTK_Ma", lichsutimkiem.update);
-
     router.delete("/:LSTK_Ma", lichsutimkiem.delete);
 
     app.use("/api/lichsutimkiem", router);
