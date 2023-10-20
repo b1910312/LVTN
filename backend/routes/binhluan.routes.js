@@ -7,10 +7,14 @@ module.exports = (app) => {
     router.post("/", binhluan.create);
 
     router.get("/", binhluan.findAll);
+    
+    router.get('/getid/getlastblma', binhluan.getLastBLMa);
 
     router.get("/:BL_Ma", binhluan.findOne);
 
     router.put("/:BL_Ma", binhluan.update);
+    
+    router.put("/capnhattrangthai/:BL_Ma", binhluan.updateTrangThai);
 
     router.delete("/:BL_Ma", binhluan.delete);
 

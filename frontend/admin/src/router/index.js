@@ -42,14 +42,39 @@ const router = createRouter({
           component: () => import('@/pages/QLNXB/themnxb.vue')
         },
         {
+          name: 'NXBSua',
+          path: 'quanlynxb/suanxb/:id',
+          component: () => import('@/pages/QLNXB/suanxb.vue')
+        },
+        {
+          name: 'QLTheLoai',
+          path: 'quanlyTheLoai',
+          component: () => import('../pages/QLTheLoai/quanlyTheLoai.vue'),
+        },
+        {
+          name: 'TheLoaiThem',
+          path: 'quanlyTheLoai/themTheLoai',
+          component: () => import('@/pages/QLTheLoai/themTheLoai.vue')
+        },
+        {
+          name: 'TheLoaiSua',
+          path: 'quanlyTheLoai/suaTheLoai/:id',
+          component: () => import('@/pages/QLTheLoai/suaTheLoai.vue')
+        },
+        {
           name: 'SachNgungKinhDoanh',
           path: 'quanlysachngungkinhdoanh',
           component: () => import('@/pages/QLSachNgungKD/QuanLySachNgungKD.vue')
         },
         {
-          name: 'NXBSua',
-          path: 'quanlynxb/suanxb/:id',
-          component: () => import('@/pages/QLNXB/suanxb.vue')
+          name: 'QLBinLuan',
+          path: 'quanlybinhluan',
+          component: () => import('../pages/QLBinhLuan/quanlybinhluan.vue'),
+        },
+        {
+          name: 'QLDanhGia',
+          path: 'quanlydanhgia',
+          component: () => import('../pages/QLDangGia/quanlydanhgia.vue'),
         },
         {
           path: 'typography',

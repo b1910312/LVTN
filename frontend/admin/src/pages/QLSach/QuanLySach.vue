@@ -1,17 +1,44 @@
 <script setup>
 import QLSachTable from '@/views/pages/QLSach/Sach.vue'
+import QLSachNgungKDTable from '@/views/pages/QLSachNgungKD/SachNgungKD.vue'
 
 </script>
 
 <template>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-  <VRow>
-    <VCol cols="12">
-      <VCard title="DANH SÁCH ĐẦU SÁCH ĐANG KINH DOANH" height="600">
-        <QLSachTable />
-      </VCard>
-    </VCol>
-  </VRow>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab"
+        aria-controls="home" aria-selected="true">Sách đang kinh doanh</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab"
+        aria-controls="profile" aria-selected="false">Sách đã ngừng kinh doanh</button>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <VRow>
+        <VCol cols="12">
+          <VCard title="DANH SÁCH ĐẦU SÁCH ĐANG KINH DOANH" height="600">
+            <QLSachTable />
+          </VCard>
+        </VCol>
+      </VRow>
+    </div>
+    <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      <VRow>
+        <VCol cols="12">
+          <VCard title="DANH SÁCH ĐẦU SÁCH ĐÃ NGỪNG KINH DOANH" height="600">
+            <QLSachNgungKDTable />
+          </VCard>
+        </VCol>
+      </VRow>
+    </div>
+  </div>
 </template>
 <script>
 export default defineComponent({

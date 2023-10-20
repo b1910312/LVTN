@@ -11,8 +11,9 @@ exports.create = async (req, res) => {
         BL_MaKH: req.body.BL_MaKH,
         BL_MaSach: req.body.BL_MaSach,
         BL_NoiDung: req.body.BL_NoiDung,
-        BL_Ten: req.body.BL_Ten,
+        BL_ReplyId: req.body.BL_ReplyId,
         BL_NgayTao: req.body.BL_NgayTao,
+        BL_NgayCapNhat: req.body.BL_NgayCapNhat,
     });
     // Save product in the DB
     const [error, document] = await handle(binhluan.save());
@@ -54,7 +55,28 @@ exports.findAll = async (req, res) => {
     return res.send(documents);
 };
 
-
+exports.getLastBLMa = async (req, res) => {
+    const [error, documents] = await handle(
+        BinhLuan.findOne().sort({ BL_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy sách")
+    }
+    return res.send(documents.BL_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
@@ -86,6 +108,36 @@ exports.update = async (req, res, next) => {
     const [error, document] = await handle(
         BinhLuan.findOneAndUpdate(condition, req.body,  {
             $set: {
+                'BL_NgayCapNhat': req.body.BL_NgayCapNhat,
+            }
+        },{
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật thông tin bình luận thành công." });
+};
+exports.updateTrangThai = async (req, res, next) => {
+
+    const condition = {
+        BL_Ma: req.params.BL_Ma
+    };
+
+    const [error, document] = await handle(
+        BinhLuan.findOneAndUpdate(condition, req.body,  {
+            $set: {
+                'BL_TrangThai': req.body.BL_TrangThai,
                 'BL_NgayCapNhat': req.body.BL_NgayCapNhat,
             }
         },{

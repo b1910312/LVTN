@@ -1,5 +1,5 @@
 <script setup>
-import QLSachNgungKDTable from '@/views/pages/QLSachNgungKD/SachNgungKD.vue'
+import QLBinhLuan from '@/views/pages/QLBinhLuan/BinhLuan.vue'
 
 </script>
 
@@ -7,8 +7,8 @@ import QLSachNgungKDTable from '@/views/pages/QLSachNgungKD/SachNgungKD.vue'
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
   <VRow>
     <VCol cols="12">
-      <VCard title="DANH SÁCH ĐẦU SÁCH NGỪNG KINH DOANH" height="600">
-        <QLSachNgungKDTable />
+      <VCard title="DANH SÁCH BÌNH LUẬN" height="600">
+        <QLBinhLuan />
       </VCard>
     </VCol>
   </VRow>

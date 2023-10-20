@@ -8,6 +8,8 @@ module.exports = (app) => {
 
     router.get("/", theloai.findAll);
 
+    router.get("/getid/getlastTheLoaima", theloai.getlastTheLoaima);
+    
     router.get("/:TL_Ma", theloai.findOne);
 
     router.put("/:TL_Ma", theloai.update);

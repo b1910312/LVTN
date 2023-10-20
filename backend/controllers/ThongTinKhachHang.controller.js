@@ -45,7 +45,6 @@ exports.findAll = async (req, res, next) => {
             new BadRequestError(500, `Lỗi trong quá trình truy xuất thông tin khách hàng với Mã khách hàng ${req.params.KH_MaKH}`)
         );
     }
-    console.log(documents)
     return res.send(documents);
 };
 

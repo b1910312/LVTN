@@ -49,17 +49,16 @@ const handleNavScroll = evt => {
     <div class="nav-header">
       <slot name="nav-header">
         <RouterLink to="/" class="app-logo d-flex align-center gap-x-3 app-title-wrapper">
-          <VRow>
-            <VCol cols="3" class="my-auto">
-              <img src="@/assets/images/KingBook(small).png" class="img-fluid w-100 ">
-            </VCol>
-            <VCol cols="9">
-              <h4 class="logotitle">
-            KingBook Admins
-          </h4>
-            </VCol>
-          </VRow>
-          
+          <div class="d-flex">
+
+            <img src="@/assets/images/KingBook(small).png" class="img-fluid w-25 h-25 ">
+
+            <h4 class="logotitle">
+               _Admin_Page
+            </h4>
+
+          </div>
+
         </RouterLink>
       </slot>
     </div>
@@ -143,8 +142,6 @@ const handleNavScroll = evt => {
 
   .logotitle {
     color: gold;
-    font-size: x-large;
-
   }
 }
 </style>

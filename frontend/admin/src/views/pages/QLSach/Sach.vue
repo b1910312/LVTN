@@ -6,8 +6,8 @@
         <input type="text" class="form-control w-100" v-model.trim="FitlerSachs" name="" id="" aria-describedby="helpId"
           placeholder="Tìm kiếm theo tên">
       </VCol>
-      <VCol cols="5"></VCol>
-      <VCol cols="1" class="pe-4">
+      <VCol cols="4"></VCol>
+      <VCol cols="1" class="pe-5 ms-5 ps-5 d-flex">
         <RouterLink :to="{ name: 'SachThem' }">
           <button class="btn btn-outline-primary w-100" style="float: right; right: 0;"><font-awesome-icon
               :icon="['fas', 'plus']" /></button>

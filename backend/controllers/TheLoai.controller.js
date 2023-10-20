@@ -11,6 +11,7 @@ exports.create = async (req, res) => {
         TL_Ma: req.body.TL_Ma,
         TL_Ten: req.body.TL_Ten,
         TL_NgayTao: req.body.TL_NgayTao,
+        TL_NgayCapNhat: req.body.TL_NgayCapNhat
 
     });
     // Save product in the DB
@@ -54,6 +55,28 @@ exports.findAll = async (req, res) => {
 };
 
 
+exports.getlastTheLoaima = async (req, res) => {
+    const [error, documents] = await handle(
+        TheLoai.findOne().sort({ TL_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất Thể loại!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy Thể loại")
+    }
+    return res.send(documents.TL_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {

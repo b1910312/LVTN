@@ -99,9 +99,23 @@ const vuetifyTheme = useTheme()
       />
       <VerticalNavLink
         :item="{
-          title: 'QL Sách NKD',
-          icon: 'bx-notification-off',
-          to: '/quanlysachngungkinhdoanh',
+          title: 'QL Thể Loại',
+          icon: 'bx-category',
+          to: '/quanlytheloai',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
+          title: 'QL Binh Luận',
+          icon: 'bx-comment',
+          to: '/quanlybinhluan',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
+          title: 'QL Đánh giá',
+          icon: 'bx-star',
+          to: '/quanlydanhgia',
         }"
       />
       <!-- 👉 Pages -->
