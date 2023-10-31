@@ -13,6 +13,10 @@ import QLSachNgungKDTable from '@/views/pages/QLSachNgungKD/SachNgungKD.vue'
         aria-controls="home" aria-selected="true">Sách đang kinh doanh</button>
     </li>
     <li class="nav-item" role="presentation">
+      <button class="nav-link " id="home1-tab" data-bs-toggle="tab" data-bs-target="#home1" type="button" role="tab"
+        aria-controls="home" aria-selected="true">Lịch sử nhập kho</button>
+    </li>
+    <li class="nav-item" role="presentation">
       <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab"
         aria-controls="profile" aria-selected="false">Sách đã ngừng kinh doanh</button>
     </li>
@@ -21,22 +25,25 @@ import QLSachNgungKDTable from '@/views/pages/QLSachNgungKD/SachNgungKD.vue'
   <!-- Tab panes -->
   <div class="tab-content">
     <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-      <VRow>
-        <VCol cols="12">
+      
           <VCard title="DANH SÁCH ĐẦU SÁCH ĐANG KINH DOANH" height="600">
             <QLSachTable />
           </VCard>
-        </VCol>
-      </VRow>
+       
     </div>
+    <div class="tab-pane" id="home1" role="tabpanel" aria-labelledby="profile-tab">
+      
+      <VCard title="DANH SÁCH ĐẦU SÁCH ĐÃ NGỪNG KINH DOANH" height="600">
+        <QLSachNgungKDTable />
+      </VCard>
+   
+</div>
     <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-      <VRow>
-        <VCol cols="12">
+      
           <VCard title="DANH SÁCH ĐẦU SÁCH ĐÃ NGỪNG KINH DOANH" height="600">
             <QLSachNgungKDTable />
           </VCard>
-        </VCol>
-      </VRow>
+       
     </div>
   </div>
 </template>

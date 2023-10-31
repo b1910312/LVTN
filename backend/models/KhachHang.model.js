@@ -14,6 +14,11 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ten cua khach hang"],
             },
+            TKKH_TrangThai: {
+                type: Number,
+                required: [true, "Trang thái cua tài khoản"],
+                // (1) đang hoạt động (2) Tạm khóa (3) khóa tài khoản
+            },
             TKKH_HangMuc: {
                 type: String,
                 required: [true, "Hang muc cua khach hang"],

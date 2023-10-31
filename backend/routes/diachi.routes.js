@@ -8,6 +8,8 @@ module.exports = (app) => {
 
     router.get("/", diachi.findAll);
 
+    router.get('/getid/getlastdcma', diachi.getLastDCMa);
+
     router.get("/:DC_MaDT", diachi.findOne);
 
     router.put("/:DC_MaDT", diachi.update);

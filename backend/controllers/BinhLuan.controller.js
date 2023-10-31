@@ -2,6 +2,7 @@ const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
 const BinhLuan = db.BinhLuan;
+const bcrypt = require("bcryptjs");
 
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
@@ -158,7 +159,6 @@ exports.updateTrangThai = async (req, res, next) => {
 
     return res.send({ message: "Cập nhật thông tin bình luận thành công." });
 };
-
 
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    

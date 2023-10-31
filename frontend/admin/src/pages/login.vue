@@ -1,126 +1,97 @@
-<script setup>
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
+<script>
+import axios from 'axios';
+import { defineComponent, vModelRadio } from 'vue';
+import { mapGetters } from "vuex";
+import { handle } from "../common/promise"
+export default defineComponent({
+  name: "LoginPage",
+  data() {
 
-const form = ref({
-  email: '',
-  password: '',
-  remember: false,
+    return {
+      NhanVien: ref({
+        TKNV_MaNV: '',
+        TKNV_MatKhau: '',
+      }),
+      isTKNV_MatKhauVisible: ref(false),
+      loading: false,
+      message: "",
+    }
+  },
+  computed: {
+    ...mapGetters({
+      loggedInEmployee: "nhanvien/loggedInEmployee",
+    }),
+  },
+  created() {
+    if (!this.loggedInNhanVien) {
+      this.$router.push("/login");
+    }
+  },
+  mounted() { },
+  methods: {
+    async handleLogin(NhanVien) {
+      this.loading = true;
+      console.log(NhanVien)
+      const [error, data] = await handle(
+        this.$store.dispatch("loginEmloyee", NhanVien)
+      );
+      if (error) {
+        console.log(error);
+        this.loading = false;
+        this.message = "Số điện thoại hoặc mật khẩu đăng nhập sai";
+      } else {
+        this.$router.push("/");
+        console.log(data)
+      }
+    },
+
+  }
 })
 
-const isPasswordVisible = ref(false)
 </script>
 
 <template>
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
-    <VCard
-      class="auth-card pa-4 pt-7"
-      max-width="448"
-    >
+    <VCard class="auth-card pa-4 pt-7" max-width="448">
       <VCardItem class="justify-center">
-        <template #prepend>
-          <div class="d-flex">
-            <div
-              class="d-flex text-primary"
-              v-html="logo"
-            />
-          </div>
-        </template>
-
-        <VCardTitle class="text-2xl font-weight-bold">
-          sneat
-        </VCardTitle>
+        <img src="@/assets/images/KingBookLogo(Big).png" class="img-fluid ">
       </VCardItem>
 
       <VCardText class="pt-2">
-        <h5 class="text-h5 mb-1">
-          Welcome to sneat! 👋🏻
+        <h5 class="text-center text-h5 mb-1">
+          ĐĂNG NHẬP
         </h5>
         <p class="mb-0">
-          Please sign-in to your account and start the adventure
+          Hãy đăng nhập để thực hiện công việc của mình
         </p>
       </VCardText>
 
       <VCardText>
-        <VForm @submit.prevent="$router.push('/')">
-          <VRow>
-            <!-- email -->
-            <VCol cols="12">
-              <VTextField
-                v-model="form.email"
-                autofocus
-                placeholder="johndoe@email.com"
-                label="Email"
-                type="email"
-              />
-            </VCol>
+        <VRow>
+          <!-- TKNV_MaNV -->
+          <VCol cols="12">
+            <VTextField v-model="NhanVien.TKNV_MaNV" autofocus placeholder="Nhập mã nhân viên của bạn tại đây"
+              label="Mã nhân viên" />
+          </VCol>
 
-            <!-- password -->
-            <VCol cols="12">
-              <VTextField
-                v-model="form.password"
-                label="Password"
-                placeholder="············"
-                :type="isPasswordVisible ? 'text' : 'password'"
-                :append-inner-icon="isPasswordVisible ? 'bx-hide' : 'bx-show'"
-                @click:append-inner="isPasswordVisible = !isPasswordVisible"
-              />
+          <!-- TKNV_MatKhau -->
+          <VCol cols="12">
+            <VTextField v-model="NhanVien.TKNV_MatKhau" label="Mật khẩu" placeholder="**********"
+              :type="isTKNV_MatKhauVisible ? 'text' : 'password'"
+              :append-inner-icon="isTKNV_MatKhauVisible ? 'bx-hide' : 'bx-show'"
+              @click:append-inner="isTKNV_MatKhauVisible = !isTKNV_MatKhauVisible" />
 
-              <!-- remember me checkbox -->
-              <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
-                <VCheckbox
-                  v-model="form.remember"
-                  label="Remember me"
-                />
+            <!-- remember me checkbox -->
+            <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
 
-                <RouterLink
-                  class="text-primary ms-2 mb-1"
-                  to="javascript:void(0)"
-                >
-                  Forgot Password?
-                </RouterLink>
-              </div>
+            </div>
 
-              <!-- login button -->
-              <VBtn
-                block
-                type="submit"
-              >
-                Login
-              </VBtn>
-            </VCol>
-
-            <!-- create account -->
-            <VCol
-              cols="12"
-              class="text-center text-base"
-            >
-              <span>New on our platform?</span>
-              <RouterLink
-                class="text-primary ms-2"
-                to="/register"
-              >
-                Create an account
-              </RouterLink>
-            </VCol>
-
-            <VCol
-              cols="12"
-              class="d-flex align-center"
-            >
-              <VDivider />
-              <span class="mx-4">or</span>
-              <VDivider />
-            </VCol>
-
-            <!-- auth providers -->
-            <VCol
-              cols="12"
-              class="text-center"
-            >
-              <AuthProvider />
-            </VCol>
-          </VRow>
-        </VForm>
+            <!-- login button -->
+            <VBtn class="w-100" @click="handleLogin(NhanVien)">
+              Đăng nhập
+            </VBtn>
+          </VCol>
+        </VRow>
       </VCardText>
     </VCard>
   </div>

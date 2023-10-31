@@ -15,12 +15,21 @@ export default {
         NXB_SDT: "",
         NXB_NgayTao: "",
         NXB_NgayCapNhat: ""
+      },
+      DC: {
+        DC_MaDT: "",
+        DC_DiaChi: "",
+        DC_PhuongXa: "",
+        DC_QuanHuyen: "",
+        DC_TinhTP: "",
+        DC_NgayTao: "",
       }
     };
   },
   mounted() {
     let NXB_Ma = this.$route.params.id
     this.getNXB(NXB_Ma)
+    this.GetDiaChi(NXB_Ma)
     // Lấy ngày hiện tại
 
     // Lưu ngày hiện tại vào biến ngày cập nhật
@@ -32,6 +41,18 @@ export default {
         this.NXBs = res.data
       })
     },
+    GetDiaChi(id) {
+      axios.get('http://localhost:3000/api/diachi/' + id)
+        .then((response) => {
+          this.DC = response.data;
+          console.log(response);
+          console.log(this.DC);
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+    },
     updateNXB() {
       const now = moment();
 
@@ -41,6 +62,14 @@ export default {
       axios.put("http://localhost:3000/api/NXB/" + this.NXBs.NXB_Ma, this.NXBs).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log(this.NXBs)
+        alert("Cập nhật thành công");
+        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+      }).catch(error => {
+        alert(error);
+      });
+      axios.put("http://localhost:3000/api/diachi/" + this.DC.DC_MaDT, this.DC).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log(this.DC)
         alert("Cập nhật thành công");
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
         this.$router.push("/quanlyNXB");
@@ -70,6 +99,18 @@ export default {
 
         <VCol cols="12">
           <VTextField v-model="NXBs.NXB_SDT" label="Số lượng" type="number" placeholder="············" />
+        </VCol>
+        <VCol cols="6">
+          <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
+        </VCol>
+        <VCol cols="6">
+          <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" placeholder="············" />
+        </VCol>
+        <VCol cols="6">
+          <VTextField v-model="DC.DC_QuanHuyen" label="Quận quyện" placeholder="············" />
+        </VCol>
+        <VCol cols="6">
+          <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
         </VCol>
         <VCol cols="10"></VCol>
         <VCol cols="2" class="d-flex gap-4">

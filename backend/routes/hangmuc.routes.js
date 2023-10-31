@@ -8,6 +8,8 @@ module.exports = (app) => {
 
     router.get("/", hangmuc.findAll);
 
+    router.get("/getid/getlasthmma", hangmuc.getLastID);
+
     router.get("/:HM_Ma", hangmuc.findOne);
 
     router.put("/:HM_Ma", hangmuc.update);

@@ -13,6 +13,7 @@ export default defineComponent({
       NewID: "",
       So: "",
       Chu: "",
+ 
       NXB: {
         NXB_Ma: "",
         NXB_Ten: "",
@@ -20,6 +21,14 @@ export default defineComponent({
         NXB_SDT: "",
         NXB_NgayTao: "",
         NXB_NgayCapNhat: ""
+      },
+      DC: {
+        DC_MaDT: "",
+        DC_DiaChi: "",
+        DC_PhuongXa: "",
+        DC_QuanHuyen: "",
+        DC_TinhTP: "",
+        DC_NgayTao: "",
       }
     };
   },
@@ -33,6 +42,7 @@ export default defineComponent({
         this.TachKBS()
         this.Increase()
         this.NXB.NXB_Ma = this.NewID
+        this.DC.DC_MaDT = this.NewID
         console.log(this.NXB.NXB_Ma)
       })
     },
@@ -59,8 +69,23 @@ export default defineComponent({
     addNXB() {
       const now = moment();
       this.NXB.NXB_NgayTao = now.format("DD-MM-YYYY");
+      this.DC.DC_NgayTao = now.format("DD-MM-YYYY");
+
       // Gọi API thêm dữ liệu
       axios.post('http://localhost:3000/api/nxb', this.NXB)
+        .then((response) => {
+          // Nếu API trả về thành công
+          if (response.status === 200) {
+            // Thông báo thành công
+            alert('Thêm dữ liệu thành công!')
+      
+          }
+        })
+        .catch((error) => {
+          // Nếu API trả về lỗi
+          console.log(error)
+        })
+      axios.post('http://localhost:3000/api/diachi', this.DC)
         .then((response) => {
           // Nếu API trả về thành công
           if (response.status === 200) {
@@ -84,7 +109,9 @@ export default defineComponent({
   <div class="m-1 mx-3 ">
     <VForm @submit.prevent="addNXB">
       <VRow>
-
+        <VCol cols="12">
+          <VFileInput label="Logo" placeholder="johndoe@example.com" />
+        </VCol>
         <VCol cols="12">
           <VTextField v-model="NXB.NXB_Ten" label="Tên Nhà xuất bản" placeholder="johndoe@example.com" />
         </VCol>
@@ -94,7 +121,20 @@ export default defineComponent({
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="NXB.NXB_SDT" label="Số điện thoại" type="number" placeholder="············" />
+          <VTextField v-model="NXB.NXB_SDT" label="Số điện thoại" placeholder="············" />
+        </VCol>
+
+        <VCol cols="6">
+          <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ"  placeholder="············" />
+        </VCol>
+        <VCol cols="6">
+          <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã"  placeholder="············" />
+        </VCol>
+        <VCol cols="6">
+          <VTextField v-model="DC.DC_QuanHuyen" label="Quận quyện"  placeholder="············" />
+        </VCol>
+        <VCol cols="6">
+          <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố"  placeholder="············" />
         </VCol>
 
         <VCol cols="10"></VCol>

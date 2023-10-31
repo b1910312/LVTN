@@ -117,13 +117,11 @@ export default defineComponent({
     XoaSach(NXB_Ma) {
       axios.delete("http://localhost:3000/api/nxb/" + NXB_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
-        // Sau đó, chuyển hướng người dùng
-        this.GetNXB();
 
       }).catch(error => {
         alert(error);
       });
+    
     }
   }
 });

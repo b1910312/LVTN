@@ -12,7 +12,9 @@ module.exports = (app) => {
 
     //Retrieve a single customer with id
     router.get("/:KH_MaKH", thongtinkhachhang.findOneByID);
-    
+
+    router.get('/getid/getlastttkhma', thongtinkhachhang.getLastTTKHMa);
+
     //Update a customer with id
     router.put("/:KH_MaKH", thongtinkhachhang.update);
 

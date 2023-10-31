@@ -25,7 +25,28 @@ exports.create = async (req, res) => {
 
 }
 
-
+exports.getLastID = async (req, res) => {
+    const [error, documents] = await handle(
+        CuocTroChuyen.findOne().sort({ CTC_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBCTC000")
+    }
+    return res.send(documents.CTC_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 //*--------Truy xuất tất cả sản phẩm trong cơ sở dữ liệu
 exports.findAll = async (req, res) => {
 

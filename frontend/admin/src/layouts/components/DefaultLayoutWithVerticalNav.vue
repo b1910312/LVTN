@@ -71,7 +71,7 @@ const vuetifyTheme = useTheme()
     <template #vertical-nav-content>
       <VerticalNavLink
         :item="{
-          title: 'Dashboard',
+          title: 'Trang chủ',
           icon: 'bx-home',
           to: '/dashboard',
         }"
@@ -92,7 +92,7 @@ const vuetifyTheme = useTheme()
       />
       <VerticalNavLink
         :item="{
-          title: 'QL NXB',
+          title: 'QL Nhà xuất bản',
           icon: 'bx-buildings',
           to: '/quanlynxb',
         }"
@@ -113,9 +113,51 @@ const vuetifyTheme = useTheme()
       />
       <VerticalNavLink
         :item="{
+          title: 'QL Nhân viên',
+          icon: 'bxs-universal-access',
+          to: '/quanlynhanvien',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
+          title: 'QL Người dùng',
+          icon: 'bxs-user',
+          to: '/quanlynguoidung',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
           title: 'QL Đánh giá',
           icon: 'bx-star',
           to: '/quanlydanhgia',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
+          title: 'QL Trò chuyện',
+          icon: 'bx-chat',
+          to: '/quanlycuoctrochuyen',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
+          title: 'QL Vai Trò',
+          icon: 'bx-sitemap',
+          to: '/quanlyvaitro',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
+          title: 'QL Hạng mức',
+          icon: 'bx-diamond',
+          to: '/quanlyhangmuc',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
+          title: 'QL Liên hệ',
+          icon: 'bxs-contact',
+          to: '/quanlylienhe',
         }"
       />
       <!-- 👉 Pages -->

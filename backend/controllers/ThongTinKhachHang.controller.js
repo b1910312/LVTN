@@ -14,6 +14,7 @@ exports.create = async (req, res) => {
         KH_MaKH: req.body.KH_MaKH,
         KH_HoTen: req.body.KH_HoTen,
         KH_NgaySinh: req.body.KH_NgaySinh,
+        KH_GioiTinh: req.body.KH_GioiTinh,
         KH_SoDienThoai: req.body.KH_SoDienThoai,
         KH_NgayTao: req.body.KH_NgayTao,
     });
@@ -47,7 +48,28 @@ exports.findAll = async (req, res, next) => {
     }
     return res.send(documents);
 };
-
+exports.getLastTTKHMa = async (req, res) => {
+    const [error, documents] = await handle(
+        ThongTinKhachHang.findOne().sort({ KH_MaKH: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBKH000")
+    }
+    return res.send(documents.KH_MaKH);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 //*-------Tìm kiếm một kháchh hàng bằng mã khách hàng
 exports.findOneByID = async (req, res, next) => {
     const condition = {

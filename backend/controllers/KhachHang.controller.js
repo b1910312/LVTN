@@ -14,7 +14,10 @@ exports.create = async (req, res) => {
         TKKH_MaKH: req.body.TKKH_MaKH,
         TKKH_Email: req.body.TKKH_Email,
         TKKH_MatKhau: bcrypt.hashSync(req.body.TKKH_MatKhau, 8),
+        TKKH_HangMuc: req.body.TKKH_HangMuc,
+        TKKH_TrangThai: req.body.TKKH_TrangThai,
         TKKH_NgayTao: req.body.TKKH_NgayTao,
+        TKKH_NgayCapNhat: req.body.TKKH_NgayCapNhat
     });
     // Lưu tài khoản khách hàng vào cơ sở dữ liệu
     const [error, document] = await handle(khachhang.save());
@@ -27,6 +30,94 @@ exports.create = async (req, res) => {
 }
 
 
+exports.updateTrangThai = async (req, res, next) => {
+
+    const condition = {
+        TKKH_MaKH: req.params.TKKH_MaKH
+    };
+
+    const [error, document] = await handle(
+        KhachHang.findOneAndUpdate(condition, {
+            'TKKH_TrangThai': req.body.TKKH_TrangThai,
+            'TKKH_NgayCapNhat': req.body.TKKH_NgayCapNhat,
+
+        }, {
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật Tài khoản khách hàng có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật Tài khoản khách hàng thành công." });
+};
+exports.updateHangMuc = async (req, res, next) => {
+
+    const condition = {
+        TKKH_MaKH: req.params.TKKH_MaKH
+    };
+    const [error, document] = await handle(
+        KhachHang.findOneAndUpdate(condition, {
+            'TKKH_HangMuc': req.body.TKKH_HangMuc,
+            'TKKH_NgayCapNhat': req.body.TKKH_NgayCapNhat,
+
+        }, {
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật Tài khoản khách hàng có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật Tài khoản khách hàng thành công." });
+};
+
+exports.ResetPassword = async (req, res, next) => {
+
+    const condition = {
+        TKKH_MaKH: req.params.TKKH_MaKH
+    };
+    const hashedPassword = bcrypt.hashSync(req.body.TKKH_MatKhau, 10);
+
+    const [error, document] = await handle(
+
+        KhachHang.findOneAndUpdate(condition, {
+            'TKKH_MatKhau': hashedPassword,
+            'TKKH_NgayCapNhat': req.body.TKKH_NgayCapNhat,
+        }, {
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật Tài khoản khách hàng có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật Tài khoản khách hàng thành công." + hashedPassword });
+};
 
 //*--------Truy xuất toàn bộ tài khoản khách hàng có trong cơ sở dữ liệu
 exports.findAll = async (req, res, next) => {
@@ -113,7 +204,7 @@ exports.delete = async (req, res, next) => {
     };
 
     const [error, document] = await handle(
-       KhachHang.deleteOne(condition)
+        KhachHang.deleteOne(condition)
     );
     if (error) {
         return next(

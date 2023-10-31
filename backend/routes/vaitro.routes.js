@@ -8,6 +8,8 @@ module.exports = (app) => {
 
     router.get("/", vaitro.findAll);
 
+    router.get("/getid/getlastvtma", vaitro.getLastID);
+
     router.get("/:VT_Ma", vaitro.findOne);
 
     router.put("/:VT_Ma", vaitro.update);

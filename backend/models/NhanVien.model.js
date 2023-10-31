@@ -14,6 +14,11 @@ module.exports = mongoose => {
                 required: ["true", "Vai tro"],
                 // Vai tro (1) Admin (2) quản lý cộng đồng (3) Xử lý đôn hàng
             },
+            TKNV_TrangThai: {
+                type: Number,
+                default: 1
+                // Vai tro (1) Đang hoạt động (2) Đã khóa 
+            },
             TKNV_NgayTao: {
                 type: String,
                 required: [true, "Ngay tao tai khoan nhan vien"],

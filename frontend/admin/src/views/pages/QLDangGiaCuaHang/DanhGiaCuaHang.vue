@@ -198,13 +198,13 @@ export default defineComponent({
       })
     },
     Increase() {
-      // Chuyển đổi chuỗi thành số nguyên
+      // Chuyển đổi chuoi thành số nguyên
       let SoNguyen = parseInt(this.So);
 
       // Tăng giá trị của số nguyên
       SoNguyen += 1;
 
-      // Chuyển đổi số nguyên thành chuỗi
+      // Chuyển đổi số nguyên thành chuoi
       this.So = String(SoNguyen).padStart(3, "0");
       this.NewID = this.Chu + this.So;
       console.log(this.NewID)
@@ -220,14 +220,14 @@ export default defineComponent({
       console.log("DG_Ma" + this.DG_MaActive)
     },
     increaseID() {
-      // Chuyển đổi chuỗi thành số nguyên
-      const số_nguyên = parseInt(this.chuỗi);
+      // Chuyển đổi chuoi thành số nguyên
+      let so_nguyen = parseInt(this.chuoi);
 
       // Tăng giá trị của số nguyên
-      số_nguyên += 1;
+      so_nguyen += 1;
 
-      // Chuyển đổi số nguyên thành chuỗi
-      this.chuỗi = String(số_nguyên);
+      // Chuyển đổi số nguyên thành chuoi
+      this.chuoi = String(so_nguyen);
     },
     GetDanhGiaCuaHang() {
       axios.get('http://localhost:3000/api/DanhGiaCuaHang')

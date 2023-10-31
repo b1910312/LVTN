@@ -14,16 +14,18 @@ exports.create = async (req, res) => {
         NV_MaNV: req.body.NV_MaNV,
         NV_HoTen: req.body.NV_HoTen,
         NV_NgaySinh: req.body.NV_NgaySinh,
+        NV_GioiTinh: req.body.NV_GioiTinh,
+        NV_CCCD: req.body.NV_CCCD,
         NV_SoDienThoai: req.body.NV_SoDienThoai,
         NV_Email: req.body.NV_Email,
         NV_NgayTao: req.body.NV_NgayTao,
+        NV_NgayCapNhat: req.body.NV_NgayCapNhat
     });
     // Lưu tài khoản khách hàng vào cơ sở dữ liệu
     const [error, document] = await handle(thongtinnhanvien.save());
 
     if (error) {
         return res.send(error);
-
     }
     return res.send(document);
 }
@@ -50,6 +52,28 @@ exports.findAll = async (req, res, next) => {
     return res.send(documents);
 };
 
+exports.getLastTTNVMa = async (req, res) => {
+    const [error, documents] = await handle(
+        ThongTinNhanVien.findOne().sort({ NV_MaNV: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBNV000")
+    }
+    return res.send(documents.NV_MaNV);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 //*-------Tìm kiếm một kháchh hàng bằng mã khách hàng
 exports.findOneByID = async (req, res, next) => {
     const condition = {

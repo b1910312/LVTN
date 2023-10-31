@@ -13,6 +13,14 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ngay sinh cua nhan vien"],
             },
+            NV_GioiTinh: {
+                type: String,
+                required: [true, "Giới tính của nhân viên"],
+            },
+            NV_CCCD: {
+                type: String,
+                required: [true, "Căn cước công dân cua nhan vien"],
+            },
             NV_SoDienThoai: {
                 type: String,
                 required: [true, "So dien thoai cua nhan vien"],

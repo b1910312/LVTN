@@ -12,6 +12,15 @@ module.exports = (app) => {
 
     //Retrieve a single customer with id
     router.get("/:TKKH_MaKH", khachhang.findOneByID);
+
+    router.put("/CapNhatTrangThai/:TKKH_MaKH", khachhang.updateTrangThai);
+
+    router.put("/CapNhatHangMuc/:TKKH_MaKH", khachhang.updateHangMuc);
+    
+    //Delete a customer with id
+
+    router.put("/ResetPassword/:TKKH_MaKH", khachhang.ResetPassword);
+    //Delete a customer with id
     
     //Update a customer with id
     router.put("/:TKKH_MaKH", khachhang.update);

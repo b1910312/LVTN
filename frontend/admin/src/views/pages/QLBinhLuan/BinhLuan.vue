@@ -34,11 +34,11 @@
           <th>
             Trạng Thái
           </th>
-          
+
           <th>
             Reply_ID
           </th>
-           
+
           <th>
             Ngày tạo
           </th>
@@ -50,7 +50,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody refs="BinhLuans">
 
         <tr v-for="(item, i) in filteredBinhLuans" :key="BL_Ma">
           <td>{{ i + 1 }}</td>
@@ -89,20 +89,38 @@
                     <VRow>
                       <VCol cols="9"></VCol>
                       <VCol cols="3">
-                        <button class="btn btn-success text-white mx-1 my-2"
-                          @click="ReplyBL(BLActive.BL_Ma, BLActive.BL_MaSach, 'KBKH001')">Trả lời</button>
+                        <button class="btn btn-success text-white mx-1 my-2" @click="BLTraloi()">Trả lời</button>
                         <button class="btn btn-danger text-white mx-1 my-2" @click="dialog = false">Đóng</button>
                       </VCol>
                     </VRow>
                   </v-card>
                 </v-dialog>
 
-                <v-btn v-if="item.BL_TrangThai == 1" class="dropdown-item btn bg bg-secondary text-white mt-1" @click="AnBL(item.BL_Ma)"> <font-awesome-icon
-                    :icon="['fas', 'trash']" /> &nbsp; Ẩn</v-btn>
-                    <v-btn v-if="item.BL_TrangThai == 2" class="dropdown-item btn bg bg-info text-white mt-1" @click="HienBL(item.BL_Ma)"> <font-awesome-icon
-                    :icon="['fas', 'trash']" /> &nbsp; hiển thị</v-btn>
-                <v-btn class="dropdown-item btn bg bg-danger text-white mt-1" @click="XoaSach(item.BL_Ma)"> <font-awesome-icon
-                    :icon="['fas', 'trash']" /> &nbsp; Xóa</v-btn>
+                <v-btn v-if="item.BL_TrangThai == 1" class="dropdown-item btn bg bg-secondary text-white mt-1"
+                  @click="AnBL(item.BL_Ma)"> <font-awesome-icon :icon="['fas', 'trash']" /> &nbsp; Ẩn</v-btn>
+                <v-btn v-if="item.BL_TrangThai == 2" class="dropdown-item btn bg bg-info text-white mt-1"
+                  @click="HienBL(item.BL_Ma)"> <font-awesome-icon :icon="['fas', 'trash']" /> &nbsp; hiển thị</v-btn>
+                <v-btn class="dropdown-item btn bg bg-danger text-white mt-1" @click="dialog3 = true">
+                  <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</v-btn>
+                <v-dialog v-model="dialog3" class="w-50 h-25">
+                  <div class="card text-start bg bg-white p-5">
+                    <h2>Bạn có chắc muốn xóa bình luận</h2>
+                    <p class="mt-3">Bình luận sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa bình luận này</p>
+                    <div class="row w-100">
+                      <div class="col-2"></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                          @click="XoaSach(BL_MaActive)">
+                          <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                          @click="dialog3 = false">
+                          <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                      <div class="col-2"></div>
+
+                    </div>
+                  </div>
+
+                </v-dialog>
               </div>
             </div>
           </td>
@@ -135,6 +153,7 @@ export default defineComponent({
       FitlerBinhLuans: "",
       BL_MaActive: "",
       BLActive: "",
+      dialog3: false,
       BLUpdate: {
         BL_MaKH: "",
         BL_MaSach: "",
@@ -142,7 +161,16 @@ export default defineComponent({
         BL_ReplyId: "",
         BL_NgayTao: "",
         BL_NgayCapNhat: ""
+      },
+      BLReply: {
+        BL_MaKH: "",
+        BL_MaSach: "",
+        BL_NoiDung: "",
+        BL_ReplyId: "",
+        BL_NgayTao: "",
+        BL_NgayCapNhat: ""
       }
+
     };
   },
   computed: {
@@ -155,6 +183,7 @@ export default defineComponent({
     },
   },
   mounted() {
+    this.GetLastID()
     this.GetBinhLuan();
     this.getNguoiDung();
     this.getNhanVien();
@@ -163,6 +192,18 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    BLTraloi() {
+      const now = moment();
+      this.BLReply.BL_Ma = this.NewID
+      this.BLReply.BL_MaKH = "KBNV001"
+      this.BLReply.BL_MaSach = this.BLActive.BL_MaSach
+      this.BLReply.BL_NoiDung = this.NoiDungTraLoi
+      this.BLReply.BL_ReplyId = this.BLActive.BL_Ma
+      this.BLReply.BL_NgayTao = now.format("DD-MM-YYYY"),
+        this.BLReply.BL_NgayCapNhat = ""
+      console.log(this.BLReply)
+      this.ReplyBL()
+    },
     openDialog() {
       this.GetBinhLuanID(this.BL_MaActive);
       this.dialog = true;
@@ -182,26 +223,13 @@ export default defineComponent({
           console.log(error);
         });
     },
-    ReplyBL(replyid, masach, mand) {
-      this.GetLastID()
-      const now = moment();
-      let data = {
-        BL_Ma: this.NewID,
-        BL_MaKH: mand,
-        BL_MaSach: masach,
-        BL_NoiDung: this.NoiDungTraLoi,
-        BL_ReplyId: replyid,
-        BL_NgayTao: now.format("DD-MM-YYYY"),
-        BL_NgayCapNhat: ""
-      }
-      axios.post('http://localhost:3000/api/binhluan', data)
+    ReplyBL() {
+      axios.post('http://localhost:3000/api/binhluan', this.BLReply)
         .then((response) => {
           // Nếu API trả về thành công
           if (response.status === 200) {
             // Thông báo thành công
-            this.NoiDungTraLoi = "";
-            this.dialog = false
-            alert("Trả lời bình luận thành công")
+
             this.GetBinhLuan()
 
           }
@@ -210,13 +238,15 @@ export default defineComponent({
           // Nếu API trả về lỗi
           console.log(error)
         })
+      this.NoiDungTraLoi = "";
+      this.dialog = false
 
     },
     AnBL(id) {
       const now = moment();
       let data = {
-          BL_NgayCapNhat: now.format("DD-MM-YYYY"),
-          BL_TrangThai: 2
+        BL_NgayCapNhat: now.format("DD-MM-YYYY"),
+        BL_TrangThai: 2
       }
       // Gọi API để cập nhật sản phẩm
       axios.put("http://localhost:3000/api/binhluan/capnhattrangthai/" + id, data).then(response => {
@@ -232,8 +262,8 @@ export default defineComponent({
     HienBL(id) {
       const now = moment();
       let data = {
-          BL_NgayCapNhat: now.format("DD-MM-YYYY"),
-          BL_TrangThai: 1
+        BL_NgayCapNhat: now.format("DD-MM-YYYY"),
+        BL_TrangThai: 1
       }
       // Gọi API để cập nhật sản phẩm
       axios.put("http://localhost:3000/api/binhluan/capnhattrangthai/" + id, data).then(response => {
@@ -246,7 +276,7 @@ export default defineComponent({
         alert(error);
       });
     },
-    GetTrangThai(id){
+    GetTrangThai(id) {
       switch (id) {
         case 1:
           return "Đang hiển thị";
@@ -261,17 +291,20 @@ export default defineComponent({
         this.LastID = res.data
         this.TachKBS()
         this.Increase()
-        console.log(this.Sach.S_Ma)
+        console.log(this.LastID)
+        console.log("ID NEW" + this.NewID)
+        console.log(this.So)
+        console.log(this.Chu)
       })
     },
     Increase() {
-      // Chuyển đổi chuỗi thành số nguyên
+      // Chuyển đổi chuoi thành số nguyên
       let SoNguyen = parseInt(this.So);
 
       // Tăng giá trị của số nguyên
       SoNguyen += 1;
 
-      // Chuyển đổi số nguyên thành chuỗi
+      // Chuyển đổi số nguyên thành chuoi
       this.So = String(SoNguyen).padStart(3, "0");
       this.NewID = this.Chu + this.So;
       console.log(this.NewID)
@@ -287,14 +320,14 @@ export default defineComponent({
       console.log("BL_Ma" + this.BL_MaActive)
     },
     increaseID() {
-      // Chuyển đổi chuỗi thành số nguyên
-      const số_nguyên = parseInt(this.chuỗi);
+      // Chuyển đổi chuoi thành số nguyên
+      let songuyen = parseInt(this.chuoi);
 
       // Tăng giá trị của số nguyên
-      số_nguyên += 1;
+      songuyen += 1;
 
-      // Chuyển đổi số nguyên thành chuỗi
-      this.chuỗi = String(số_nguyên);
+      // Chuyển đổi số nguyên thành chuoi
+      this.chuoi = String(songuyen);
     },
     GetBinhLuan() {
       axios.get('http://localhost:3000/api/binhluan')
@@ -347,12 +380,12 @@ export default defineComponent({
     XoaSach(BL_Ma) {
       axios.delete("http://localhost:3000/api/BinhLuan/" + BL_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
         this.GetBinhLuan();
       }).catch(error => {
         alert(error);
       });
+      this.dialog3 = false
     }
   },
 });

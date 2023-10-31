@@ -1,7 +1,7 @@
 const { BadRequestError } = require("../helpers/errors");
 const config = require("../config");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const handle = require("../helpers/promise");
 const db = require("../models");
 const NhanVien = db.NhanVien;
@@ -13,7 +13,8 @@ exports.create = async (req, res) => {
     const nhanvien = new NhanVien({
         TKNV_MaNV: req.body.TKNV_MaNV,
         TKNV_VaiTro: req.body.TKNV_VaiTro,
-        TKNV_MatKhau: bcrypt.hashSync(req.body.TKNV_MatKhau, 8),
+        TKNV_MatKhau:  bcrypt.hashSync(req.body.TKNV_MatKhau, 10),
+        TKNV_TrangThai: req.body.TKNV_TrangThai,
         TKNV_NgayTao: req.body.TKNV_NgayTao,
     });
     // Lưu tài khoản nhân viên vào cơ sở dữ liệu
@@ -67,6 +68,66 @@ exports.findOneByID = async (req, res, next) => {
         return res.send("Không tìm thấy tài khoản nhân viên");
     }
     return res.send(documents);
+};
+
+exports.updateTrangThai = async (req, res, next) => {
+
+    const condition = {
+        TKNV_MaNV: req.params.TKNV_MaNV
+    };
+
+    const [error, document] = await handle(
+        NhanVien.findOneAndUpdate(condition,  {
+                'TKNV_TrangThai': req.body.TKNV_TrangThai,
+                'TKNV_NgayCapNhat': req.body.TKNV_NgayCapNhat,
+
+        },{
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật thông tin bình luận thành công." });
+};
+exports.ResetPassword = async (req, res, next) => {
+
+    const condition = {
+        TKNV_MaNV: req.params.TKNV_MaNV
+    };
+    const hashedPassword = bcrypt.hashSync(req.body.TKNV_MatKhau, 10);
+
+    const [error, document] = await handle(
+        
+        NhanVien.findOneAndUpdate(condition,  {
+                'TKNV_MatKhau': hashedPassword,
+                'TKNV_NgayCapNhat': req.body.TKNV_NgayCapNhat,
+        },{
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật thông tin bình luận thành công." + hashedPassword });
 };
 
 
@@ -143,21 +204,26 @@ exports.signin = async (req, res, next) => {
     }
 
     const passwordIsValid = bcrypt.compareSync(
-        req.body.TKNV_MaNVtKhau,
-        nhanvien.TKNV_MaNVtKhau,
+        req.body.TKNV_MatKhau,
+        nhanvien.TKNV_MatKhau,
     );
     console.log(passwordIsValid)
     if (!passwordIsValid) {
         return next(new BadRequestError(401, "password"));
     }
 
+    if (nhanvien.TKNV_TrangThai == 2) {
+        return next(new BadRequestError(401, "Blocked"));
+    }
+
     const token = jwt.sign({ TKNV_MaNV: nhanvien.TKNV_MaNV }, config.jwt.secret, {
-        expiresIn: 86400, // 24 hours
+        expiresIn: 7200, // 2 hours
     });
 
     res.status(200).send({
-        TKNV_MaNV: nhanvien._id,
-        TKNV_Ten: nhanvien.TKNV_Ten,
+        TKNV_MaNV: nhanvien.TKNV_MaNV,
+        TKNV_TrangThai: nhanvien.TKNV_TrangThai,
+        TLNV_VaiTro: nhanvien.TKNV_VaiTro, 
         accessToken: token,
     });
 };

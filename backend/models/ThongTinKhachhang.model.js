@@ -13,6 +13,10 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ngay sinh cua khach hang"],
             },
+            KH_GioiTinh: {
+                type: Number,
+                required: [true, "Gioi tinh cua khach hang"],
+            },
             KH_SoDienThoai: {
                 type: String,
                 required: [true, "So dien thoai cua khach hang"],

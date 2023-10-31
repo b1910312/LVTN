@@ -5,17 +5,21 @@ const SachNgungKinhDoanh = db.SachNgungKinhDoanh;
 
 //*-------------Thêm sách
 exports.create = async (req, res) => {
+    const moment = require("moment");
+
+    // Lấy ngày hiện tại ở định dạng chuỗi
+    const dateString = moment().format("DD-MM-YYYY");
     // Create a product
     const sachngungkinhdoanh = new SachNgungKinhDoanh({
-        SNKD_Ma: req.body.SNKD_Ma,
-        SNKD_Ten: req.body.SNKD_Ten,
-        SNKD_TacGia: req.body.SNKD_TacGia,
-        SNKD_NXB: req.body.SNKD_NXB,
-        SNKD_Gia: req.body.SNKD_Gia,
-        SNKD_TheLoai: req.body.SNKD_TheLoai,
-        SNKD_NgayNhap: req.body.SNKD_NgayNhap,
-        SNKD_NgayCapNhat: req.body.SNKD_NgayCapNhat,
-        SNKD_NgayXoa: req.body.SNKD_NgayXoa,
+        SNKD_Ma: req.body.S_Ma,
+        SNKD_Ten: req.body.S_Ten,
+        SNKD_TacGia: req.body.S_TacGia,
+        SNKD_NXB: req.body.S_NXB,
+        SNKD_Gia: req.body.S_Gia,
+        SNKD_TheLoai: req.body.S_TheLoai,
+        SNKD_NgayNhap: req.body.S_NgayNhap,
+        SNKD_NgayCapNhat: req.body.S_NgayCapNhat,
+        SNKD_NgayXoa: dateString.toString()
     });
     // Save product in the DB
     const [error, document] = await handle(sachngungkinhdoanh.save());
@@ -80,7 +84,7 @@ exports.findOne = async (req, res) => {
 };
 
 //Xóa một sách bằng mã sách
-exports.delete = async (req,res) => {    
+exports.delete = async (req, res) => {
     const condition = {
         SNKD_Ma: req.params.SNKD_Ma
     };
@@ -91,7 +95,7 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được sách có mã ${req.params.id}`)
+            new BadRequestError(500, `Không xóa được sách có mã ${req.params.id}`)
         );
     }
 

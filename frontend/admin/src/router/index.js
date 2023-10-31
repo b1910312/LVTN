@@ -3,7 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/dashboard' },
+    {
+      path: '/', redirect: '/dashboard', },
     {
       path: '/',
       component: () => import('../layouts/default.vue'),
@@ -11,6 +12,15 @@ const router = createRouter({
         {
           path: 'dashboard',
           component: () => import('../pages/dashboard.vue'),
+          beforeRouteEnter: (to, from, next) => {
+            if (!this.$store.getters["nhanvien/loggedInEmployee"]) {
+              next({
+                path: '/login',
+              });
+            } else {
+              next();
+            }
+          },
         },
         {
           path: 'account-settings',
@@ -72,9 +82,39 @@ const router = createRouter({
           component: () => import('../pages/QLBinhLuan/quanlybinhluan.vue'),
         },
         {
+          name: 'QLNhanVien',
+          path: 'quanlynhanvien',
+          component: () => import('../pages/QLNhanVien/quanlynhanvien.vue'),
+        },
+        {
+          name: 'QLNguoiDung',
+          path: 'quanlynguoidung',
+          component: () => import('../pages/QLNguoiDung/quanlynguoidung.vue'),
+        },
+        {
           name: 'QLDanhGia',
           path: 'quanlydanhgia',
           component: () => import('../pages/QLDangGia/quanlydanhgia.vue'),
+        },
+        {
+          name: 'QLCuocTroChuyen',
+          path: 'quanlycuoctrochuyen',
+          component: () => import('../pages/QLCuocTroChuyen/quanlycuoctrochuyen.vue'),
+        },
+        {
+          name: 'QLVaiTro',
+          path: 'quanlyvaitro',
+          component: () => import('../pages/QLVaiTro/quanlyvaitro.vue'),
+        },
+        {
+          name: 'QLHangMuc',
+          path: 'quanlyhangmuc',
+          component: () => import('../pages/QLHangMuc/quanlyhangmuc.vue'),
+        },
+        {
+          name: 'QLLienHe',
+          path: 'quanlylienhe',
+          component: () => import('../pages/QLLienHe/quanlylienhe.vue'),
         },
         {
           path: 'typography',

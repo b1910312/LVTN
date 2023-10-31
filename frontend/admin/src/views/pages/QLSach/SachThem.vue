@@ -60,13 +60,13 @@ export default defineComponent({
 
     increaseID() {
       // Chuyển đổi chuỗi thành số nguyên
-      const số_nguyên = parseInt(this.chuỗi);
+      let so_nguyen = parseInt(this.chuỗi);
 
       // Tăng giá trị của số nguyên
-      số_nguyên += 1;
+      so_nguyen += 1;
 
       // Chuyển đổi số nguyên thành chuỗi
-      this.chuỗi = String(số_nguyên);
+      this.chuỗi = String(so_nguyen);
     },
     addSach() {
       const now = moment();
