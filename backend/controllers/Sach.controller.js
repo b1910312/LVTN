@@ -2,7 +2,7 @@ const { BadRequestError } = require("../helpers/errors");
 const handle = require("../helpers/promise");
 const db = require("../models");
 const Sach = db.Sach;
-
+const NhapKho = db.NhapKho;
 exports.findAllFavorite = async (req, res) => {
     res.send({ message: "Hello san pham" });
 }
@@ -59,7 +59,102 @@ exports.findAll = async (req, res) => {
 
     return res.send(documents);
 };
+exports.findNhapKhoAll = async (req, res) => {
 
+    console.log('');
+
+    const condition = {
+        ownerId: req.userId
+    };
+    const NK_Ma = req.query.NK_Ma;
+
+    if (NK_Ma) {
+        condition.NK_Ma = { $regex: new RegExp(NK_Ma), $options: "i" };
+    }
+
+    const [error, documents] = await handle(
+        NhapKho.find(condition, '-ownerId').sort({ 'NK_Ma': 1 })
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
+exports.updateSoLuong = async (req, res, next) => {
+
+    const condition = {
+        S_Ma: req.params.S_Ma
+    };
+    const [error, document] = await handle(
+        Sach.findOneAndUpdate(condition, {
+            'S_SoLuong': req.body.S_SoLuong,
+            'S_NgayCapNhat': req.body.S_NgayCapNhat,
+
+        }, {
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật sách có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy sách"));
+    }
+
+    return res.send({ message: "Cập nhật sách thành công." });
+};
+
+exports.NhapKho = async (req, res, next) => {
+    const nhapkho = new NhapKho({
+        NK_Ma: req.body.NK_Ma,
+        NK_MaSach: req.body.NK_MaSach,
+        NK_MaNV: req.body.NK_MaNV,
+        NK_Gia: req.body.NK_Gia,
+        NK_SoLuong: req.body.NK_SoLuong,
+        NK_NgayNhap: req.body.NK_NgayNhap,
+    });
+    // Save product in the DB
+    const [error, document] = await handle(nhapkho.save());
+
+    if (error) {
+        return console.log(error);
+
+    }
+
+    return res.send(document);
+
+};
+exports.getLastNKMa = async (req, res) => {
+    const [error, documents] = await handle(
+        NhapKho.findOne().sort({ NK_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất nhap kho!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBNK000")
+    }
+    return res.send(documents.NK_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 exports.getLastSMa = async (req, res) => {
     const [error, documents] = await handle(
         Sach.findOne().sort({ S_Ma: -1 })
@@ -70,7 +165,7 @@ exports.getLastSMa = async (req, res) => {
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy sách")
+        return res.send("KBS000")
     }
     return res.send(documents.S_Ma);
     // if (!lastRecord) {
@@ -89,6 +184,24 @@ exports.findOne = async (req, res) => {
     };
     const [error, documents] = await handle(
         Sach.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy sách")
+    }
+    return res.send(documents);
+};
+exports.findNhapKhoSMa = async (req, res) => {
+    const condition = {
+        NK_MaSach: req.params.NK_MaSach,
+    };
+    const [error, documents] = await handle(
+        NhapKho.find(condition)
     );
 
     if (error) {

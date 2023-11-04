@@ -67,7 +67,7 @@ exports.getLastNxbMa = async (req, res) => {
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy nhà xuất bản")
+        return res.send("KBNXB000")
     }
     return res.send(documents.NXB_Ma);
     // if (!lastRecord) {

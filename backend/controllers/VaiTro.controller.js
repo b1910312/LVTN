@@ -62,9 +62,9 @@ exports.getLastID = async (req, res) => {
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy sách")
+        return res.send("KBVT000")
     }
-    return res.send(documents._Ma);
+    return res.send(documents.VT_Ma);
     // if (!lastRecord) {
     //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
     // }

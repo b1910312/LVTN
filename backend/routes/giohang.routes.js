@@ -8,6 +8,8 @@ module.exports = (app) => {
 
     router.get("/", giohang.findAll);
 
+    router.get('/getid/getlastghma', giohang.getLastGHMa);
+
     router.get("/:GH_Ma", giohang.findOne);
 
     router.put("/:GH_Ma", giohang.update);

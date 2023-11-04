@@ -10,6 +10,9 @@ module.exports = (app) => {
 
     router.get("/:CTDH_Ma", chitietdonhang.findOne);
 
+    router.get("/getbyDHMa/:CTDH_MaDH", chitietdonhang.findOneDH);
+    
+
     router.put("/:CTDH_Ma", chitietdonhang.update);
 
     router.delete("/:CTDH_Ma", chitietdonhang.delete);

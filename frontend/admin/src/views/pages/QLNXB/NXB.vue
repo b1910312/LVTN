@@ -70,20 +70,18 @@ height: 800px;">
                         <div class="col-11">
                           <h4>Thông tin nhà xuất bản: {{ NXB.NXB_Ten }}</h4>
                         </div>
+
                         <div class=col-1>
                           <VBtn class="bg bg-danger" @click="dialog3 = false">Đóng</VBtn>
                         </div>
                       </div>
                       <div class="card p-3">
-                        <div class="row w-100">
-                          <div class="col-12 col-md-6">
-                            <h6> Logo&nbsp;&nbsp; <button class="btn btn-outline-success h-50"><font-awesome-icon
-                                  :icon="['fas', 'pen']" /></button>
-                            </h6>
-                            <img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" class="img-fluid mx-auto mt-2 mb-4" alt=""
-                              srcset="">
-                          </div>
-                        </div>
+                        <h6> Logo&nbsp;&nbsp;
+
+
+                        </h6>
+                        <img style="max-width: 300px;" :src="GetLogo(NXB.NXB_Ma)" class="img-fluid mx-auto mt-2 mb-4" alt=""
+                          srcset="">
 
                         <VRow>
                           <VCol cols="12">
@@ -103,28 +101,26 @@ height: 800px;">
                             <VTextField v-model="NXB.NXB_SDT" label="Số điện thoại" readonly placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" readonly
-                              placeholder="············" />
-                          </VCol> <VCol cols="6">
-                            <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" readonly
-                              placeholder="············" />
+                            <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" readonly placeholder="············" />
+                          </VCol>
+                          <VCol cols="6">
+                            <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" readonly placeholder="············" />
                           </VCol>
                           <VCol cols="6">
                             <VTextField v-model="DC.DC_QuanHuyen" label="Quận/Huyện" readonly
                               placeholder="············" />
-                          </VCol> <VCol cols="6">
+                          </VCol>
+                          <VCol cols="6">
                             <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố" readonly
                               placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="NXB.NXB_NgayTao" label="Ngày tạo" readonly
-                              placeholder="············" />
+                            <VTextField v-model="NXB.NXB_NgayTao" label="Ngày tạo" readonly placeholder="············" />
                           </VCol>
                           <VCol cols="6">
                             <VTextField v-model="NXB.NXB_NgayCapNhat" label="Ngày cập nhật" readonly
                               placeholder="············" />
                           </VCol>
-                          
 
                         </VRow>
                       </div>
@@ -159,7 +155,9 @@ export default defineComponent({
       NXB: "",
       FitlerNXBs: "",
       dialog3: false,
-      DC:"",
+      DC: "",
+      Logo: "",
+      dialog4: false,
     }
 
   },
@@ -175,10 +173,40 @@ export default defineComponent({
   },
   mounted() {
     this.GetNXB()
+    this.GetLogo();
     // Lấy ngày hiện tại
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    cancel() {
+      this.dialog4 = false
+    },
+    async UpdateLogo() {
+      const formData = new FormData();
+      formData.append("image", this.imageFile);
+
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/NXB/" + this.NXB.NXB_Ma, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        // this.$router.push("/quanlynxb");
+        window.location.reload()
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+
+    },
+
+    setImageFile(event) {
+      this.imageFile = event.target.files[0];
+    },
+    GetLogo(NXB_Ma) {
+      const logo = "http://localhost:3000/api/thumbnail/image/NXB/" + NXB_Ma
+      return logo;
+    },
     GetOneSach(id) {
       axios.get('http://localhost:3000/api/nxb/' + id)
         .then((response) => {
@@ -190,7 +218,7 @@ export default defineComponent({
           // handle error
           console.log(error);
         })
-        this.GetDiaChi(id)
+      this.GetDiaChi(id)
 
 
     },

@@ -5,10 +5,6 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ma cua thumbnail"],
             },
-           TB_URL: {
-                type: String,
-                required: [true, "Ten cua thumbnail"],
-            },
            TB_NgayTao: {
                 type: String,
                 required: [true, "Ngay tao thumbnail"],

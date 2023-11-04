@@ -9,7 +9,6 @@ exports.create = async (req, res) => {
     // Create a product
     const thumbnail = new ThumbNail({
         TB_MaSach: req.body.TB_MaSach,
-        TB_URL: req.body.TB_URL,
         TB_NgayTao: req.body.TB_NgayTao,
     });
     // Save product in the DB

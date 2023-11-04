@@ -92,6 +92,13 @@ const vuetifyTheme = useTheme()
       />
       <VerticalNavLink
         :item="{
+          title: 'QL Đơn hàng',
+          icon: 'bx-money-withdraw',
+          to: '/quanlydonhang',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
           title: 'QL Nhà xuất bản',
           icon: 'bx-buildings',
           to: '/quanlynxb',

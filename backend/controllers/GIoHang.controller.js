@@ -11,6 +11,7 @@ exports.create = async (req, res) => {
         GH_Ma: req.body.GH_Ma,
         GH_MaKH: req.body.GH_MaKH,
         GH_NgayTao: req.body.GH_NgayTao,
+        GH_NgayCapNhat: req.body.GH_NgayCapNhat,
     });
     // Save product in the DB
     const [error, document] = await handle(giohang.save());
@@ -72,6 +73,28 @@ exports.findOne = async (req, res) => {
         return res.send("Không tìm thấy giỏ hảng")
     }
     return res.send(documents);
+};
+exports.getLastGHMa = async (req, res) => {
+    const [error, documents] = await handle(
+        GioHang.findOne().sort({ GH_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBGH000")
+    }
+    return res.send(documents.GH_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
 };
 
 //*--- Cập nhật thông tin sách thông qua mã sách

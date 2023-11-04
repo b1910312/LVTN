@@ -86,9 +86,8 @@ height: 800px;">
                       </div>
                       <div class="card p-3">
 
-                        <h6> Ảnh đại diện&nbsp;&nbsp; <button class="btn btn-outline-success h-50">Cập nhật</button>
-                        </h6>
-                        <img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" class="img-fluid w-50 mt-2 mb-4"
+                        <h6> Ảnh đại diện&nbsp;&nbsp; </h6>
+                        <img style="max-width: 300px;" :src="GetLogo(NV.NV_MaNV)" class="img-fluid mx-auto mt-2 mb-4"
                           alt="" srcset="">
 
 
@@ -163,9 +162,37 @@ height: 800px;">
                       </div>
                       <div class="card p-3">
 
-                        <h6> Ảnh đại diện&nbsp;&nbsp; <button class="btn btn-outline-success h-50">Cập nhật</button>
+                        <h6 class="ms-3"> Ảnh đại diện&nbsp;&nbsp; <button @click="dialog5 = true"
+                            class="btn btn-outline-success"><font-awesome-icon :icon="['fas', 'pen']" /></button>
                         </h6>
-                        <img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" class="img-fluid w-50 mt-2 mb-4"
+                        <v-dialog v-model="dialog5">
+                          <div class="card w-75 mx-auto text-start bg bg-white p-5">
+                            <div class="col-11">
+                              <h4>Cập nhật Ảnh đại diện nhân viên: {{ NV.NV_HoTen }}</h4>
+                            </div>
+
+                            <VCol cols="12">
+                              <VForm @submit.prevent="UpdateLogo">
+                                <VFileInput label="Logo" type="file" ref="imageInput" @change="setImageFile" />
+                                <div class="row w-100 mt-2">
+                                  <div class="col-8"></div>
+                                  <div class="d-flex gap-4 col-2">
+                                    <VBtn class="ms-5" type="Thêm">
+                                      Cập nhật
+                                    </VBtn>
+                                  </div>
+                                  <div class="d-flex gap-4 col-1">
+                                    <VBtn class="ms-5 bg bg-secondary" @click="cancel()">
+                                      Hủy
+                                    </VBtn>
+                                  </div>
+                                </div>
+                              </VForm>
+                            </VCol>
+                          </div>
+
+                        </v-dialog>
+                        <img style="max-width: 300px;" :src="GetLogo(NV.NV_MaNV)" class="img-fluid mx-auto mt-2 mb-4"
                           alt="" srcset="">
 
 
@@ -249,7 +276,8 @@ export default defineComponent({
       DC: "",
       GT: "",
       dialog3: false,
-      dialog4: false
+      dialog4: false,
+      dialog5: false
 
     }
 
@@ -271,6 +299,35 @@ export default defineComponent({
   },
 
   methods: {
+    cancel() {
+      this.dialog4 = false
+    },
+    async UpdateLogo() {
+      const formData = new FormData();
+      formData.append("image", this.imageFile);
+
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/NV/" + this.NV.NV_MaNV, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        // this.$router.push("/quanlynxb");
+        window.location.reload()
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+
+    },
+
+    setImageFile(event) {
+      this.imageFile = event.target.files[0];
+    },
+    GetLogo(NV_MaNV) {
+      const logo = "http://localhost:3000/api/thumbnail/image/NV/" + NV_MaNV
+      return logo;
+    },
     CapNhatThongTin() {
       const now = moment();
 

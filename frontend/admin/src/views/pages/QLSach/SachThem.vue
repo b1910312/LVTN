@@ -13,6 +13,20 @@ export default defineComponent({
       NewID: "",
       So: "",
       Chu: "",
+
+      LastID1: "",
+      NewID1: "",
+      So1: "",
+      Chu1: "",
+
+      NK: {
+        NK_Ma: "",
+        NK_MaSach: "",
+        NK_MaNV: "",
+        NK_Gia: "",
+        NK_SoLuong: "",
+        NK_NgayNhap: "",
+      },
       Sach: {
         S_Ma: "",
         S_Ten: "",
@@ -23,13 +37,20 @@ export default defineComponent({
         S_NXB: "",
         S_NgayNhap: "",
         S_NgayCapNhat: ""
-      }
+      },
+      nhanvien: {},
+
     };
   },
   mounted() {
     this.GetLastID()
+    this.GetNhanVien()
   },
   methods: {
+    GetNhanVien() {
+      const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"));
+      this.nhanvien = nhanvienchitiet;
+    },
     GetLastID() {
       axios.get(`http://localhost:3000/api/sach/getid/getlastsma`).then(res => {
         this.LastID = res.data
@@ -37,6 +58,13 @@ export default defineComponent({
         this.Increase()
         this.Sach.S_Ma = this.NewID
         console.log(this.Sach.S_Ma)
+      })
+      axios.get(`http://localhost:3000/api/sach/NhapKho/getid/getlastnkma`).then(res => {
+        this.LastID1 = res.data
+        this.TachKBS()
+        this.Increase()
+        this.NK.NK_Ma = this.NewID1
+        console.log("newid" + this.NK.NK_Ma)
       })
     },
     Increase() {
@@ -50,12 +78,27 @@ export default defineComponent({
       this.So = String(SoNguyen).padStart(3, "0");
       this.NewID = this.Chu + this.So;
       console.log(this.NewID)
+
+      let SoNguyen1 = parseInt(this.So1);
+
+      // Tăng giá trị của số nguyên
+      SoNguyen1 += 1;
+
+      // Chuyển đổi số nguyên thành chuỗi
+      this.So1 = String(SoNguyen1).padStart(3, "0");
+      this.NewID1 = this.Chu1 + this.So1;
+      console.log(this.NewID1)
     },
     TachKBS() {
       let [Text1, result1] = this.LastID.split("0");
       let [Text, result] = this.LastID.split("S");
       this.So = result;
       this.Chu = Text1;
+
+      let [Text3, result3] = this.LastID1.split("0");
+      let [Text2, result2] = this.LastID1.split("NK");
+      this.So1 = result2;
+      this.Chu1 = Text3;
     },
 
     increaseID() {
@@ -77,7 +120,6 @@ export default defineComponent({
           // Nếu API trả về thành công
           if (response.status === 200) {
             // Thông báo thành công
-            alert('Thêm dữ liệu thành công!')
             this.$router.push("/quanlysach");
           }
         })
@@ -85,7 +127,21 @@ export default defineComponent({
           // Nếu API trả về lỗi
           console.log(error)
         })
-
+      this.NK.NK_MaSach = this.Sach.S_Ma
+      this.NK.NK_MaNV = this.nhanvien.TKNV_MaNV
+      this.NK.NK_NgayNhap = now.format("DD-MM-YYYY");
+      this.NK.NK_SoLuong = this.Sach.S_SoLuong;
+      //Gọi API để cập nhật sản phẩm
+      axios.post("http://localhost:3000/api/sach/nhapkho/", this.NK).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("NHAPKHO")
+        console.log(this.NK)
+        alert("Cập nhật thành công");
+        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+        this.$router.push("/quanlysach");
+      }).catch(error => {
+        alert(error);
+      });
     }
   }
 });
@@ -110,7 +166,10 @@ export default defineComponent({
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="Sach.S_Gia" label="Gia" type="number" placeholder="············" />
+          <VTextField v-model="Sach.S_Gia" label="Giá" type="number" placeholder="············" />
+        </VCol>
+        <VCol cols="12">
+          <VTextField v-model="NK.NK_Gia" label="Giá nhập kho" type="number" placeholder="············" />
         </VCol>
 
         <VCol cols="12">

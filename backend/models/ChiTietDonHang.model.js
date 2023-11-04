@@ -5,20 +5,25 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ma cua chi tiet don hang"],
             },
-        
-           CTDH_MaDH: {
+
+            CTDH_MaDH: {
                 type: String,
                 required: [true, "Ma cua khach hang"],
             },
-           CTDH_TenSach: {
+
+            CTDH_MaSach: {
+                type: String,
+                required: [true, "Ma cua Sach"],
+            },
+            CTDH_TenSach: {
                 type: String,
                 required: [true, "Ten cua sach"],
             },
-           CTDH_SoLuong: {
+            CTDH_SoLuong: {
                 type: Number,
                 required: [true, "So luong cua sach"],
             },
-           CTDH_Gia: {
+            CTDH_Gia: {
                 type: Number,
                 required: [true, "Gia cua sach"],
             },
@@ -26,11 +31,11 @@ module.exports = mongoose => {
                 type: Number,
                 required: [true, "Thanh tien cua sach"],
             },
-           CTDH_NgayTao: {
+            CTDH_NgayTao: {
                 type: String,
                 required: [true, "Ngay tao chi tiet don hang"],
             },
-           CTDH_NgayCapNhat: {
+            CTDH_NgayCapNhat: {
                 type: String,
             },
         });

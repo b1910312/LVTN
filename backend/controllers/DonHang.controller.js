@@ -29,7 +29,36 @@ exports.create = async (req, res) => {
     return res.send(document);
 
 }
+exports.updateTrangThai = async (req, res, next) => {
 
+    const condition = {
+        DH_Ma: req.params.DH_Ma
+    };
+
+    const [error, document] = await handle(
+        DonHang.findOneAndUpdate(condition, req.body,  {
+            $set: {
+                'DH_TrangThai': req.body.DH_TrangThai,
+                'DH_NgayCapNhat': req.body.DH_NgayCapNhat,
+            }
+        },{
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật thông tin bình luận thành công." });
+};
 
 //*--------Truy xuất tất cả sản phẩm trong cơ sở dữ liệu
 exports.findAll = async (req, res) => {

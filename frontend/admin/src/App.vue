@@ -4,13 +4,16 @@ import UpgradeToPro from '@/components/UpgradeToPro.vue'
 import { hexToRgb } from '@layouts/utils'
 
 const { global } = useTheme()
-</script>
 
+</script>
 <script>
 import { mapGetters, mapMutations } from "vuex";
 export default {
+
   created() {
-    if (!this.loggedInNhanVien) {
+    const nhanvien = localStorage.getItem('nhanvien')
+    const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
+    if (nhanvien == null || nhanvienchitiet.TKNV_VaiTro != "KBVT001" || nhanvienchitiet.TKNV_TrangThai == 2) {
       this.$router.push("/login");
     }
   },

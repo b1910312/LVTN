@@ -8,7 +8,7 @@
     "themeConfig.js",
     "auto-imports.d.js",
     "componenjs.d.js"
-  ],
+, "../../backend/services"  ],
   "exclude": [
     "dist",
     "node_modules",

@@ -5,46 +5,41 @@ import statsVerticalChart from '@images/cards/chart-success.png'
 import statsVerticalPaypal from '@images/cards/paypal-error.png'
 import statsVerticalWallet from '@images/cards/wallet-primary.png'
 import { hexToRgb } from '@layouts/utils'
+import { ref } from 'vue';
 
 const vuetifyTheme = useTheme()
 
+function congTatCaGiaTri(arr) {
+  return arr.reduce((total, currentValue) => total + currentValue, 0);
+}
+
+const props = defineProps({
+  incomeData: {
+    type: Array,
+    required: true,
+  },
+  MaxVL: {
+    type: Number,
+    required: true,
+  },
+  MinVL: {
+    type: Number,
+    required: true
+  }
+})
+const tongDoanhSo = ref(0);
+
+
+console.log("props.incomeData")
+console.log(props.incomeData)
+const OB = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+console.log("OB")
+console.log(OB)
 const series = {
   income: [{
-    data: [
-      24,
-      21,
-      30,
-      22,
-      42,
-      26,
-      35,
-      29,
-    ],
+    data: props.incomeData,
   }],
-  expenses: [{
-    data: [
-      24,
-      21,
-      30,
-      25,
-      42,
-      26,
-      35,
-      29,
-    ],
-  }],
-  profit: [{
-    data: [
-      24,
-      21,
-      30,
-      22,
-      42,
-      26,
-      35,
-      35,
-    ],
-  }],
+
 }
 
 const currentTab = ref('income')
@@ -59,33 +54,17 @@ const tabData = computed(() => {
       profitLossAmount: '6.5k',
       compareToLastWeek: '$39k',
     },
-    expenses: {
-      avatar: statsVerticalPaypal,
-      title: 'Total Expenses',
-      stats: '$316.5k',
-      profitLoss: 27.8,
-      profitLossAmount: '7.2k',
-      compareToLastWeek: '$16k',
-    },
-    profit: {
-      avatar: statsVerticalChart,
-      title: 'Total Profit',
-      stats: '$147.9k',
-      profitLoss: 35.1,
-      profitLossAmount: '4.5k',
-      compareToLastWeek: '$28k',
-    },
   }
-  
+
   return data[currentTab.value]
 })
 
 const chartConfig = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  const disabledTextColor = `rgba(${ hexToRgb(String(currentTheme['on-surface'])) },${ variableTheme['disabled-opacity'] })`
-  const borderColor = `rgba(${ hexToRgb(String(variableTheme['border-color'])) },${ variableTheme['border-opacity'] })`
-  
+  const disabledTextColor = `rgba(${hexToRgb(String(currentTheme['on-surface']))},${variableTheme['disabled-opacity']})`
+  const borderColor = `rgba(${hexToRgb(String(variableTheme['border-color']))},${variableTheme['border-opacity']})`
+
   return {
     chart: {
       parentHeightOffset: 0,
@@ -143,14 +122,19 @@ const chartConfig = computed(() => {
       axisTicks: { show: false },
       axisBorder: { show: false },
       categories: [
-        '',
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
+        " ",
+        'Tháng 1',
+        'Tháng 2',
+        'Tháng 3',
+        'Tháng 4',
+        'Tháng 5',
+        'Tháng 6',
+        'Tháng 7',
+        'Tháng 8',
+        'Tháng 9',
+        'Tháng 10',
+        'Tháng 11',
+        'Tháng 12',
       ],
       labels: {
         style: {
@@ -161,8 +145,8 @@ const chartConfig = computed(() => {
       },
     },
     yaxis: {
-      min: 10,
-      max: 50,
+      min: props.MinVL,
+      max: props.MaxVL,
       show: false,
       tickAmount: 4,
     },
@@ -183,15 +167,13 @@ const chartConfig = computed(() => {
     },
   }
 })
+
 </script>
 
 <template>
   <VCard>
-    <VCardItem>
-      <VTabs
-        v-model="currentTab"
-        class="v-tabs-pill"
-      >
+    <!-- <VCardItem>
+      <VTabs v-model="currentTab" class="v-tabs-pill">
         <VTab value="income">
           Income
         </VTab>
@@ -202,51 +184,33 @@ const chartConfig = computed(() => {
           Profit
         </VTab>
       </VTabs>
-    </VCardItem>
+    </VCardItem> -->
 
     <VCardText class="d-flex align-center gap-3">
-      <VAvatar
-        size="46"
-        rounded
-        :image="tabData.avatar"
-      />
+      <VAvatar size="46" rounded :image="tabData.avatar" />
 
       <div>
         <p class="mb-0">
-          {{ tabData.title }}
+          Tổng doanh thu năm
         </p>
         <div class="d-flex align-center gap-2">
           <h6 class="text-h6">
-            {{ tabData.stats }}
+            {{ congTatCaGiaTri(props.incomeData) }} VNĐ
           </h6>
-          <span
-            class="text-sm"
-            :class="tabData.profitLoss > 0 ? 'text-success' : 'text-error'"
-          >
-            <VIcon
-              size="24"
-              icon="bx-chevron-up"
-            />
+          <!-- <span class="text-sm" :class="tabData.profitLoss > 0 ? 'text-success' : 'text-error'">
+            <VIcon size="24" icon="bx-chevron-up" />
             {{ tabData.profitLoss }}%
-          </span>
+          </span> -->
         </div>
       </div>
     </VCardText>
 
     <VCardText>
-      <VueApexCharts
-        type="area"
-        :height="241"
-        :options="chartConfig"
-        :series="series[currentTab]"
-      />
+      <VueApexCharts type="area" :height="241" :options="chartConfig" :series="series[currentTab]" />
     </VCardText>
 
-    <VCardText class="d-flex align-center justify-center gap-3">
-      <VProgressCircular
-        size="45"
-        :model-value="tabData.profitLoss"
-      >
+    <!-- <VCardText class="d-flex align-center justify-center gap-3">
+      <VProgressCircular size="45" :model-value="tabData.profitLoss">
         <span class="text-xs text-medium-emphasis">{{ tabData.profitLossAmount }}</span>
       </VProgressCircular>
 
@@ -257,6 +221,6 @@ const chartConfig = computed(() => {
         </h6>
         <span class="text-sm text-disabled">{{ tabData.compareToLastWeek }} less than last week</span>
       </div>
-    </VCardText>
+    </VCardText> -->
   </VCard>
 </template>

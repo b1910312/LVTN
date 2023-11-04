@@ -3,11 +3,12 @@ import { handle } from "../common/promise";
 
 const state = {
     nhanvien: {
-        TKNV_Ma: String,
+        TKNV_MaNV: String,
         TKNV_Ten: String,
         TKNV_MatKhau: String,
         TKNV_VaiTro: String,
-        TKNV_TrangThai: Number
+        TKNV_TrangThai: Number,
+        TKNV_Logined: Boolean
     },
     statusEmployee: {
         loggedInNhanVien: Boolean
@@ -41,6 +42,7 @@ const actions = {
                 TKNV_MaNV: nhanvien.TKNV_MaNV,
                 TKNV_MatKhau: nhanvien.TKNV_MatKhau,
                 TKNV_VaiTro: nhanvien.TKNV_VaiTro,
+                TKNV_Logined: nhanvien.TKNV_Logined,
                 TKNV_TrangThai: nhanvien.TKNV_TrangThai
             })
         );

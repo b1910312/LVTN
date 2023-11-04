@@ -9,6 +9,7 @@ exports.create = async (req, res) => {
     const chitietdonhang = new ChiTietDonHang({
         CTDH_Ma: req.body.CTDH_Ma,
         CTDH_MaDH: req.body.CTDH_MaDH,
+        CTDH_MaSach: req.body.CTDH_MaSach,
         CTDH_TenSach: req.body.CTDH_TenSach,
         CTDH_SoLuong: req.body.CTDH_SoLuong,
         CTDH_Gia: req.body.CTDH_Gia,
@@ -56,7 +57,6 @@ exports.findAll = async (req, res) => {
 };
 
 
-
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
@@ -64,6 +64,25 @@ exports.findOne = async (req, res) => {
     };
     const [error, documents] = await handle(
         ChiTietDonHang.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất chi tiết đơn hàng!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy chi tiết đơn hàng")
+    }
+    return res.send(documents);
+};
+//*----- Truy xuất một sản phẩm bằng mã sách
+exports.findOneDH = async (req, res) => {
+    const condition = {
+        CTDH_MaDH: req.params.CTDH_MaDH,
+    };
+    const [error, documents] = await handle(
+        ChiTietDonHang.find(condition)
     );
 
     if (error) {

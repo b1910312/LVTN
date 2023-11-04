@@ -6,8 +6,10 @@
         <input type="text" class="form-control w-100" v-model.trim="FitlerSachs" name="" id="" aria-describedby="helpId"
           placeholder="Tìm kiếm theo tên">
       </VCol>
-      <VCol cols="4"></VCol>
-      <VCol cols="1" class="pe-5 ms-5 ps-5 d-flex">
+      <VCol cols="3"></VCol>
+      <VCol cols="2" class="ms-5 ps-5 d-flex">
+        <button class="btn btn-outline-primary w-100" @click="GetSach()"
+          style="float: right; right: 0;"><font-awesome-icon :icon="['fas', 'arrows-rotate']" /></button>
         <RouterLink :to="{ name: 'SachThem' }">
           <button class="btn btn-outline-primary w-100" style="float: right; right: 0;"><font-awesome-icon
               :icon="['fas', 'plus']" /></button>
@@ -89,34 +91,30 @@ height: 800px;">
                           <VBtn class="bg bg-danger" @click="dialog3 = false">Đóng</VBtn>
                         </div>
                       </div>
-                      <div class="card p-3">
-                        <div class="row w-100">
-
-                          <div class="col-12 col-md-6">
-                            <h6> THUMBNAIL&nbsp;&nbsp; <button class="btn btn-outline-success h-50">Cập nhật</button>
-                            </h6>
-                            <img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" class="img-fluid mt-2 mb-4" alt=""
-                              srcset="">
-                          </div>
-
-                          <div class="col-12 col-md-6">
-                            <h6 class=""> HÌNH MINH HỌA &nbsp;&nbsp;<button class="btn btn-outline-success h-50">Cập
-                                nhật</button>
-                            </h6>
-                            <v-carousel class="mb-4 " height="350">
-
-                              <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                                auto></v-carousel-item>
-
-                              <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
-                                auto></v-carousel-item>
-
-                              <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                                auto></v-carousel-item>
-                            </v-carousel>
-                          </div>
+                      <div class="row w-100">
+                        <div class="col-12 col-md-6">
+                          <h6> THUMBNAIL&nbsp;&nbsp; <button class="btn btn-outline-success h-50">Cập nhật</button>
+                          </h6>
+                          <img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" class="img-fluid mt-2 mb-4" alt=""
+                            srcset="">
                         </div>
 
+                        <div class="col-12 col-md-6">
+                          <h6 class=""> HÌNH MINH HỌA &nbsp;&nbsp;<button class="btn btn-outline-success h-50">Cập
+                              nhật</button>
+                          </h6>
+                          <v-carousel class="mb-4 " height="350">
+
+                            <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                              auto></v-carousel-item>
+
+                            <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
+                              auto></v-carousel-item>
+
+                            <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+                              auto></v-carousel-item>
+                          </v-carousel>
+                        </div>
                         <VRow>
                           <VCol cols="12">
                             <VTextField v-model="sach.S_Ma" label="Mã sách" readonly placeholder="John" />
@@ -137,12 +135,10 @@ height: 800px;">
                           <VCol cols="6">
                             <VTextField v-model="sach.S_Gia" label="Giá bán (VNĐ)" readonly placeholder="············" />
                           </VCol>
-                          <VCol cols="4">
+                          <VCol cols="6">
                             <VTextField v-model="sach.S_SoLuong" label="Số lượng" readonly placeholder="············" />
                           </VCol>
-                          <VCol cols="2 ">
-                            <VBtn class="btn bg bg-primary h-100">Nhập thêm</VBtn>
-                          </VCol>
+
                           <VCol cols="6">
                             <VTextField v-model="sach.S_NgayNhap" label="Ngày nhập kho" readonly
                               placeholder="············" />
@@ -152,6 +148,42 @@ height: 800px;">
                               placeholder="············" />
                           </VCol>
                         </VRow>
+                      </div>
+                    </Vrow>
+                  </div>
+                </v-dialog>
+                <button class="dropdown-item btn bg bg-primary text-white mb-1" @click="dialog5 = true">
+                  <font-awesome-icon :icon="['fas', 'eye']" /> Nhập kho</button>
+                <v-dialog v-model="dialog5" class="w-50 my-auto" style="height: fit-content;">
+                  <div class="card text-start bg bg-white p-4">
+                    <Vrow>
+                      <div class="row w-100 mb-3">
+                        <div class="col-6 ms-3">
+                          <h4>Nhập kho sách: <br> {{ sach.S_Ten }}</h4>
+                        </div>
+                        <div class=col-4></div>
+                        <div class=col-1>
+                          <VBtn class="bg bg-danger" @click="dialog5 = false">Đóng</VBtn>
+                        </div>
+                      </div>
+                      <div class="row w-100 ms-2">
+
+                        <VRow>
+                          <VCol cols="12">
+                            <VTextField v-model="NK.NK_SoLuong" label="Số lượng" type="number"
+                              placeholder="············" />
+                          </VCol>
+                          <VCol cols="12">
+                            <VTextField v-model="NK.NK_Gia" label="Giá" type="number"
+                              placeholder="············" />
+                          </VCol>
+                        </VRow>
+                      </div>
+                      <div class="row w-100 mt-3">
+                        <div class="col-10"></div>
+                        <div class="col-2">
+                          <VBtn class="bg bg-primary" @click="NhapKho()">Cập nhật</VBtn>
+                        </div>
                       </div>
                     </Vrow>
                   </div>
@@ -185,12 +217,27 @@ export default defineComponent({
       sachs: [],
       sach: "",
       sachNKD: "",
+      LastID: "",
+      NewID: "",
+      So: "",
+      Chu: "",
+      NK:{
+        NK_Ma: "",
+        NK_MaSach:"",
+        NK_MaNV: "",
+        NK_Gia: "",
+        NK_SoLuong: "",
+        NK_NgayNhap:"",
+      },
       S_NgayXoa: "",
       TenNXB: "",
       TenTheLoai: "",
       FitlerSachs: "",
       S_MaActive: "",
       dialog3: false,
+      dialog5: false,
+      nhanvien: {},
+
     }
 
   },
@@ -205,6 +252,8 @@ export default defineComponent({
     },
   },
   mounted() {
+    this.GetNhanVien()
+    this.GetLastID()
     this.GetSach()
     this.getNXB()
     this.getTheLoai()
@@ -212,6 +261,78 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    GetNhanVien(){
+      const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"));
+      this.nhanvien = nhanvienchitiet;
+    },
+    GetLastID() {
+      axios.get(`http://localhost:3000/api/sach/NhapKho/getid/getlastnkma`).then(res => {
+        this.LastID = res.data
+        this.TachKBS()
+        this.Increase()
+        this.NK.NK_Ma = this.NewID
+        console.log("newid"+this.NK.NK_Ma)
+      })
+    },
+    Increase() {
+      // Chuyển đổi chuỗi thành số nguyên
+      let SoNguyen = parseInt(this.So);
+
+      // Tăng giá trị của số nguyên
+      SoNguyen += 1;
+
+      // Chuyển đổi số nguyên thành chuỗi
+      this.So = String(SoNguyen).padStart(3, "0");
+      this.NewID = this.Chu + this.So;
+      console.log(this.NewID)
+    },
+    TachKBS() {
+      let [Text1, result1] = this.LastID.split("0");
+      let [Text, result] = this.LastID.split("NK");
+      this.So = result;
+      this.Chu = Text1;
+    },
+
+    increaseID() {
+      // Chuyển đổi chuỗi thành số nguyên
+      let so_nguyen = parseInt(this.chuỗi);
+
+      // Tăng giá trị của số nguyên
+      so_nguyen += 1;
+
+      // Chuyển đổi số nguyên thành chuỗi
+      this.chuỗi = String(so_nguyen);
+    },
+    NhapKho() {
+      const now = moment();
+      this.NK.NK_MaNV = this.nhanvien.TKNV_MaNV
+      this.NK.NK_MaSach = this.sach.S_Ma
+      this.NK.NK_NgayNhap = now.format("DD-MM-YYYY");
+      let SSL = parseInt(this.sach.S_SoLuong);
+      let NKSL = parseInt(this.NK.NK_SoLuong);
+      this.sach.S_SoLuong = SSL + NKSL;
+      this.sach.S_NgayCapNhat = now.format("DD-MM-YYYY");
+      //Gọi API để cập nhật sản phẩm
+      axios.put("http://localhost:3000/api/sach/nhapkho/" + this.sach.S_Ma, this.NK).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log(this.NK)
+        alert("Cập nhật thành công");
+        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+        this.$router.push("/quanlysach");
+      }).catch(error => {
+        alert(error);
+      });
+      // Gọi API để cập nhật sản phẩm
+      axios.put("http://localhost:3000/api/sach/CapNhatSoLuong/" + this.sach.S_Ma, this.sach).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log(this.NK)
+        alert("Cập nhật thành công");
+        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+        this.$router.push("/quanlysach");
+      }).catch(error => {
+        alert(error);
+      });
+    },
     setActiveSach(data) {
       this.S_MaActive = data;
       console.log("S_Ma" + this.S_MaActive)

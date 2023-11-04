@@ -223,8 +223,9 @@ exports.signin = async (req, res, next) => {
     res.status(200).send({
         TKNV_MaNV: nhanvien.TKNV_MaNV,
         TKNV_TrangThai: nhanvien.TKNV_TrangThai,
-        TLNV_VaiTro: nhanvien.TKNV_VaiTro, 
+        TKNV_VaiTro: nhanvien.TKNV_VaiTro, 
         accessToken: token,
+        TKNV_Logined: true
     });
 };
 

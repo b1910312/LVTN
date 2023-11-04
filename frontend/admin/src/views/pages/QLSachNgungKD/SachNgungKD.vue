@@ -6,8 +6,12 @@
         <input type="text" class="form-control w-100" v-model.trim="FitlerSachs" name="" id="" aria-describedby="helpId"
           placeholder="Tìm kiếm theo tên">
       </VCol>
-      <VCol Cols="6">
+      <VCol Cols="5">
 
+      </VCol>
+      <VCol cols="1 me-2 mb-1">
+        <button class="btn btn-outline-primary w-100" @click="GetSach()"
+          style="float: right; right: 0;"><font-awesome-icon :icon="['fas', 'arrows-rotate']" /></button>
       </VCol>
     </VRow>
     <VTable height="500" fixed-header>

@@ -1,6 +1,7 @@
 <script setup>
 import QLSachTable from '@/views/pages/QLSach/Sach.vue'
 import QLSachNgungKDTable from '@/views/pages/QLSachNgungKD/SachNgungKD.vue'
+import LSNhapKho from '@/views/pages/QLSach/LSNhapKho.vue'
 
 </script>
 
@@ -33,8 +34,8 @@ import QLSachNgungKDTable from '@/views/pages/QLSachNgungKD/SachNgungKD.vue'
     </div>
     <div class="tab-pane" id="home1" role="tabpanel" aria-labelledby="profile-tab">
       
-      <VCard title="DANH SÁCH ĐẦU SÁCH ĐÃ NGỪNG KINH DOANH" height="600">
-        <QLSachNgungKDTable />
+      <VCard title="LỊCH SỬ NHẬP KHO" height="600">
+        <LSNhapKho />
       </VCard>
    
 </div>

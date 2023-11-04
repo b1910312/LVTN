@@ -12,15 +12,6 @@ const router = createRouter({
         {
           path: 'dashboard',
           component: () => import('../pages/dashboard.vue'),
-          beforeRouteEnter: (to, from, next) => {
-            if (!this.$store.getters["nhanvien/loggedInEmployee"]) {
-              next({
-                path: '/login',
-              });
-            } else {
-              next();
-            }
-          },
         },
         {
           path: 'account-settings',
@@ -80,6 +71,11 @@ const router = createRouter({
           name: 'QLBinLuan',
           path: 'quanlybinhluan',
           component: () => import('../pages/QLBinhLuan/quanlybinhluan.vue'),
+        },
+        {
+          name: 'QLDonHang',
+          path: 'quanlydonhang',
+          component: () => import('../pages/QLDonHang/quanlydonhang.vue'),
         },
         {
           name: 'QLNhanVien',

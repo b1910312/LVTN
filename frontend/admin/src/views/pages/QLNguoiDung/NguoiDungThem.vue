@@ -13,6 +13,10 @@ export default defineComponent({
       NewID: "",
       So: "",
       Chu: "",
+      LastID1: "",
+      NewID1: "",
+      So1: "",
+      Chu1: "",
       KH: {
         KH_MaKH: "",
         KH_HoTen: "",
@@ -41,14 +45,15 @@ export default defineComponent({
         TKKH_NgayCapNhat: ""
       },
       GH: {
-
         GH_Ma: "",
         GH_MaKH: "",
-        GH_NgayTao: ""
+        GH_NgayTao: "",
+        GH_NgayCapNhat: ""
       }
     };
   },
   mounted() {
+    this.GetLastID1()
     this.GetLastID()
   },
   methods: {
@@ -81,13 +86,45 @@ export default defineComponent({
       this.Chu = Text1;
       console.log(Text1);
     },
-    addKhachHang() {
+    GetLastID1() {
+      axios.get(`http://localhost:3000/api/giohang/getid/getlastghma`).then(res => {
+        this.LastID1 = res.data
+        console.log("MAGH" + this.LastID1)
+        this.TachKBS1()
+        this.Increase1()
+        this.GH.GH_Ma = this.NewID1
+        console.log("Gio hang" + this.GH.GH_Ma)
+      })
+    },
+    Increase1() {
+      // Chuyển đổi chuỗi thành số nguyên
+      let SoNguyen = parseInt(this.So1);
+
+      // Tăng giá trị của số nguyên
+      SoNguyen += 1;
+
+      // Chuyển đổi số nguyên thành chuỗi
+      this.So1 = String(SoNguyen).padStart(3, "0");
+      this.NewID1 = this.Chu1 + this.So1;
+      console.log("new ID 1" + this.NewID1)
+    },
+    TachKBS1() {
+      let [Text1, result1] = this.LastID1.split("0");
+      let [Text, result] = this.LastID1.split("H");
+      this.So1 = result;
+      console.log("so" + result);
+      this.Chu1 = Text1;
+      console.log("chu" + Text1);
+    },
+    async addKhachHang() {
       const now = moment();
       this.KH.KH_NgayTao = now.format("DD-MM-YYYY");
       this.DC.DC_NgayTao = now.format("DD-MM-YYYY");
       this.TKKH.TKKH_NgayTao = now.format("DD-MM-YYYY");
+      this.GH.GH_NgayTao = now.format("DD-MM-YYYY");
       this.TKKH.TKKH_MaKH = this.KH.KH_MaKH;
       this.DC.DC_MaDT = this.KH.KH_MaKH;
+      this.GH.GH_MaKH = this.KH.KH_MaKH;
 
       // Gọi API thêm dữ liệu
       axios.post('http://localhost:3000/api/thongtinkhachhang', this.KH)
@@ -95,7 +132,6 @@ export default defineComponent({
           // Nếu API trả về thành công
           if (response.status === 200) {
             // Thông báo thành công
-            alert('Thêm dữ liệu thành công!')
           }
         })
         .catch((error) => {
@@ -108,7 +144,6 @@ export default defineComponent({
           // Nếu API trả về thành công
           if (response.status === 200) {
             // Thông báo thành công
-            alert('Thêm dữ liệu thành công!')
           }
         })
         .catch((error) => {
@@ -120,17 +155,44 @@ export default defineComponent({
           // Nếu API trả về thành công
           if (response.status === 200) {
             // Thông báo thành công
-            alert('Thêm dữ liệu thành công!')
-            window.location.reload()
           }
         })
         .catch((error) => {
           // Nếu API trả về lỗi
           console.log(error)
         })
-      window.location.reload();
+      axios.post('http://localhost:3000/api/giohang', this.GH)
+        .then((response) => {
+          // Nếu API trả về thành công
+          if (response.status === 200) {
+            // Thông báo thành công
 
-    }
+          }
+        })
+        .catch((error) => {
+          // Nếu API trả về lỗi
+          console.log(error)
+        })
+      const formData = new FormData();
+      formData.append("image", this.imageFile);
+
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/KH/" + this.KH.KH_MaKH, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        window.location.reload()
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+
+
+    },
+    setImageFile(event) {
+      this.imageFile = event.target.files[0];
+    },
   }
 });
 
@@ -140,11 +202,15 @@ export default defineComponent({
   <div class="m-1 mx-3 ">
     <VForm>
       <VRow>
-        <VCol cols="12">
-          <VTextField v-model="KH.KH_MaKH" label="Mã Nhân viên" readonly placeholder="John" />
+
+        <VCol cols="6">
+          <VTextField v-model="KH.KH_MaKH" label="Mã khách hàng" readonly placeholder="John" />
+        </VCol>
+        <VCol cols="6">
+          <VFileInput label="Ảnh đại diện" type="file" ref="imageInput" @change="setImageFile" />
         </VCol>
         <VCol cols="12">
-          <VTextField v-model="KH.KH_HoTen" label="Tên Nhân viên" placeholder="johndoe@example.com" />
+          <VTextField v-model="KH.KH_HoTen" label="Tên khách hàng" placeholder="johndoe@example.com" />
         </VCol>
 
         <VCol cols="6">

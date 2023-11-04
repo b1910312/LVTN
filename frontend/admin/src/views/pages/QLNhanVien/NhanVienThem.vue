@@ -76,7 +76,7 @@ export default defineComponent({
       this.Chu = Text1;
       console.log(Text1);
     },
-    addNhanVien() {
+    async addNhanVien() {
       const now = moment();
       this.NV.NV_NgayTao = now.format("DD-MM-YYYY");
       this.DC.DC_NgayTao = now.format("DD-MM-YYYY");
@@ -123,9 +123,24 @@ export default defineComponent({
           // Nếu API trả về lỗi
           console.log(error)
         })
-        window.location.reload();
+      const formData = new FormData();
+      formData.append("image", this.imageFile);
 
-    }
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/NV/" + this.NV.NV_MaNV, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        window.location.reload()
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+    },
+    setImageFile(event) {
+      this.imageFile = event.target.files[0];
+    },
   }
 });
 
@@ -135,8 +150,11 @@ export default defineComponent({
   <div class="m-1 mx-3 ">
     <VForm>
       <VRow>
-        <VCol cols="12">
+        <VCol cols="6">
           <VTextField v-model="NV.NV_MaNV" label="Mã Nhân viên" readonly placeholder="John" />
+        </VCol>
+        <VCol cols="6">
+          <VFileInput label="Ảnh đại diện" type="file" ref="imageInput" @change="setImageFile" />
         </VCol>
         <VCol cols="6">
           <VTextField v-model="NV.NV_HoTen" label="Tên Nhân viên" placeholder="johndoe@example.com" />

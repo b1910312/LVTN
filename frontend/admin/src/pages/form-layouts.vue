@@ -5,12 +5,49 @@ import DemoFormLayoutMultipleColumn from '@/views/pages/form-layouts/DemoFormLay
 import DemoFormLayoutVerticalForm from '@/views/pages/form-layouts/DemoFormLayoutVerticalForm.vue'
 import DemoFormLayoutVerticalFormWithIcons from '@/views/pages/form-layouts/DemoFormLayoutVerticalFormWithIcons.vue'
 </script>
+<script>
+import now from 'moment'
+export default {
+  data() {
+    return {
+      imageFile: null,
+      Image: {
+        TB_MaSach: "KBS001",
+        TB_NgayTao: "12-08-2023"
+      }
+    };
+  },
+  methods: {
+    setImageFile(event) {
+      this.imageFile = event.target.files[0];
+    },
+    async uploadImage(event) {
+      event.preventDefault();
 
+      const formData = new FormData();
+      formData.append("thumbnail", this.imageFile);
+
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/SB/"+this.Image.TB_MaSach, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+    }
+
+  }
+};
+</script>
 <template>
   <div>
-    <VRow>
+    <!-- <VRow>
       <VCol cols="12" md="6">
-        <!-- 👉 Horizontal Form -->
+      
         <VCard title="Horizontal Form">
           <VCardText>
             <DemoFormLayoutHorizontalForm />
@@ -18,7 +55,7 @@ import DemoFormLayoutVerticalFormWithIcons from '@/views/pages/form-layouts/Demo
         </VCard>
       </VCol>
       <VCol cols="12" md="6">
-        <!-- 👉 Horizontal Form with Icons -->
+       
         <VCard title="Horizontal Form with Icons">
           <VCardText>
             <DemoFormLayoutHorizontalFormWithIcons />
@@ -26,7 +63,7 @@ import DemoFormLayoutVerticalFormWithIcons from '@/views/pages/form-layouts/Demo
         </VCard>
       </VCol>
       <VCol cols="12" md="6">
-        <!-- 👉 Vertical Form -->
+        
         <VCard title="Vertical Form">
           <VCardText>
             <DemoFormLayoutVerticalForm />
@@ -34,7 +71,7 @@ import DemoFormLayoutVerticalFormWithIcons from '@/views/pages/form-layouts/Demo
         </VCard>
       </VCol>
       <VCol cols="12" md="6">
-        <!-- 👉 Vertical Form with Icons -->
+        
         <VCard title="Vertical Form with Icons">
           <VCardText>
             <DemoFormLayoutVerticalFormWithIcons />
@@ -42,13 +79,19 @@ import DemoFormLayoutVerticalFormWithIcons from '@/views/pages/form-layouts/Demo
         </VCard>
       </VCol>
       <VCol cols="12">
-        <!-- 👉 Multiple Column -->
+         
         <VCard title="Multiple Column">
           <VCardText>
             <DemoFormLayoutMultipleColumn />
           </VCardText>
         </VCard>
       </VCol>
-    </VRow>
+    </VRow> -->
+    <div>
+      <form @submit="uploadImage">
+        <VFileInput type="file" ref="imageInput" @change="setImageFile" />
+        <button type="submit">Tải lên</button>
+      </form>
+    </div>
   </div>
 </template>

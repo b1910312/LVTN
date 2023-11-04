@@ -53,6 +53,7 @@ const setupThumbNailRoutes                        = require("./routes/thumbnail.
 const setupTinNhanRoutes                          = require("./routes/tinnhan.routes");
 const setupUuDaiRoutes                            = require("./routes/uudai.routes");
 const setupVaiTroRoutes                           = require("./routes/vaitro.routes");
+const setupImageRoutes                            = require("./routes/image.router");
 
 
 function getToday() {
@@ -122,3 +123,4 @@ setupThumbNailRoutes(app);
 setupTinNhanRoutes(app);
 setupUuDaiRoutes(app);
 setupVaiTroRoutes(app);
+setupImageRoutes(app);

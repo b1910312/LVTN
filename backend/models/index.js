@@ -38,6 +38,7 @@ const createSachUuDai = require("./SachUuDai.model");
 const createLoaiUuDai = require("./LoaiUuDai.model");
 const createMaGiamGia = require("./MaGiamGia.model");
 const createNguoiDungUuDai = require("./NguoiDungUuDai.model");
+const createNhapKho = require("./NhapKho.model");
 
 const db = {};
 
@@ -81,5 +82,5 @@ db.UuDai = createUuDai(mongoose);
 db.LoaiUuDai = createLoaiUuDai(mongoose);
 db.MaGiamGia = createMaGiamGia(mongoose);
 db.NguoiDungUuDai = createNguoiDungUuDai(mongoose);
-
+db.NhapKho = createNhapKho(mongoose)
 module.exports = db;
