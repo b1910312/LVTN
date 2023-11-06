@@ -30,6 +30,14 @@ const router = createRouter({
                     path: 'donhang/:id',
                     component: () => import('../pages/DonHang.vue'),
                 },
+                {
+                    path: 'lienhe',
+                    component: () => import('../pages/LienHe.vue'),
+                },
+                {
+                    path: 'trochuyen',
+                    component: () => import('../pages/ChatPage.vue'),
+                },
                 
             ]
         },
@@ -45,6 +53,10 @@ const router = createRouter({
                     path: 'dangky',
                     component: () => import('../pages/DangKy.vue'),
                 },
+                {
+                    path: '/:pathMatch(.*)*',
+                    component: () => import('../pages/BlankPage.vue'),
+                  },
             ]
         }
     ],

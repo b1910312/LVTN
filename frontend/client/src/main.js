@@ -10,10 +10,10 @@ import router from '@/router'
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
-import { faPen, faGears, faTrash, faPlus, faLinkSlash, faReply, faStar, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faPhone, faMapLocationDot, faLock, faUnlock, faSpinner, faMedal, faCheck, faUserCircle, faDoorOpen } from '@fortawesome/free-solid-svg-icons'
+import { faPen, faGears, faTrash, faPlus, faLinkSlash, faReply, faStar, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis,faHouse, faXmark, faArrowsRotate, faPhone, faMapLocationDot, faLock, faUnlock, faSpinner, faMedal, faCheck, faUserCircle, faDoorOpen } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faPen, faGears, faTrash, faPlus, faLinkSlash, faReply, faStar, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faPhone, faMapLocationDot, faLock, faUnlock, faSpinner, faMedal, faCheck, faUserCircle, faDoorOpen)
+library.add(faPen, faGears, faTrash, faPlus, faLinkSlash, faReply, faStar, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis,faHouse, faXmark, faArrowsRotate, faPhone, faMapLocationDot, faLock, faUnlock, faSpinner, faMedal, faCheck, faUserCircle, faDoorOpen)
 const vuetify = createVuetify({
   components,
   directives,
