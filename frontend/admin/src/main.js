@@ -1,5 +1,5 @@
 /* eslint-disable import/order */
-import '@/@iconify/icons-bundle'
+    import '@/@iconify/icons-bundle'
 import App from '@/App.vue'
 import vuetify from '@/plugins/vuetify'
 import { loadFonts } from '@/plugins/webfontloader'
@@ -18,10 +18,10 @@ import store from "./store";
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import specific icons */
-import { faPen, faGears, faTrash, faPlus, faLinkSlash, faReply, faStar, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faLock, faUnlock, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faPen, faGears, faTrash, faPlus, faLinkSlash, faReply, faStar, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faLock, faUnlock, faSpinner, faMedal, faCheck } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faPen, faGears, faTrash, faPlus, faLinkSlash, faReply, faStar, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faLock, faUnlock, faSpinner)
+library.add(faPen, faGears, faTrash, faPlus, faLinkSlash, faReply, faStar, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faLock, faUnlock, faSpinner, faMedal, faCheck)
 window.axios = axios;
 loadFonts()
 

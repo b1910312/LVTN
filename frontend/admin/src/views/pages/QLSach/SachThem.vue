@@ -39,14 +39,47 @@ export default defineComponent({
         S_NgayCapNhat: ""
       },
       nhanvien: {},
+      imageFile: null,
+      imageFile1: null,
+      imageFile2: null,
+      imageFile3: null,
 
+      imageThumbnail: null,
+      TL: [],
+      NXB: []
     };
   },
   mounted() {
     this.GetLastID()
     this.GetNhanVien()
+    this.GetNXB()
+    this.GetTL()
   },
   methods: {
+    GetTL() {
+      axios.get('http://localhost:3000/api/theloai')
+        .then((response) => {
+          this.TL = response.data;
+          console.log(response);
+          console.log(this.TL);
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+    },
+    GetNXB() {
+      axios.get('http://localhost:3000/api/nxb')
+        .then((response) => {
+          this.NXB = response.data;
+          console.log(response);
+          console.log(this.NXB);
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+    },
     GetNhanVien() {
       const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"));
       this.nhanvien = nhanvienchitiet;
@@ -111,7 +144,7 @@ export default defineComponent({
       // Chuyển đổi số nguyên thành chuỗi
       this.chuỗi = String(so_nguyen);
     },
-    addSach() {
+    async addSach() {
       const now = moment();
       this.Sach.S_NgayNhap = now.format("DD-MM-YYYY");
       // Gọi API thêm dữ liệu
@@ -142,8 +175,76 @@ export default defineComponent({
       }).catch(error => {
         alert(error);
       });
-    }
+      const formData = new FormData();
+      // formData.append("images", this.imageFile);
+      // try {
+      //   const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/sach/HMH/" + this.Sach.S_Ma + "/1", formData, {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data"
+      //     }
+      //   });
+      //   alert('Thêm dữ liệu thành công!')
+      //   console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      // } catch (error) {
+      //   alert('LỖI!')
+
+      //   console.error("Lỗi khi tải lên tệp ảnh:", error);
+      // }
+      this.LuuHMM(formData, 1, this.imageFile)
+      this.LuuHMM(formData, 2, this.imageFile1)
+      this.LuuHMM(formData, 3, this.imageFile2)
+      this.LuuHMM(formData, 4, this.imageFile3)
+      // formData.delete("images")
+      formData.append("image", this.imageThumbnail);
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/TB/" + this.Sach.S_Ma, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        alert('Thêm dữ liệu thành công!')
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+      // this.LuuHMM(1,this.imageFile1)
+      // this.LuuHMM(2,this.imageFile2)
+      // this.LuuHMM(3,this.imageFile3)
+
+    },
+    async LuuHMM(form, STT, File) {
+      form.append("images", File);
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/sach/HMH/" + this.Sach.S_Ma + "/" + STT, form, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        alert('Thêm dữ liệu thành công!')
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        alert('LỖI!')
+
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+    },
+    setImageThumbNail(event) {
+      this.imageThumbnail = event.target.files[0];
+    },
+    setImageHMH(event) {
+      this.imageFile = event.target.files[0];
+    },
+    setImageHMH1(event) {
+      this.imageFile1 = event.target.files[0];
+    },
+    setImageHMH2(event) {
+      this.imageFile2 = event.target.files[0];
+    },
+    setImageHMH3(event) {
+      this.imageFile3 = event.target.files[0];
+    },
   }
+
 });
 
 </script>
@@ -152,7 +253,9 @@ export default defineComponent({
   <div class="m-1 mx-3 ">
     <VForm @submit.prevent="addSach">
       <VRow>
-
+        <VCol cols="12">
+          <VTextField v-model="Sach.S_Ma" readonly label="Mã sách" placeholder="johndoe@example.com" />
+        </VCol>
         <VCol cols="12">
           <VTextField v-model="Sach.S_Ten" label="Tên sách" placeholder="johndoe@example.com" />
         </VCol>
@@ -172,11 +275,43 @@ export default defineComponent({
           <VTextField v-model="NK.NK_Gia" label="Giá nhập kho" type="number" placeholder="············" />
         </VCol>
 
-        <VCol cols="12">
+        <!-- <VCol cols="12">
           <VTextField v-model="Sach.S_TheLoai" label="Thể loại" placeholder="+1 63 456 7890" />
+          
+        </VCol> -->
+        <VCol cols="1">
+            <label for="" class="h-100 my-3">Thể loại</label>
+          </VCol>
+          <VCol cols="5">
+            <select class="form-control h-100" v-model="Sach.S_TheLoai">
+              <option v-for="gt in TL" :value="gt.TL_Ma">{{ gt.TL_Ten }}</option>
+            </select>
+          </VCol>
+        <!-- <VCol cols="12">
+          <VTextField v-model="Sach.S_NXB" label="Nhà xuất bản" placeholder="+1 123 456 7890" />
+        </VCol> -->
+        <VCol cols="1">
+            <label for="" class="h-100 my-3">NXB</label>
+          </VCol>
+          <VCol cols="5">
+            <select class="form-control h-100" v-model="Sach.S_NXB">
+              <option v-for="gt in NXB" :value="gt.NXB_Ma">{{ gt.NXB_Ten }}</option>
+            </select>
+          </VCol>
+        <VCol cols="12">
+          <VFileInput label="ThumbNail Sách" type="file" ref="imageInput" @change="setImageThumbNail" />
         </VCol>
         <VCol cols="12">
-          <VTextField v-model="Sach.S_NXB" label="Nhà xuất bản" placeholder="+1 123 456 7890" />
+          <VFileInput label="Hình minh họa" type="file" ref="imageInput1" @change="setImageHMH" />
+        </VCol>
+        <VCol cols="12">
+          <VFileInput label="Hình minh họa" type="file" ref="imageInput2" @change="setImageHMH1" />
+        </VCol>
+        <VCol cols="12">
+          <VFileInput label="Hình minh họa" type="file" ref="imageInput3" @change="setImageHMH2" />
+        </VCol>
+        <VCol cols="12">
+          <VFileInput label="Hình minh họa" type="file" ref="imageInput4" @change="setImageHMH3" />
         </VCol>
         <VCol cols="10"></VCol>
         <VCol cols="2" class="d-flex gap-4">

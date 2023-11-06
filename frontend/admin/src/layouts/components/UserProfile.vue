@@ -17,6 +17,13 @@ export default {
     this.GetOneVT(this.nvv.TKNV_VaiTro)
   },
   methods: {
+    profile(){
+      this.$router.push("/account-settings")
+    },
+    GetLogo(NV_MaNV) {
+      const logo = "http://localhost:3000/api/thumbnail/image/NV/" + NV_MaNV
+      return logo;
+    },
     GetOneNV(id) {
       axios.get('http://localhost:3000/api/thongtinnhanvien/' + id)
         .then((response) => {
@@ -58,8 +65,7 @@ export default {
 <template>
   <VBadge dot location="bottom right" offset-x="3" offset-y="3" color="success" bordered>
     <VAvatar class="cursor-pointer" color="primary" variant="tonal">
-      <VImg :src="avatar1" />
-
+      <VImg :src="GetLogo(NV.NV_MaNV)" />
       <!-- SECTION Menu -->
       <VMenu activator="parent" width="230" location="bottom end" offset="14px">
         <VList>
@@ -69,7 +75,7 @@ export default {
               <VListItemAction start>
                 <VBadge dot location="bottom right" offset-x="3" offset-y="3" color="success">
                   <VAvatar color="primary" variant="tonal">
-                    <VImg :src="avatar1" />
+                    <VImg :src="GetLogo(NV.NV_MaNV)" />
                   </VAvatar>
                 </VBadge>
               </VListItemAction>
@@ -83,7 +89,7 @@ export default {
           <VDivider class="my-2" />
 
           <!-- 👉 Profile -->
-          <VListItem link>
+          <VListItem @click="profile()">
             <template #prepend>
               <VIcon class="me-2" icon="bx-user" size="22" />
             </template>
@@ -91,7 +97,7 @@ export default {
             <VListItemTitle>Profile</VListItemTitle>
           </VListItem>
 
-          <!-- 👉 Settings -->
+<!--           
           <VListItem link>
             <template #prepend>
               <VIcon class="me-2" icon="bx-cog" size="22" />
@@ -100,7 +106,6 @@ export default {
             <VListItemTitle>Settings</VListItemTitle>
           </VListItem>
 
-          <!-- 👉 Pricing -->
           <VListItem link>
             <template #prepend>
               <VIcon class="me-2" icon="bx-dollar" size="22" />
@@ -109,14 +114,13 @@ export default {
             <VListItemTitle>Pricing</VListItemTitle>
           </VListItem>
 
-          <!-- 👉 FAQ -->
           <VListItem link>
             <template #prepend>
               <VIcon class="me-2" icon="bx-help-circle" size="22" />
             </template>
 
             <VListItemTitle>FAQ</VListItemTitle>
-          </VListItem>
+          </VListItem> -->
 
           <!-- Divider -->
           <VDivider class="my-2" />

@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { VDataTable } from 'vuetify/labs/VDataTable'
 
 const isCurrentPasswordVisible = ref(false)
@@ -116,247 +116,131 @@ const recentDevices = [
     },
   },
 ]
-</script>
+</script> -->
+<script>
+import moment from 'moment'
+export default {
+  name: "adsada",
+  data() {
+    return {
+      password1: "",
+      password2: "",
+      NV: [],
+      nvv: [],
+      CapNhatMatKhau: ""
+    }
+  },
+  created() {
+    this.getNV()
+    this.GetOneNV(this.nvv.TKNV_MaNV)
+  },
+  methods: {
+    getNV() {
+      this.nvv = JSON.parse(localStorage.getItem("nhanvien"))
+      console.log(this.nvv);
+    },
+    GetOneNV(id) {
+      axios.get('http://localhost:3000/api/thongtinnhanvien/' + id)
+        .then((response) => {
+          this.NV = response.data;
+          console.log(response);
+          console.log(this.NV);
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
 
+    },
+    updatePassword(id) {
+      const now = moment()
+      const data = {
+        TKNV_MatKhau: this.password2,
+        TKNV_NgayCapNhat: now.format("DD-MM-YYYY")
+      }
+      axios.put('http://localhost:3000/api/nhanvien/ResetPassword/' + id, data)
+        .then((response) => {
+          this.CapNhatMatKhau = "Cập nhật mật khẩu thành công"
+
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+      this.password1 = ""
+      this.password2 = ""
+    },
+    checkPasswordMatch() {
+      if (this.password1 == "") {
+        return false;
+      }
+      if (this.password2 == "") {
+        return false;
+      }
+      return this.password1 === this.password2;
+    },
+  }
+}
+</script>
 <template>
   <VRow>
     <!-- SECTION: Change Password -->
     <VCol cols="12">
-      <VCard title="Change Password">
+      <VCard title="Đổi mật khẩu">
         <VForm>
           <VCardText>
             <!-- 👉 Current Password -->
-            <VRow>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <!-- 👉 current password -->
-                <VTextField
-                  v-model="currentPassword"
-                  :type="isCurrentPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isCurrentPasswordVisible ? 'bx-hide' : 'bx-show'"
-                  label="Current Password"
-                  placeholder="············"
-                  @click:append-inner="isCurrentPasswordVisible = !isCurrentPasswordVisible"
-                />
-              </VCol>
-            </VRow>
 
             <!-- 👉 New Password -->
             <VRow>
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <!-- 👉 new password -->
-                <VTextField
-                  v-model="newPassword"
-                  :type="isNewPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isNewPasswordVisible ? 'bx-hide' : 'bx-show'"
-                  label="New Password"
-                  placeholder="············"
-                  @click:append-inner="isNewPasswordVisible = !isNewPasswordVisible"
-                />
-              </VCol>
+              <div class="col-12">
+                <p class="text-center text-success">{{ CapNhatMatKhau }}</p>
+              </div>
+              <VCol cols="12">
+                <VTextField v-model="password1" label="Nhập mật khẩu mới" placeholder="Nhập mật khẩu mới"
+                  type="password" />
 
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <!-- 👉 confirm password -->
-                <VTextField
-                  v-model="confirmPassword"
-                  :type="isConfirmPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isConfirmPasswordVisible ? 'bx-hide' : 'bx-show'"
-                  label="Confirm New Password"
-                  placeholder="············"
-                  @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
-                />
+              </VCol>
+              <VCol cols="12">
+                <VTextField v-model="password2" label="Nhập lại mật khẩu mới" placeholder="Nhập lại mật khẩu mới"
+                  type="password" />
               </VCol>
             </VRow>
           </VCardText>
 
           <!-- 👉 Password Requirements -->
-          <VCardText>
+          <!-- <VCardText>
             <p class="text-base font-weight-medium mt-2">
               Password Requirements:
             </p>
 
             <ul class="d-flex flex-column gap-y-3">
-              <li
-                v-for="item in passwordRequirements"
-                :key="item"
-                class="d-flex"
-              >
+              <li v-for="item in passwordRequirements" :key="item" class="d-flex">
                 <div>
-                  <VIcon
-                    size="7"
-                    icon="bxs-circle"
-                    class="me-3"
-                  />
+                  <VIcon size="7" icon="bxs-circle" class="me-3" />
                 </div>
                 <span class="font-weight-medium">{{ item }}</span>
               </li>
             </ul>
-          </VCardText>
+          </VCardText> -->
 
           <!-- 👉 Action Buttons -->
           <VCardText class="d-flex flex-wrap gap-4">
-            <VBtn>Save changes</VBtn>
+            <div class="row w-100 mb-3">
+              <div class="col-9">
 
-            <VBtn
-              type="reset"
-              color="secondary"
-              variant="tonal"
-            >
-              Reset
-            </VBtn>
+              </div>
+              <div class=col-3>
+                <VBtn class="bg bg-primary" @click="updatePassword(NV.NV_MaNV)" :disabled="!checkPasswordMatch()">
+                  Tạo mật khẩu
+                </VBtn>
+              </div>
+            </div>
           </VCardText>
         </VForm>
       </VCard>
     </VCol>
     <!-- !SECTION -->
 
-    <!-- SECTION Two-steps verification -->
-    <VCol cols="12">
-      <VCard title="Two-steps verification">
-        <VCardText>
-          <p class="font-weight-semibold">
-            Two factor authentication is not enabled yet.
-          </p>
-          <p>
-            Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.
-            <a
-              href="javascript:void(0)"
-              class="text-decoration-none"
-            >Learn more.</a>
-          </p>
-
-          <VBtn>
-            Enable 2FA
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </VCol>
-    <!-- !SECTION -->
-
-    <VCol cols="12">
-      <!-- SECTION: Create an API key -->
-      <VCard title="Create an API key">
-        <VRow>
-          <!-- 👉 Choose API Key -->
-          <VCol
-            cols="12"
-            md="5"
-            order-md="0"
-            order="1"
-          >
-            <VCardText>
-              <VForm @submit.prevent="() => {}">
-                <VRow>
-                  <!-- 👉 Choose API Key -->
-                  <VCol cols="12">
-                    <VSelect
-                      label="Choose the API key type you want to create"
-                      placeholder="Select API key type"
-                      :items="['Full Control', 'Modify', 'Read & Execute', 'List Folder Contents', 'Read Only', 'Read & Write']"
-                    />
-                  </VCol>
-
-                  <!-- 👉 Name the API Key -->
-                  <VCol cols="12">
-                    <VTextField
-                      label="Name the API key"
-                      placeholder="Name the API key"
-                    />
-                  </VCol>
-
-                  <!-- 👉 Create Key Button -->
-                  <VCol cols="12">
-                    <VBtn
-                      type="submit"
-                      block
-                    >
-                      Create Key
-                    </VBtn>
-                  </VCol>
-                </VRow>
-              </VForm>
-            </VCardText>
-          </VCol>
-        </VRow>
-      </VCard>
-    <!-- !SECTION -->
-    </VCol>
-
-    <VCol cols="12">
-      <!-- SECTION: API Keys List -->
-      <VCard title="API Key List &amp; Access">
-        <VCardText>
-          An API key is a simple encrypted string that identifies an application without any principal. They are useful for accessing public data anonymously, and are used to associate API requests with your project for quota and billing.
-        </VCardText>
-
-        <!-- 👉 Server Status -->
-        <VCardText class="d-flex flex-column gap-y-4">
-          <div
-            v-for="serverKey in serverKeys"
-            :key="serverKey.key"
-            class="bg-var-theme-background pa-4"
-          >
-            <div class="d-flex align-center flex-wrap mb-3">
-              <h6 class="text-h6 mb-0 me-3">
-                {{ serverKey.name }}
-              </h6>
-              <VChip
-                label
-                color="primary"
-                size="small"
-              >
-                {{ serverKey.permission }}
-              </VChip>
-            </div>
-            <p class="text-base font-weight-medium">
-              <span class="me-3">{{ serverKey.key }}</span>
-              <VIcon
-                :size="18"
-                icon="bx-copy"
-                class="cursor-pointer"
-              />
-            </p>
-            <span>Created on {{ serverKey.createdOn }}</span>
-          </div>
-        </VCardText>
-      </VCard>
-      <!-- !SECTION -->
-    </VCol>
-
-    <!-- SECTION Recent Devices -->
-    <VCol cols="12">
-      <!-- 👉 Table -->
-      <VCard title="Recent Devices">
-        <VDataTable
-          :headers="recentDevicesHeaders"
-          :items="recentDevices"
-          class="text-no-wrap rounded-0 text-sm"
-        >
-          <template #item.browser="{ item }">
-            <div class="d-flex">
-              <VIcon
-                start
-                :icon="item.raw.deviceIcon.icon"
-                :color="item.raw.deviceIcon.color"
-              />
-              <span class="text-high-emphasis text-base">
-                {{ item.raw.browser }}
-              </span>
-            </div>
-          </template>
-          <!-- TODO Refactor this after vuetify provides proper solution for removing default footer -->
-          <template #bottom />
-        </VDataTable>
-      </VCard>
-    </VCol>
-    <!-- !SECTION -->
   </VRow>
 </template>

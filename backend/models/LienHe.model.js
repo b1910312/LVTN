@@ -12,11 +12,11 @@ module.exports = mongoose => {
             },
             LH_Ho: {
                 type: String,
-                required: [true, "Ho cua khach hang"],
+                
             },
             LH_Ten: {
                 type: String,
-                required: [true, "Ten cua khach hang"],
+           
             },
             LH_ChuDe: {
                 type: String,

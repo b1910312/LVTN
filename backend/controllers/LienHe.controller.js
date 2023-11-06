@@ -85,14 +85,14 @@ exports.update = async (req, res, next) => {
     };
 
     const [error, document] = await handle(
-        LienHe.findOneAndUpdate(condition, req.body,  {
+        LienHe.findOneAndUpdate(condition, req.body, {
             $set: {
                 'LH_TrangThai': req.body.LH_TrangThai,
                 'LH_MaNV': req.body.LH_MaNV,
                 'LH_NoiDungTraLoi': req.body.LH_NoiDungTraLoi,
                 'LH_NgayCapNhat': req.body.LH_NgayCapNhat,
             }
-        },{
+        }, {
             new: true,
             projection: "-ownerId",
         })
@@ -111,9 +111,37 @@ exports.update = async (req, res, next) => {
     return res.send({ message: "Cập nhật thông tin liên hệ thành công." });
 };
 
+exports.updateTrangThai = async (req, res, next) => {
 
+    const condition = {
+        LH_Ma: req.params.LH_Ma
+    };
+
+    const [error, document] = await handle(
+        LienHe.findOneAndUpdate(condition, {
+            'LH_TrangThai': req.body.LH_TrangThai,
+            'LH_NgayCapNhat': req.body.LH_NgayCapNhat,
+
+        }, {
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật thông tin bình luận thành công." });
+};
 //Xóa một sách bằng mã sách
-exports.delete = async (req,res) => {    
+exports.delete = async (req, res) => {
     const condition = {
         LH_Ma: req.params.LH_Ma
     };
@@ -124,7 +152,7 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được liên hệ có mã ${req.params.id}`)
+            new BadRequestError(500, `Không xóa được liên hệ có mã ${req.params.id}`)
         );
     }
 

@@ -102,7 +102,51 @@
                   v-if="item.TKNV_TrangThai == 1"><font-awesome-icon :icon="['fas', 'lock']" /> Khóa tài khoản</button>
                 <button class="dropdown-item btn bg bg-success text-white mb-1" @click="MoKhoaTaiKhoan(NV.TKNV_MaNV)"
                   v-if="item.TKNV_TrangThai == 2"><font-awesome-icon :icon="['fas', 'lock']" /> Mở khóa tài khoản</button>
-                <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.TKNV_MaNV)">
+                  <button class="dropdown-item btn bg bg-info text-white mb-1" @click="dialog4 = true">
+                  <font-awesome-icon :icon="['fas', 'medal']" />Cập nhật vai trò</button>
+                <v-dialog v-model="dialog4">
+                  <div class="card p-2 w-75 mx-auto">
+                    <div class="row w-100 my-3">
+                      <div class="col-11">
+                        <h4>Cập nhật vai trò của nhân viên: {{ NV.TKNV_MaNV }}</h4>
+                      </div>
+                      <div class="col-1">
+                        <Vbtn class="btn btn-danger" @click="dialog4 = false">Đóng</Vbtn>
+                      </div>
+                    </div>
+                    <div class="card mx-1 my-1">
+
+                      <VRow class="px-4">
+                        <!-- <VCol cols="6" class="my-2">
+                        <VTextField v-model="KH.TKKH_HangMuc" label="Hạng mức hiện tại" readonly
+                          placeholder="+1 123 456 7890" />
+                      </VCol> -->
+                        <VCol cols="4">
+                          <label for="" class="h-100 my-3 h6">Vai trò hiện tại</label>
+                        </VCol>
+                        <VCol cols="8" class="my-3">
+                          <label for="" class="h5">{{ getVaiTroName(NV.TKNV_VaiTro) }}</label>
+                        </VCol>
+                        <VCol cols="4">
+                          <label for="" class="h-100 my-3 h6">Vai trò mới</label>
+                        </VCol>
+                        <VCol cols="8" class="my-3">
+                          <select class="form-control h-100" v-model="this.NewVT">
+                            <option v-for="gt in VTs" :value="gt.VT_Ma">{{ gt.VT_TenVaiTro }}</option>
+                          </select>
+                        </VCol>
+                        <VCol cols="9">
+
+                        </VCol>
+                        <VCol cols="3" class=" my-3">
+                          <Vbtn class="btn btn-primary" @click="capnhatvaitro()">Cập nhật</Vbtn>
+                        </VCol>
+                      </VRow>
+                    </div>
+
+                  </div>
+                </v-dialog>
+                  <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.TKNV_MaNV)">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
               </div>
             </div>
@@ -128,9 +172,11 @@ export default defineComponent({
       FitlerNVs: "",
       DC: "",
       GT: "",
+      NewVT: "",
       VTs: [],
       dialog2: false,
       dialog3: false,
+      dialog4: false,
       password1: "",
       password2: "",
       CapNhatMatKhau: ""
@@ -145,6 +191,14 @@ export default defineComponent({
       })
     },
   },
+  created() {
+    const nhanvien = localStorage.getItem('nhanvien')
+    const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
+    if ( nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
+      alert("Quyền đéo đâu mà vào")
+      this.$router.push("/");
+    }
+  },
   mounted() {
     this.GetVaiTro()
     this.GetNV()
@@ -152,6 +206,21 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    capnhatvaitro() {
+      const now = moment()
+      this.NV.TKNV_VaiTro = this.NewVT;
+      this.NV.TKNV_NgayCapNhat = now.format("DD-MM-YYYY");
+      // Gọi API để cập nhật sản phẩm
+      axios.put("http://localhost:3000/api/nhanvien/CapNhatVaiTro/" + this.NV.TKNV_MaNV, this.NV).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+      this.dialog4 = false
+      this.GetNV()
+      }).catch(error => {
+        alert(error);
+      });
+      
+    },
     updatePassword(id) {
       const now = moment()
       const data = {
@@ -208,9 +277,7 @@ export default defineComponent({
 
 
     },
-    getVaiTroName(TKNV_MaVT) {
-      return this.VTs.find(item => item.VT_Ma === TKNV_MaVT).VT_TenVaiTro;
-    },
+
     GetNV() {
       axios.get('http://localhost:3000/api/nhanvien')
         .then((response) => {
@@ -264,6 +331,9 @@ export default defineComponent({
           // handle error
           console.log(error);
         })
+    },
+    getVaiTroName(TKNV_MaVT) {
+      return this.VTs.find(item => item.VT_Ma === TKNV_MaVT).VT_TenVaiTro;
     },
     GetTrangThai(id) {
       switch (id) {

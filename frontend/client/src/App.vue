@@ -1,24 +1,25 @@
 <template>
-  <NavBar/>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+      <RouterView />
+
 </template>
 
 <script>
-import NavBar from './components/Navbar.vue'
+
 export default {
   name: 'App',
-  components: {
-    NavBar
-  }
+  
 }
 </script>
 
 <style>
 #app {
+  background: linear-gradient(90deg,#24243e, #302b63, #0f0c29);
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  padding: 10px 10px;
 }
 </style>

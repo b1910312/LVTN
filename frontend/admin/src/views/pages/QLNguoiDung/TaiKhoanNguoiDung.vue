@@ -71,7 +71,7 @@
                           <h4>Cấp mới mật khẩu: </h4>
                         </div>
                         <div class=col-1>
-                          <VBtn class="bg bg-danger" @click="dialog3 = false , CapNhatMatKhau = ''">Đóng </VBtn>
+                          <VBtn class="bg bg-danger" @click="dialog3 = false, CapNhatMatKhau = ''">Đóng </VBtn>
                         </div>
                         <div class="col-12">
                           <p class="text-center text-success">{{ CapNhatMatKhau }}</p>
@@ -106,13 +106,15 @@
                   v-if="item.TKKH_TrangThai == 1"><font-awesome-icon :icon="['fas', 'lock']" /> Tạm khóa tài
                   khoản</button>
                 <button class="dropdown-item btn bg bg-secondary text-white mb-1" @click="dialog1 = true"
-                  v-if="item.TKKH_TrangThai == 2"><font-awesome-icon :icon="['fas', 'spinner']" /> Xử lý tài khoản</button>
+                  v-if="item.TKKH_TrangThai == 2"><font-awesome-icon :icon="['fas', 'spinner']" /> Xử lý tài
+                  khoản</button>
                 <v-dialog v-model="dialog1" class="w-50 h-25">
                   <div class="card text-start bg bg-white p-5">
                     <h3>Phương hướng xử lý tài khoản đang tạm khóa</h3>
                     <p>
                       (1) Nếu tài khoản vi phạm quy định của hệ thống có thể khóa tài khoản vĩnh viễn sau khi xem xét <br>
-                      (2) Nếu tài khoản không vi phạm quy định của hệ thống có thể mở khóa tài khoản vĩnh viễn sau khi xem xét <br>
+                      (2) Nếu tài khoản không vi phạm quy định của hệ thống có thể mở khóa tài khoản vĩnh viễn sau khi xem
+                      xét <br>
 
                     </p>
                     <div class="row w-100">
@@ -130,8 +132,54 @@
                   </div>
 
                 </v-dialog>
+
                 <button class="dropdown-item btn bg bg-success s text-white mb-1" @click="MoKhoaTaiKhoan(KH.TKKH_MaKH)"
                   v-if="item.TKKH_TrangThai == 3"><font-awesome-icon :icon="['fas', 'lock']" /> Mở khóa tài khoản</button>
+
+                <button class="dropdown-item btn bg bg-info text-white mb-1" @click="dialog4 = true">
+                  <font-awesome-icon :icon="['fas', 'medal']" /> Nâng hạng</button>
+                <v-dialog v-model="dialog4">
+                  <div class="card p-2 w-75 mx-auto">
+                    <div class="row w-100 my-3">
+                      <div class="col-11">
+                        <h4>Nâng hạng mức khách hàng: {{ KH.TKKH_MaKH }}</h4>
+                      </div>
+                      <div class="col-1">
+                        <Vbtn class="btn btn-danger" @click="dialog4 = false">Đóng</Vbtn>
+                      </div>
+                    </div>
+                    <div class="card mx-1 my-1">
+
+                      <VRow class="px-4">
+                        <!-- <VCol cols="6" class="my-2">
+                        <VTextField v-model="KH.TKKH_HangMuc" label="Hạng mức hiện tại" readonly
+                          placeholder="+1 123 456 7890" />
+                      </VCol> -->
+                        <VCol cols="4">
+                          <label for="" class="h-100 my-3 h6">Hạng Mức hiện tại</label>
+                        </VCol>
+                        <VCol cols="8" class="my-3">
+                          <label for="" class="h5">{{ getHangMucName(KH.TKKH_HangMuc) }}</label>
+                        </VCol>
+                        <VCol cols="4">
+                          <label for="" class="h-100 my-3 h6">Hạng Mức tiếp theo</label>
+                        </VCol>
+                        <VCol cols="8" class="my-3">
+                          <select class="form-control h-100" v-model="this.newHM">
+                            <option v-for="gt in HMs" :value="gt.HM_Ma">{{ gt.HM_TenHangMuc }}</option>
+                          </select>
+                        </VCol>
+                        <VCol cols="9">
+
+                        </VCol>
+                        <VCol cols="3" class=" my-3">
+                          <Vbtn class="btn btn-primary" @click="nanghang()">Nâng hạng</Vbtn>
+                        </VCol>
+                      </VRow>
+                    </div>
+
+                  </div>
+                </v-dialog>
                 <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.TKKH_MaKH)">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
               </div>
@@ -159,9 +207,11 @@ export default defineComponent({
       DC: "",
       GT: "",
       HMs: [],
+      newHM: "",
       dialog1: false,
       dialog2: false,
       dialog3: false,
+      dialog4: false,
       password1: "",
       password2: "",
       CapNhatMatKhau: ""
@@ -183,6 +233,21 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    nanghang() {
+      const now = moment()
+      this.KH.TKKH_HangMuc = this.newHM;
+      this.KH.TKKH_NgayCapNhat = now.format("DD-MM-YYYY");
+      // Gọi API để cập nhật sản phẩm
+      axios.put("http://localhost:3000/api/khachhang/CapNhatHangMuc/" + this.KH.TKKH_MaKH, this.KH).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+      this.dialog4 = false
+      this.GetKH()
+      }).catch(error => {
+        alert(error);
+      });
+
+    },
     updatePassword(id) {
       const now = moment()
       const data = {
@@ -228,7 +293,7 @@ export default defineComponent({
         .then((response) => {
           this.KH = response.data;
           console.log(response);
-          console.log("KhachHAng" +this.KH);
+          console.log("KhachHAng" + this.KH);
 
         })
         .catch((error) => {
@@ -311,7 +376,7 @@ export default defineComponent({
           // handle error
           console.log(error);
         })
-        this.dialog1 = false
+      this.dialog1 = false
 
     },
     GetTrangThai(id) {

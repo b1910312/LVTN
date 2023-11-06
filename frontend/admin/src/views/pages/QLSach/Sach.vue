@@ -93,26 +93,129 @@ height: 800px;">
                       </div>
                       <div class="row w-100">
                         <div class="col-12 col-md-6">
-                          <h6> THUMBNAIL&nbsp;&nbsp; <button class="btn btn-outline-success h-50">Cập nhật</button>
+                          <h6> THUMBNAIL&nbsp;&nbsp; <button class="btn btn-outline-success h-50"
+                              @click="dialog6 = true">Cập nhật</button>
                           </h6>
-                          <img src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" class="img-fluid mt-2 mb-4" alt=""
+                          <v-dialog v-model="dialog6">
+                            <div class="card w-75 mx-auto text-start bg bg-white p-5">
+                              <div class="col-11">
+                                <h4>Cập nhật ThumbNail sách: {{ sach.S_Ten }}</h4>
+                              </div>
+
+                              <VCol cols="12">
+                                <VForm @submit.prevent="UpdateThumbNail">
+                                  <VFileInput label="ThumbNail" type="file" ref="imageInput"
+                                    @change="setImageThumbNail" />
+                                  <div class="row w-100 mt-2">
+                                    <div class="col-8"></div>
+                                    <div class="d-flex gap-4 col-2">
+                                      <VBtn class="ms-5" type="Thêm">
+                                        Cập nhật
+                                      </VBtn>
+                                    </div>
+                                    <div class="d-flex gap-4 col-1">
+                                      <VBtn class="ms-5 bg bg-secondary" @click="dialog6 = false">
+                                        Hủy
+                                      </VBtn>
+                                    </div>
+                                  </div>
+                                </VForm>
+                              </VCol>
+                            </div>
+
+                          </v-dialog>
+                          <img :src="GetThumNail(sach.S_Ma)" class="img-fluid mt-2 mb-4" style="height: 350px;" alt=""
                             srcset="">
                         </div>
 
                         <div class="col-12 col-md-6">
-                          <h6 class=""> HÌNH MINH HỌA &nbsp;&nbsp;<button class="btn btn-outline-success h-50">Cập
+                          <h6 class=""> HÌNH MINH HỌA &nbsp;&nbsp;<button @click="dialog7 = true"
+                              class="btn btn-outline-success">Cập
                               nhật</button>
                           </h6>
+                          <v-dialog v-model="dialog7">
+                            <div class="card w-75 mx-auto text-start bg bg-white p-5">
+                              <div class="row w-100">
+                                <div class="col-11">
+                                <h4>Cập nhật hình minh họa sách: {{ sach.S_Ten }}</h4>
+                              </div>
+                              <div class="col-1">
+                                <Vbtn class="btn btn-danger" @click="dialog7 = false">Đóng</Vbtn>
+                              </div>
+                              </div>
+                              <VCol cols="12">
+                                <div class="row w-100 mt-2">
+                                  <div class="col-10">
+                                    <VFileInput label="Hình minh họa 1" type="file" ref="imageInput1"
+                                      @change="setImageHMH" />
+                                  </div>
+                                  <div class="d-flex gap-4 col-2">
+                                    <VBtn class="ms-5"  @click="CapNhatHMM(1,imageFile)">
+                                      Cập nhật
+                                    </VBtn>
+                                  </div>
+
+                                </div>
+
+                                <div class="row w-100 mt-2">
+                                  <div class="col-10">
+                                    <VFileInput label="Hình minh họa 2" type="file" ref="imageInput2"
+                                      @change="setImageHMH1" />
+                                  </div>
+                                  <div class="d-flex gap-4 col-2">
+                                    <VBtn class="ms-5"  @click="CapNhatHMM(2,imageFile1)">
+                                      Cập nhật
+                                    </VBtn>
+                                  </div>
+
+                                </div>
+                                <div class="row w-100 mt-2">
+                                  <div class="col-10">
+                                    <VFileInput label="Hình minh họa 3" type="file" ref="imageInput3"
+                                      @change="setImageHMH2" />
+                                  </div>
+                                  <div class="d-flex gap-4 col-2">
+                                    <VBtn class="ms-5" @click="CapNhatHMM(3,imageFile2)">
+                                      Cập nhật
+                                    </VBtn>
+                                  </div>
+
+                                </div>
+                                <div class="row w-100 mt-2">
+                                  <div class="col-10">
+                                    <VFileInput label="Hình minh họa 4" type="file" ref="imageInput4"
+                                      @change="setImageHMH3" />
+                                  </div>
+                                  <div class="d-flex gap-4 col-2">
+                                    <VBtn class="ms-5" @click="CapNhatHMM(4,imageFile3)">
+                                      Cập nhật
+                                    </VBtn>
+                                  </div>
+
+                                </div>
+                                <div class="row w-100 mt-5">
+                                  <div class="d-flex gap-4 col-12">
+                                    <VBtn class=" bg bg-success w-100" @click="done()" >
+                                      Xong
+                                    </VBtn>
+                                  </div>
+                                  
+                                </div>
+
+                              </VCol>
+                            </div>
+
+                          </v-dialog>
                           <v-carousel class="mb-4 " height="350">
 
-                            <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                              auto></v-carousel-item>
+                            <v-carousel-item :src="GetHMM(sach.S_Ma, 1)" auto></v-carousel-item>
 
-                            <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
-                              auto></v-carousel-item>
+                            <v-carousel-item :src="GetHMM(sach.S_Ma, 2)" auto></v-carousel-item>
 
-                            <v-carousel-item src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                              auto></v-carousel-item>
+                            <v-carousel-item :src="GetHMM(sach.S_Ma, 3)" auto></v-carousel-item>
+
+                            <v-carousel-item :src="GetHMM(sach.S_Ma, 4)" auto></v-carousel-item>
+
                           </v-carousel>
                         </div>
                         <VRow>
@@ -153,7 +256,7 @@ height: 800px;">
                   </div>
                 </v-dialog>
                 <button class="dropdown-item btn bg bg-primary text-white mb-1" @click="dialog5 = true">
-                  <font-awesome-icon :icon="['fas', 'eye']" /> Nhập kho</button>
+                  <font-awesome-icon :icon="['fas', 'plus']" /> Nhập kho</button>
                 <v-dialog v-model="dialog5" class="w-50 my-auto" style="height: fit-content;">
                   <div class="card text-start bg bg-white p-4">
                     <Vrow>
@@ -174,8 +277,7 @@ height: 800px;">
                               placeholder="············" />
                           </VCol>
                           <VCol cols="12">
-                            <VTextField v-model="NK.NK_Gia" label="Giá" type="number"
-                              placeholder="············" />
+                            <VTextField v-model="NK.NK_Gia" label="Giá" type="number" placeholder="············" />
                           </VCol>
                         </VRow>
                       </div>
@@ -221,22 +323,30 @@ export default defineComponent({
       NewID: "",
       So: "",
       Chu: "",
-      NK:{
+      NK: {
         NK_Ma: "",
-        NK_MaSach:"",
+        NK_MaSach: "",
         NK_MaNV: "",
         NK_Gia: "",
         NK_SoLuong: "",
-        NK_NgayNhap:"",
+        NK_NgayNhap: "",
       },
       S_NgayXoa: "",
       TenNXB: "",
       TenTheLoai: "",
       FitlerSachs: "",
       S_MaActive: "",
+      dialog6: false,
+      dialog7: false,
       dialog3: false,
       dialog5: false,
       nhanvien: {},
+      imageFile: null,
+      imageFile1: null,
+      imageFile2: null,
+      imageFile3: null,
+
+      imageThumbnail: null
 
     }
 
@@ -261,7 +371,67 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
-    GetNhanVien(){
+    done(){
+      window.location.reload()
+    },
+    setImageThumbNail(event) {
+      this.imageThumbnail = event.target.files[0];
+    },
+    setImageHMH(event) {
+      this.imageFile = event.target.files[0];
+    },
+    setImageHMH1(event) {
+      this.imageFile1 = event.target.files[0];
+    },
+    setImageHMH2(event) {
+      this.imageFile2 = event.target.files[0];
+    },
+    setImageHMH3(event) {
+      this.imageFile3 = event.target.files[0];
+    },
+    async CapNhatHMM(STT, File) {
+      const formData = new FormData();
+
+      formData.append("images", File);
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/sach/HMH/" + this.sach.S_Ma + "/" + STT, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        alert('Thêm dữ liệu thành công!')
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        alert('LỖI!' + error)
+
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+    },
+    async UpdateThumbNail() {
+      const formData = new FormData();
+      formData.append("image", this.imageThumbnail);
+      try {
+        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/TB/" + this.sach.S_Ma, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        window.location.reload()
+        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải lên tệp ảnh:", error);
+      }
+    },
+    
+    GetThumNail(S_Ma) {
+      const logo = "http://localhost:3000/api/thumbnail/image/TB/" + S_Ma
+      return logo;
+    },
+    GetHMM(S_Ma, STT) {
+      const logo = "http://localhost:3000/api/thumbnail/image/HMH/HMH/" + S_Ma + "/" + STT
+      return logo;
+    },
+    GetNhanVien() {
       const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"));
       this.nhanvien = nhanvienchitiet;
     },
@@ -271,7 +441,7 @@ export default defineComponent({
         this.TachKBS()
         this.Increase()
         this.NK.NK_Ma = this.NewID
-        console.log("newid"+this.NK.NK_Ma)
+        console.log("newid" + this.NK.NK_Ma)
       })
     },
     Increase() {

@@ -49,7 +49,18 @@ export default defineComponent({
         GH_MaKH: "",
         GH_NgayTao: "",
         GH_NgayCapNhat: ""
-      }
+      },
+      GioiTinh: [
+        {
+          name: "Nữ",
+          value: "1"
+        },
+        {
+          name: "Nam",
+          value: "2"
+        },
+      ],
+      imageFile: null
     };
   },
   mounted() {
@@ -214,17 +225,25 @@ export default defineComponent({
         </VCol>
 
         <VCol cols="6">
-          <VTextField v-model="KH.KH_NgaySinh" label="Ngày Sinh" placeholder="+1 123 456 7890" />
+          <VTextField v-model="KH.KH_NgaySinh" type="date" label="Ngày Sinh" placeholder="+1 123 456 7890" />
         </VCol>
 
         <VCol cols="6">
-          <VTextField v-model="TKKH.TKKH_Email" label="Email" placeholder="············" />
+          <VTextField v-model="TKKH.TKKH_Email" type="email" label="Email" placeholder="············" />
         </VCol>
         <VCol cols="6 ">
           <VTextField v-model="KH.KH_SoDienThoai" label="Số diện thoại" placeholder="············" />
         </VCol>
-        <VCol cols="6">
+        <!-- <VCol cols="6">
           <VTextField v-model="KH.KH_GioiTinh" label="Giới tính" placeholder="············" />
+        </VCol> -->
+        <VCol cols="1">
+          <label for="" class="h-100 my-3">Giới tính</label>
+        </VCol>
+        <VCol cols="5">
+          <select class="form-control h-100" v-model="KH.KH_GioiTinh">
+            <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}</option>
+          </select>
         </VCol>
         <VCol cols="6">
           <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
@@ -244,7 +263,7 @@ export default defineComponent({
           </div>
           <div class=col-2>
             <VBtn class="bg bg-primary w-100" @click="addKhachHang()">
-              Thêm nhân viên
+              Thêm khách hàng
             </VBtn>
           </div>
         </div>

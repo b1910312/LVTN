@@ -13,7 +13,7 @@ export default {
   created() {
     const nhanvien = localStorage.getItem('nhanvien')
     const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
-    if (nhanvien == null || nhanvienchitiet.TKNV_VaiTro != "KBVT001" || nhanvienchitiet.TKNV_TrangThai == 2) {
+    if (nhanvien == null || nhanvienchitiet.TKNV_VaiTro == "KBVT002" || nhanvienchitiet.TKNV_TrangThai == 2) {
       this.$router.push("/login");
     }
   },

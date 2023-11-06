@@ -10,48 +10,33 @@ const activeTab = ref(route.params.tab)
 // tabs
 const tabs = [
   {
-    title: 'Account',
+    title: 'Thông tin tài khoản',
     icon: 'bx-user',
     tab: 'account',
   },
   {
-    title: 'Security',
+    title: 'Bảo mật',
     icon: 'bx-lock-open',
     tab: 'security',
   },
-  {
-    title: 'Notifications',
-    icon: 'bx-bell',
-    tab: 'notification',
-  },
+  
 ]
 </script>
 
+
 <template>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+
   <div>
-    <VTabs
-      v-model="activeTab"
-      show-arrows
-    >
-      <VTab
-        v-for="item in tabs"
-        :key="item.icon"
-        :value="item.tab"
-      >
-        <VIcon
-          size="20"
-          start
-          :icon="item.icon"
-        />
+    <VTabs v-model="activeTab" show-arrows>
+      <VTab v-for="item in tabs" :key="item.icon" :value="item.tab">
+        <VIcon size="20" start :icon="item.icon" />
         {{ item.title }}
       </VTab>
     </VTabs>
     <VDivider />
 
-    <VWindow
-      v-model="activeTab"
-      class="mt-5 disable-tab-transition"
-    >
+    <VWindow v-model="activeTab" class="mt-5 disable-tab-transition">
       <!-- Account -->
       <VWindowItem value="account">
         <AccountSettingsAccount />
@@ -63,9 +48,9 @@ const tabs = [
       </VWindowItem>
 
       <!-- Notification -->
-      <VWindowItem value="notification">
+      <!-- <VWindowItem value="notification">
         <AccountSettingsNotification />
-      </VWindowItem>
+      </VWindowItem> -->
     </VWindow>
   </div>
 </template>

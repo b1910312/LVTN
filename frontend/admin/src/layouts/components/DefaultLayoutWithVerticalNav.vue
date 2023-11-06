@@ -31,12 +31,11 @@ const vuetifyTheme = useTheme()
           <VIcon icon="bx-menu" />
         </IconBtn>
 
-        <!-- 👉 Search -->
+<!--         
         <div
           class="d-flex align-center cursor-pointer"
           style="user-select: none;"
         >
-          <!-- 👉 Search Trigger button -->
           <IconBtn>
             <VIcon icon="bx-search" />
           </IconBtn>
@@ -45,11 +44,11 @@ const vuetifyTheme = useTheme()
             <span class="me-3">Search</span>
             <span class="meta-key">&#8984;K</span>
           </span>
-        </div>
+        </div> -->
 
         <VSpacer />
 
-        <IconBtn
+        <!-- <IconBtn
           class="me-2"
           href="https://github.com/themeselection/sneat-vuetify-vuejs-admin-template-free"
           target="_blank"
@@ -60,7 +59,7 @@ const vuetifyTheme = useTheme()
 
         <IconBtn class="me-2">
           <VIcon icon="bx-bell" />
-        </IconBtn>
+        </IconBtn> -->
 
         <NavbarThemeSwitcher class="me-2" />
 

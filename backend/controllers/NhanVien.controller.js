@@ -99,6 +99,35 @@ exports.updateTrangThai = async (req, res, next) => {
 
     return res.send({ message: "Cập nhật thông tin bình luận thành công." });
 };
+exports.updateVaiTro = async (req, res, next) => {
+
+    const condition = {
+        TKNV_MaNV: req.params.TKNV_MaNV
+    };
+
+    const [error, document] = await handle(
+        NhanVien.findOneAndUpdate(condition,  {
+                'TKNV_VaiTro': req.body.TKNV_VaiTro,
+                'TKNV_NgayCapNhat': req.body.TKNV_NgayCapNhat,
+
+        },{
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật thông tin bình luận thành công." });
+};
 exports.ResetPassword = async (req, res, next) => {
 
     const condition = {

@@ -37,7 +37,7 @@ import QLThemNguoiDung from '@/views/pages/QLNguoiDung/NguoiDungThem.vue'
       </VCard>
     </div>
     <div class="tab-pane" id="ThemNV" role="tabpanel" aria-labelledby="ThemNV-tab">
-      <VCard title="Thêm nhân viên mới" height="600">
+      <VCard title="THÊM KHÁCH HÀNG MỚI" height="600">
         <QLThemNguoiDung />
       </VCard>
     </div>

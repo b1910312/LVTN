@@ -109,6 +109,13 @@ export default defineComponent({
     // Lấy ngày hiện tại
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
+  created() {
+    const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
+    if ( nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
+      alert("Quyền đéo đâu mà vào")
+      this.$router.push("/");
+    }
+  },
   methods: {
     openDialog() {
       this.dialog = true

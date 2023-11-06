@@ -8,8 +8,8 @@
       </VCol>
       <VCol cols="5"></VCol>
       <VCol cols="1" class="pe-4">
-        <button class="btn btn-outline-secondary w-100" style="float: right; right: 0;" @click="GetNV()"><font-awesome-icon
-            :icon="['fas', 'arrows-rotate']" /></button>
+        <button class="btn btn-outline-secondary w-100" style="float: right; right: 0;"
+          @click="GetNV()"><font-awesome-icon :icon="['fas', 'arrows-rotate']" /></button>
       </VCol>
     </VRow>
     <VTable height="500" fixed-header>
@@ -207,7 +207,10 @@ height: 800px;">
                           </VCol>
 
                           <VCol cols="12">
-                            <VTextField v-model="GT" label="Giới tính" placeholder="············" />
+                            <!-- <v-select v-model="NV.NV_GioiTinh" :options="options"></v-select> -->
+                            <select class="form-control" v-model="NV.NV_GioiTinh">
+                              <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}</option>
+                            </select>
                           </VCol>
                           <VCol cols="4">
                             <VTextField v-model="NV.NV_CCCD" label="Căn cước công dân" placeholder="············" />
@@ -268,6 +271,7 @@ import moment from "moment";
 // Tạo component
 export default defineComponent({
   name: "DanhSachSach",
+
   data() {
     return {
       NVs: [],
@@ -277,7 +281,17 @@ export default defineComponent({
       GT: "",
       dialog3: false,
       dialog4: false,
-      dialog5: false
+      dialog5: false,
+      GioiTinh: [
+        {
+          name: "Nữ",
+          value: "1"
+        },
+        {
+          name: "Nam",
+          value: "2"
+        },
+      ]
 
     }
 

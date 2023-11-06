@@ -37,7 +37,7 @@ import QLThemNhanVien from '@/views/pages/QLNhanVien/NhanVienThem.vue'
       </VCard>
     </div>
     <div class="tab-pane" id="ThemNV" role="tabpanel" aria-labelledby="ThemNV-tab">
-      <VCard title="Thêm nhân viên mới" height="600">
+      <VCard title="Thêm nhân viên mới" height="600" style="overflow-y: auto;">
         <QLThemNhanVien />
       </VCard>
     </div>

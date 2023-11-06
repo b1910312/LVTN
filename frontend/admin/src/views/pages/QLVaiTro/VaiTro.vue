@@ -101,6 +101,13 @@ export default defineComponent({
       })
     },
   },
+  created() {
+    const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
+    if ( nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
+      alert("Quyền đéo đâu mà vào")
+      this.$router.push("/");
+    }
+  },
   mounted() {
     setInterval(() => {
             this.GetLastID();

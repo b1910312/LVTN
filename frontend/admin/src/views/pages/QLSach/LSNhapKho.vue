@@ -10,8 +10,8 @@
       <VCol cols="2" class=" ms-5 ps-5 d-flex">
         <button class="btn btn-outline-primary w-100" @click="GetSach()"
           style="float: right; right: 0;"><font-awesome-icon :icon="['fas', 'arrows-rotate']" /></button>
-        <button class="btn btn-outline-primary w-100" style="float: right; right: 0;" @click="dialog5 = true"><font-awesome-icon
-            :icon="['fas', 'plus']" /></button>
+        <button class="btn btn-outline-primary w-100" style="float: right; right: 0;"
+          @click="dialog5 = true"><font-awesome-icon :icon="['fas', 'plus']" /></button>
         <v-dialog v-model="dialog5" class="w-50 mt-5" style="height: fit-content;">
           <div class="card text-start bg bg-white p-4 ">
             <Vrow>
@@ -27,8 +27,13 @@
               <div class="row w-100 ms-2">
 
                 <VRow>
-                  <VCol cols="12">
-                    <VTextField v-model="NK.NK_MaSach" label="MaSach" placeholder="············" />
+                  <VCol cols="1">
+                    <label for="" class="h-100 my-3">Sách</label>
+                  </VCol>
+                  <VCol cols="11">
+                    <select class="form-control h-100" v-model="NK.NK_MaSach">
+                      <option v-for="gt in Sach" :value="gt.S_Ma">{{ gt.S_Ten }} ({{ gt.S_Ma }})</option>
+                    </select>
                   </VCol>
                   <VCol cols="12">
                     <VTextField v-model="NK.NK_SoLuong" label="Số lượng" type="number" placeholder="············" />
@@ -115,6 +120,7 @@ export default defineComponent({
         NK_SoLuong: "",
         NK_NgayNhap: "",
       },
+      Sach: [],
       FitlerNKs: "",
       NK_MaActive: "",
       dialog3: false,
@@ -138,10 +144,23 @@ export default defineComponent({
     this.GetNhanVien()
     this.GetLastID()
     this.GetSach()
+    this.GetSachMa()
     // Lấy ngày hiện tại
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    GetSachMa() {
+      axios.get('http://localhost:3000/api/sach')
+        .then((response) => {
+          this.Sach = response.data;
+          console.log(response);
+          console.log(this.Sach);
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+    },
     GetNhanVien() {
       const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"));
       this.nhanvien = nhanvienchitiet;

@@ -16,6 +16,9 @@ module.exports = (app) => {
     //Update a customer with id
 
     router.put("/CapNhatTrangThai/:TKNV_MaNV", nhanvien.updateTrangThai);
+
+    router.put("/CapNhatVaiTro/:TKNV_MaNV", nhanvien.updateVaiTro);
+
     //Delete a customer with id
 
     router.put("/ResetPassword/:TKNV_MaNV", nhanvien.ResetPassword);

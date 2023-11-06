@@ -40,13 +40,37 @@ export default defineComponent({
         TKNV_TrangThai: "1",
         TKNV_NgayTao: "",
         TKNV_NgayCapNhat: ""
-      }
+      },
+      VT: [],
+      GioiTinh: [
+        {
+          name: "Nữ",
+          value: "1"
+        },
+        {
+          name: "Nam",
+          value: "2"
+        },
+      ]
     };
   },
   mounted() {
     this.GetLastID()
+    this.GetVT()
   },
   methods: {
+    GetVT() {
+      axios.get('http://localhost:3000/api/vaitro')
+        .then((response) => {
+          this.VT = response.data;
+          console.log(response);
+          console.log(this.VT);
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+    },
     GetLastID() {
       axios.get(`http://localhost:3000/api/thongtinnhanvien/getid/getlastttnvma`).then(res => {
         this.LastID = res.data
@@ -147,7 +171,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="m-1 mx-3 ">
+  <div class="m-1 mx-3 " >
     <VForm>
       <VRow>
         <VCol cols="6">
@@ -159,27 +183,39 @@ export default defineComponent({
         <VCol cols="6">
           <VTextField v-model="NV.NV_HoTen" label="Tên Nhân viên" placeholder="johndoe@example.com" />
         </VCol>
-        <VCol cols="3">
-          <VTextField v-model="TKNV.TKNV_VaiTro" label="Vai trò" placeholder="+1 123 456 7890" />
-        </VCol>
-
-        <VCol cols="3">
-          <VTextField v-model="NV.NV_NgaySinh" label="Ngày Sinh" placeholder="+1 123 456 7890" />
-        </VCol>
-
-
         <VCol cols="6">
+          <VTextField v-model="NV.NV_NgaySinh" type="date" label="Ngày Sinh" placeholder="+1 123 456 7890" />
+        </VCol>
+
+        <VCol cols="1">
+          <label for="" class="h-100 my-3">Giới tính</label>
+        </VCol>
+        
+        <VCol cols="5">
+          <select class="form-control h-100" v-model="NV.NV_GioiTinh">
+            <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}</option>
+          </select>
+        </VCol>
+        <VCol cols="1">
+          <label for="" class="h-100 my-3">Vai trò</label>
+        </VCol>
+        <VCol cols="5">
+          <select class="form-control h-100" v-model="TKNV.TKNV_VaiTro">
+            <option v-for="vt in VT" :value="vt.VT_Ma">{{ vt.VT_TenVaiTro }}</option>
+          </select>
+        </VCol>
+
+       
+        <VCol cols="12">
           <VTextField v-model="NV.NV_CCCD" label="Căn cước công dân" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="NV.NV_Email" label="Email" placeholder="············" />
+          <VTextField v-model="NV.NV_Email" type="email" label="Email" placeholder="············" />
         </VCol>
         <VCol cols="6 ">
           <VTextField v-model="NV.NV_SoDienThoai" label="Số diện thoại" placeholder="············" />
         </VCol>
-        <VCol cols="6">
-          <VTextField v-model="NV.NV_GioiTinh" label="Giới tính" placeholder="············" />
-        </VCol>
+       
         <VCol cols="6">
           <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
         </VCol>

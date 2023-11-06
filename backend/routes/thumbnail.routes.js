@@ -12,7 +12,10 @@ module.exports = (app) => {
     var router = express.Router();
     router.post("/", thumbnail.create);
     router.post('/upload_images/:DoiTuong/:MaSach', image.create)
+    router.post('/upload_images/sach/:DoiTuong/:MaSach/:STT', image.createHMH)
     router.get("/image/:DoiTuong/:MaSach", image.findOne)
+    router.get("/image/HMH/:DoiTuong/:MaSach/:STT", image.findOneHMM)
+
     router.put("/:TB_MaSach", thumbnail.update);
     router.delete("/:TB_MaSach", thumbnail.delete);
 

@@ -12,6 +12,8 @@ module.exports = (app) => {
 
     router.put("/:LH_Ma", lienhe.update);
 
+    router.put("/done/:LH_Ma", lienhe.updateTrangThai);
+
     router.delete("/:LH_Ma", lienhe.delete);
 
     app.use("/api/lienhe", router);
