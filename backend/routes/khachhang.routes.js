@@ -12,6 +12,11 @@ module.exports = (app) => {
 
     //Retrieve a single customer with id
     router.get("/:TKKH_MaKH", khachhang.findOneByID);
+    
+    router.get("/GetByEmail/:TKKH_Email", khachhang.findOneByEmail);
+
+    router.get("/GetPass/:TKKH_Email/:TKKH_MatKhau", khachhang.findPassByEmail);
+
 
     router.put("/CapNhatTrangThai/:TKKH_MaKH", khachhang.updateTrangThai);
 

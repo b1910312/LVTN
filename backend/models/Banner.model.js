@@ -1,7 +1,7 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            BN_MaSach: {
+            BN_Ma: {
                 type: String,
                 required: [true, "Ma cua sach"],
             },

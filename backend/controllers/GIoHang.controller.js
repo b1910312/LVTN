@@ -8,7 +8,7 @@ const GioHang = db.GioHang;
 exports.create = async (req, res) => {
     // Create a product
     const giohang = new GioHang({
-        GH_Ma: req.body.GH_Ma,
+        
         GH_MaKH: req.body.GH_MaKH,
         GH_NgayTao: req.body.GH_NgayTao,
         GH_NgayCapNhat: req.body.GH_NgayCapNhat,
@@ -41,12 +41,12 @@ exports.findAll = async (req, res) => {
     }
 
     const [error, documents] = await handle(
-        GioHang.find(condition, '-ownerId').sort({ 'GH_Ma': 1 })
+        GioHang.find(condition, '-ownerId').sort({ 'GH_MaKH': 1 })
     );
 
     if (error) {
         return next(
-            new BadRequestError(500, `Lỗi trong quá trình truy xuất giỏ hảng với mã ${req.params.GH_Ma}`)
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất giỏ hảng với mã ${req.params.GH_MaKH}`)
         );
     }
 
@@ -58,7 +58,7 @@ exports.findAll = async (req, res) => {
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
-        GH_Ma: req.params.GH_Ma,
+        GH_MaKH: req.params.GH_MaKH,
     };
     const [error, documents] = await handle(
         GioHang.findOne(condition)
@@ -76,7 +76,7 @@ exports.findOne = async (req, res) => {
 };
 exports.getLastGHMa = async (req, res) => {
     const [error, documents] = await handle(
-        GioHang.findOne().sort({ GH_Ma: -1 })
+        GioHang.findOne().sort({ GH_MaKH: -1 })
     );
     if (error) {
         return next(
@@ -86,7 +86,7 @@ exports.getLastGHMa = async (req, res) => {
     if (!documents) {
         return res.send("KBGH000")
     }
-    return res.send(documents.GH_Ma);
+    return res.send(documents.GH_MaKH);
     // if (!lastRecord) {
     //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
     // }
@@ -101,7 +101,7 @@ exports.getLastGHMa = async (req, res) => {
 exports.update = async (req, res, next) => {
 
     const condition = {
-        GH_Ma: req.params.GH_Ma
+        GH_MaKH: req.params.GH_MaKH
     };
 
     const [error, document] = await handle(
@@ -132,7 +132,7 @@ exports.update = async (req, res, next) => {
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        GH_Ma: req.params.GH_Ma
+        GH_MaKH: req.params.GH_MaKH
     };
 
     const [error, document] = await handle(

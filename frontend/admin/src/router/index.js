@@ -14,6 +14,10 @@ const router = createRouter({
           component: () => import('../pages/dashboard.vue'),
         },
         {
+          path: 'quanlybanner',
+          component: () => import('../pages/QLBanner/quanlybanner.vue'),
+        },
+        {
           path: 'account-settings',
           component: () => import('../pages/account-settings.vue'),
         },

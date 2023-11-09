@@ -45,7 +45,6 @@ export default defineComponent({
         TKKH_NgayCapNhat: ""
       },
       GH: {
-        GH_Ma: "",
         GH_MaKH: "",
         GH_NgayTao: "",
         GH_NgayCapNhat: ""
@@ -64,7 +63,6 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.GetLastID1()
     this.GetLastID()
   },
   methods: {
@@ -96,36 +94,6 @@ export default defineComponent({
       console.log(result);
       this.Chu = Text1;
       console.log(Text1);
-    },
-    GetLastID1() {
-      axios.get(`http://localhost:3000/api/giohang/getid/getlastghma`).then(res => {
-        this.LastID1 = res.data
-        console.log("MAGH" + this.LastID1)
-        this.TachKBS1()
-        this.Increase1()
-        this.GH.GH_Ma = this.NewID1
-        console.log("Gio hang" + this.GH.GH_Ma)
-      })
-    },
-    Increase1() {
-      // Chuyển đổi chuỗi thành số nguyên
-      let SoNguyen = parseInt(this.So1);
-
-      // Tăng giá trị của số nguyên
-      SoNguyen += 1;
-
-      // Chuyển đổi số nguyên thành chuỗi
-      this.So1 = String(SoNguyen).padStart(3, "0");
-      this.NewID1 = this.Chu1 + this.So1;
-      console.log("new ID 1" + this.NewID1)
-    },
-    TachKBS1() {
-      let [Text1, result1] = this.LastID1.split("0");
-      let [Text, result] = this.LastID1.split("H");
-      this.So1 = result;
-      console.log("so" + result);
-      this.Chu1 = Text1;
-      console.log("chu" + Text1);
     },
     async addKhachHang() {
       const now = moment();

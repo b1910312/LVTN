@@ -1,36 +1,37 @@
-<script>
-export default {
-  name: "ErrPage",
-  props: {
-    errorCode: {
-      type: String,
-      required: false,
-    },
-    errorTitle: {
-      type: String,
-      required: false,
-    },
-    errorDescription: {
-      type: String,
-      required: false,
-    },
-  }
-}
+<script setup>
+const props = defineProps({
+  errorCode: {
+    type: String,
+    required: false,
+  },
+  errorTitle: {
+    type: String,
+    required: false,
+  },
+  errorDescription: {
+    type: String,
+    required: false,
+  },
+})
 </script>
 
 <template>
-  <div class="text-center mb-4" style="height: 245px;">
-      <div class=" card w-50 mx-auto" style="background-color: rgba(0, 0, 0, 0.3); border-radius: 50px;">
-        <!-- 👉 Title and subtitle -->
-    <h1 v-if="errorCode" class=" text-white text-h1 font-weight-medium">
-      {{errorCode }}
+  <div class="text-center mb-4">
+    <!-- 👉 Title and subtitle -->
+    <h1
+      v-if="props.errorCode"
+      class="text-h1 font-weight-medium"
+    >
+      {{ props.errorCode }}
     </h1>
-    <h5 v-if="errorTitle" class=" text-white text-h5 font-weight-medium mb-3">
-      {{errorTitle }}
+    <h5
+      v-if="props.errorTitle"
+      class="text-h5 font-weight-medium mb-3"
+    >
+      {{ props.errorTitle }}
     </h5>
-    <p v-if="errorDescription" class="text-white">
-      {{errorDescription }}
+    <p v-if="props.errorDescription">
+      {{ props.errorDescription }}
     </p>
-      </div>
   </div>
 </template>

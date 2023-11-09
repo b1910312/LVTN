@@ -59,6 +59,55 @@ exports.findAll = async (req, res) => {
 
     return res.send(documents);
 };
+
+exports.findLatestBooks = async (req, res) => {
+    const condition = {
+        ownerId: req.userId
+    };
+    const S_Ten = req.query.S_Ma;
+
+    if (S_Ten) {
+        condition.S_Ten = { $regex: new RegExp(S_Ten), $options: "i" };
+    }
+
+    const [error, documents] = await handle(
+        Sach.find(condition, '-ownerId')
+            .sort({ 'S_NgayTao': -1 }) // Sắp xếp theo ngày tạo giảm dần (mới nhất lên đầu)
+            .limit(20) // Giới hạn kết quả trả về 20 dòng đầu tiên
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
+exports.findLowestQuantityBooks = async (req, res) => {
+    const condition = {
+        ownerId: req.userId
+    };
+    const S_Ten = req.query.S_Ma;
+
+    if (S_Ten) {
+        condition.S_Ten = { $regex: new RegExp(S_Ten), $options: "i" };
+    }
+
+    const [error, documents] = await handle(
+        Sach.find(condition, '-ownerId')
+            .sort({ 'S_SoLuong': 1 }) // Sắp xếp theo số lượng tăng dần
+            .limit(20) // Giới hạn kết quả trả về 20 dòng đầu tiên
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
 exports.findNhapKhoAll = async (req, res) => {
 
     console.log('');

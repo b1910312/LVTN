@@ -84,6 +84,13 @@ const vuetifyTheme = useTheme()
       /> -->
       <VerticalNavLink
         :item="{
+          title: 'QL Banner',
+          icon: 'bx-book-open',
+          to: '/quanlybanner',
+        }"
+      />
+      <VerticalNavLink
+        :item="{
           title: 'QL Sách',
           icon: 'bx-book-open',
           to: '/quanlysach',

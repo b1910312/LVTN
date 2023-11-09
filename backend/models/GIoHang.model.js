@@ -1,10 +1,6 @@
 module.exports = mongoose => {
     const schema = mongoose.Schema(
         {
-            GH_Ma: {
-                type: String,
-                required: [true, "Ma cua gio hang"],
-            },
             GH_MaKH: {
                 type: String,
                 required: [true, "Ma cua khach hang"],

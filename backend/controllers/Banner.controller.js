@@ -8,8 +8,10 @@ const Banner = db.Banner;
 exports.create = async (req, res) => {
     // Create a product
     const banner = new Banner({
-        BN_MaSach: req.body.BN_MaSach,
+        BN_Ma: req.body.BN_Ma,
         BN_NgayTao: req.body.BN_NgayTao,
+        BN_NgayCapNhat: req.body.BN_NgayCapNhat,
+
     });
     // Save product in the DB
     const [error, document] = await handle(banner.save());
@@ -51,7 +53,36 @@ exports.findAll = async (req, res) => {
     return res.send(documents);
 };
 
+exports.updateTrangThai = async (req, res, next) => {
 
+    const condition = {
+        BN_Ma: req.params.BN_Ma
+    };
+
+    const [error, document] = await handle(
+        Banner.findOneAndUpdate(condition, req.body,  {
+            $set: {
+                'BN_TrangThai': req.body.BN_TrangThai,
+                'BN_NgayCapNhat': req.body.BN_NgayCapNhat,
+            }
+        },{
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật thông tin bình luận có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy bình luận"));
+    }
+
+    return res.send({ message: "Cập nhật thông tin bình luận thành công." });
+};
 
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
@@ -72,7 +103,28 @@ exports.findOne = async (req, res) => {
     }
     return res.send(documents);
 };
-
+exports.getLastBNMa = async (req, res) => {
+    const [error, documents] = await handle(
+        Banner.findOne().sort({ BN_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất nhap kho!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBBN000")
+    }
+    return res.send(documents.BN_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 //*--- Cập nhật thông tin sách thông qua mã sách
 exports.update = async (req, res, next) => {
 

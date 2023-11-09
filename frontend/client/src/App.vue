@@ -1,24 +1,28 @@
-<template>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+<script setup>
+import { useTheme } from 'vuetify'
+import UpgradeToPro from '@/components/UpgradeToPro.vue'
+import { hexToRgb } from '@layouts/utils'
 
-  <RouterView />
-</template>
+const { global } = useTheme()
+global.theme = { dark: true }
+</script>
 <script>
 
+import { mapGetters, mapMutations } from "vuex";
 export default {
-  name: 'App',
-  
+
+  // created() {
+  //   const nhanvien = localStorage.getItem('nhanvien')
+  //   const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
+  //   if (nhanvien == null || nhanvienchitiet.TKNV_VaiTro == "KBVT002" || nhanvienchitiet.TKNV_TrangThai == 2) {
+  //     this.$router.push("/login");
+  //   }
+  // },
 }
 </script>
-
-<style>
-#app {
-  background: linear-gradient(90deg, #24243e, #302b63, #0f0c29);
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  padding: 10px 10px;
-}
-</style>
+<template>
+  <VApp :style="`--v-global-theme-primary: ${hexToRgb(global.current.value.colors.primary)}`">
+    <RouterView />
+    <!-- <UpgradeToPro /> -->
+  </VApp>
+</template>

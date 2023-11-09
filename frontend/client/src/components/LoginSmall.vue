@@ -1,5 +1,5 @@
 <template>
-    <div class="card p-2 " style="border-radius: 20px; background-color: rgba(170, 163, 163, 0.4);">
+    <div class="card p-2 " style="border-radius: 20px; background-color: rgba(0, 255, 4, 0.1);">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="navitem col-6 " role="presentation">
@@ -13,34 +13,34 @@
         </ul>
 
         <!-- Tab panes -->
-        <div class="tab-content  p-2 m-2" style="border-radius: 20px; background-color: rgba(255, 255, 255, 0.5);">
+        <div class="tab-content  p-2 m-2" style="border-radius: 20px; background-color: rgba(0, 255, 125, 0.5);">
             <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <div class="mb-3 text-start p-1 ">
                     <label for="" class="form-label mt-2">Email</label>
                     <input type="text" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
                     <label for="" class="form-label mt-2">Mật khẩu</label>
-                    <input type="password"  name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                    <input type="password" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
                 </div>
 
                 <!-- login button -->
-                <VBtn class="w-75 mx-auto btn btn-primary">
+                <v-button class="w-100 mx-auto btn btn-info">
                     Đăng nhập
-                </VBtn>
+                </v-button>
             </div>
             <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="mb-3 text-start p-1 ">
                     <label for="" class="form-label mt-2">Email</label>
                     <input type="text" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
                     <label for="" class="form-label mt-2">Mật khẩu</label>
-                    <input type="password"  name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                    <input type="password" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
                     <label for="" class="form-label mt-2">Nhập lại mật khẩu</label>
-                    <input type="password"  name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
+                    <input type="password" name="" id="" class="form-control" placeholder="" aria-describedby="helpId">
                 </div>
 
                 <!-- login button -->
-                <VBtn class="w-75 mx-auto btn btn-primary">
-                    Đăng nhập
-                </VBtn>
+                <v-button class="w-100 mx-auto btn btn-warning">
+                    Đăng ký
+                </v-button>
             </div>
         </div>
     </div>
@@ -55,50 +55,21 @@ export default {
     data() {
         return {}
     },
-    mounted() {
-        this.hide()
-    },
-    methods: {
-        hide() {
-            const vInputDetails = document.querySelector(".v-input__details");
-            vInputDetails.style.display = "none"; // Ẩn phần tử
-        }
-    }
 }
 </script>
 <style>
-.v-input {
-    border-radius: 10px;
-
-}
-
-.v-field__input {
-    border-radius: 10px;
-
-}
-
-.v-field__overlay {
-    border-radius: 10px;
-
-}
-
-.v-input__control {
-    border-radius: 10px;
-}
-
-.v-field__field {
-    border-radius: 10px;
-
-    border: 1px solid blue;
-
-}
-
 .navitem .active {
-    background-color: white;
-    color: green;
+    background-color: rgb(0, 255, 0);
+    color: white;
 }
-
-.navitem .active:hover {
-    background-color: white;
-    color: green;
-}</style>
+.navlinks{
+    color: gray;
+}
+.form-label{
+    color: white;
+}
+.navitem:hover {
+    background-color: rgb(146, 238, 146);
+    color: white;
+}
+</style>

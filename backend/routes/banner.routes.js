@@ -8,11 +8,15 @@ module.exports = (app) => {
 
     router.get("/", Banner.findAll);
 
-    router.get("/:BN_MaSach", Banner.findOne);
+    router.get("/getid/getlastbnma", Banner.getLastBNMa);
 
-    router.put("/:BN_MaSach", Banner.update);
+    router.get("/:BN_Ma", Banner.findOne);
 
-    router.delete("/:BN_MaSach", Banner.delete);
+    router.put("/:BN_Ma", Banner.update);
+
+    router.put("/CapNhatTrangThai/:BN_Ma", Banner.updateTrangThai);
+
+    router.delete("/:BN_Ma", Banner.delete);
 
     app.use("/api/banner", router);
 };

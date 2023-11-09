@@ -8,6 +8,8 @@ module.exports = (app) => {
 
     router.get("/", lienhe.findAll);
 
+    router.get('/getid/getlastlhma', lienhe.getLastLHMa);
+
     router.get("/:LH_Ma", lienhe.findOne);
 
     router.put("/:LH_Ma", lienhe.update);

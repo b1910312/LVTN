@@ -1,16 +1,11 @@
 <script>
-import CarcousleBanner from '@/components/CarcousleBanner.vue';
+import SPCarcousleBanner from '@/components/SPCarcousleBanner.vue';
 import ListSanPham_NgangVue from '@/components/ListSanPham_Ngang.vue';
 export default {
     name: "ChiTietSach",
     data() {
         return {
-            Sach: {
-                name: "hello",
-                img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg",
-                gia: 20000,
-                soluong: 100
-            },
+            Sach: {},
             BinhLuan: [
                 {
 
@@ -50,34 +45,40 @@ export default {
             ],
             currentRating: 0,  // Số sao hiện tại
             reviews: [],
+            TB: [],
 
         }
     },
     components: {
-        CarcousleBanner,
+        SPCarcousleBanner,
         ListSanPham_NgangVue
     },
     mounted() {
-
+        this.getSach(this.$route.params.id)
+        this.GetHinhAnh()
     },
     created() {
 
     },
     props: {
-        // rating: {
-        //     type: Number,
-        //     default: 0,
-        // },
-        // count: {
-        //     type: Number,
-        //     default: 0,
-        // },
-        // reviews: {
-        //     type: Array,
-        //     default: () => [],
-        // },
+
     },
     methods: {
+        GetHinhAnh() {
+            this.TB.push(this.GetThumNail(this.$route.params.id))
+            for (let i = 0; i < 4; i++) {
+                this.TB.push(this.GetHMM(this.$route.params.id, i+1))
+            }
+           
+        },
+        GetThumNail(S_Ma) {
+            const logo = "http://localhost:3000/api/thumbnail/image/TB/" + S_Ma
+            return logo;
+        },
+        GetHMM(S_Ma, STT) {
+            const logo = "http://localhost:3000/api/thumbnail/image/HMH/HMH/" + S_Ma + "/" + STT
+            return logo;
+        },
         hientraloi(id) {
             const vInputDetails = document.getElementById(id);
             vInputDetails.style.display = "contents"; // Ẩn phần tử
@@ -95,50 +96,59 @@ export default {
                 rating: rating,
                 comment: "Mô tả đánh giá"  // Thay thế bằng nội dung thực tế từ người dùng
             });
-        }
+        },
+        getSach(S_MaSach) {
+            // Sử dụng tính năng fetch() để chỉ gọi dữ liệu một lần
+            axios.get(`http://localhost:3000/api/sach/${S_MaSach}`).then(res => {
+                this.Sach = res.data
+                console.log(this.Sach)
+            })
+        },
     }
 }
 </script>
 <template>
     <VRow>
         <VCol cols="6" class="my-auto">
-            <CarcousleBanner />
+            <SPCarcousleBanner :img="TB"/>
         </VCol>
         <VCol cols="6">
-            <VCard :title="Sach.name">
-                <v-table theme="light">
+            <VCard :title="Sach.name" style="border-radius: 15px;">
+                <h3 class="text-start ms-5 px-5 mt-3">[{{ Sach.S_Ma }}]&nbsp;&nbsp;{{ Sach.S_Ten }}</h3>
+
+                <v-table theme="dark" class="p-4">
                     <tbody class="text-start">
                         <tr class="row w-100">
                             <td class="col-1"></td>
                             <td class="col-4">Tên sách:</td>
-                            <td class="col-7">{{ Sach.name }}</td>
+                            <td class="col-7">{{ Sach.S_Ten }}</td>
 
 
                         </tr>
                         <tr class="row w-100">
                             <td class="col-1"></td>
                             <td class="col-4">Tác giả:</td>
-                            <td class="col-7">{{ Sach.gia }}</td>
+                            <td class="col-7">{{ Sach.S_TacGia }}</td>
                         </tr>
                         <tr class="row w-100">
                             <td class="col-1"></td>
                             <td class="col-4">Nhà xuất bản:</td>
-                            <td class="col-7">{{ Sach.gia }}</td>
+                            <td class="col-7">{{ Sach.S_NXB }}</td>
                         </tr>
                         <tr class="row w-100">
                             <td class="col-1"></td>
                             <td class="col-4">Thể loại:</td>
-                            <td class="col-7">{{ Sach.gia }}</td>
+                            <td class="col-7">{{ Sach.S_TheLoai }}</td>
                         </tr>
                         <tr class="row w-100">
                             <td class="col-1"></td>
                             <td class="col-4">Giá:</td>
-                            <td class="col-7">{{ Sach.gia }}</td>
+                            <td class="col-7">{{ Sach.S_Gia }} VNĐ</td>
                         </tr>
                         <tr class="row w-100">
                             <td class="col-1"></td>
                             <td class="col-4">Số lượng:</td>
-                            <td class="col-7">{{ Sach.soluong }}</td>
+                            <td class="col-7">{{ Sach.S_SoLuong }}</td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -149,7 +159,7 @@ export default {
         <VCol cols="12">
             <VCard>
                 <!-- Nav tabs -->
-               
+
 
                 <!-- Tab panes -->
                 <h3 class="mt-3 text-start ms-5">ĐÁNH GIÁ</h3>
@@ -174,7 +184,7 @@ export default {
                     </div>
                 </div>
                 <h3 class=" text-start ms-5 mt-3">BÌNH LUẬN</h3>
-                <Vcard class=" text-dark">
+                <Vcard class=" text-white ">
                     <!-- <VRow style="border: 1px solid rgba(164, 164, 164, 0.3);" class="m-1">
                                 <VCol cols="1">
                                     <img :src="Sach.img" style="border-radius: 50px;"
@@ -259,7 +269,7 @@ export default {
         </VCol>
     </VRow>
     <VRow>
-        <ListSanPham_NgangVue/>
+        <ListSanPham_NgangVue />
     </VRow>
 </template>
 

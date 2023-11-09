@@ -67,7 +67,7 @@ exports.createHMH = async (req, res, next) => {
 
     form.on('fileBegin', (name, file) => {
         // Tạo tên tệp mới kết hợp với extension
-        file.filepath = form.uploadDir + '/' + doituong + "_" + paramName + "_" +(STT) + '.png'; // Gán giá trị mới
+        file.filepath = form.uploadDir + '/' + doituong + "_" + paramName + "_" + (STT) + '.png'; // Gán giá trị mới
     });
     form.parse(req, (err, fields, files) => {
         if (err) {
@@ -109,6 +109,7 @@ exports.createHMH = async (req, res, next) => {
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res, next) => {
 
+    res.setHeader('content-Type', 'image/jpeg');
 
     let imageName = "uploads/" + req.params.DoiTuong + "_" + req.params.MaSach + ".png";
 
@@ -119,15 +120,15 @@ exports.findOne = async (req, res, next) => {
                 message: `cannot read image , ${err}`
             });
         }
-        res.writeHead(200, { 'content-Type': 'image/jpeg' });
         res.end(imageData);
     });
 };
 
 exports.findOneHMM = async (req, res, next) => {
 
+    res.setHeader('content-Type', 'image/jpeg');
 
-    let imageName = "uploads/" + req.params.DoiTuong + "_" + req.params.MaSach +"_"+ req.params.STT+ ".png";
+    let imageName = "uploads/" + req.params.DoiTuong + "_" + req.params.MaSach + "_" + req.params.STT + ".png";
 
     fs.readFile(imageName, (err, imageData) => {
         if (err) {
@@ -136,7 +137,6 @@ exports.findOneHMM = async (req, res, next) => {
                 message: `cannot read image , ${err}`
             });
         }
-        res.writeHead(200, { 'content-Type': 'image/jpeg' });
         res.end(imageData);
     });
 };

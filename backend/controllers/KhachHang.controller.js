@@ -159,7 +159,55 @@ exports.findOneByID = async (req, res, next) => {
     }
     return res.send(documents);
 };
+//*-------Tìm kiếm một kháchh hàng bằng mã khách hàng
+exports.findOneByEmail = async (req, res, next) => {
+    const condition = {
+        TKKH_Email: req.params.TKKH_Email,
 
+    };
+    const [error, documents] = await handle(
+        KhachHang.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất tài khoản khách hàng!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy tài khoản khách hàng");
+    }
+    return res.send(documents);
+};
+exports.findPassByEmail = async (req, res, next) => {
+    const condition = {
+        TKKH_Email: req.params.TKKH_Email,
+
+    };
+    const [error, documents] = await handle(
+        KhachHang.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất tài khoản khách hàng!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy tài khoản khách hàng");
+    }
+
+    // Lấy mật khẩu từ req.body
+    const password = req.params.TKKH_MatKhau;
+
+    // Hash mật khẩu
+
+    // So sánh mật khẩu đã hash với mật khẩu trong documents
+    const isCorrect = bcrypt.compareSync(password, documents.TKKH_MatKhau);
+
+    // Trả về kết quả so sánh
+    return res.send(isCorrect);
+};
 
 //*-----Update a customer by the is in the request
 exports.update = async (req, res, next) => {
@@ -226,7 +274,7 @@ exports.signup = async (req, res, next) => {
         TKKH_MaKH: req.body.TKKH_MaKH,
         TKKH_Ten: req.body.TKKH_Ten,
         TKKH_Email: req.body.TKKH_Email,
-        TKKH_MaKHtKhau: bcrypt.hashSync(req.body.TKKH_MaKHtKhau, 8),
+        TKKH_MatKhau: bcrypt.hashSync(req.body.TKKH_MatKhau, 8),
         TKKH_NgayTao: req.body.TKKH_NgayTao,
     });
 
@@ -234,10 +282,10 @@ exports.signup = async (req, res, next) => {
 
     if (error) {
         let statusCode = 400;
-        let { TKKH_Ten = {}, TKKH_Email = {}, TKKH_MaKHtKhau = {} } = error.errors;
+        let { TKKH_Ten = {}, TKKH_Email = {}, TKKH_MatKhau = {} } = error.errors;
 
         const errorMessage =
-            TKKH_Ten.message || TKKH_Email.message || TKKH_MaKHtKhau.message;
+            TKKH_Ten.message || TKKH_Email.message || TKKH_MatKhau.message;
         if (!errorMessage) {
             statusCode = 500;
         }
@@ -263,8 +311,8 @@ exports.signin = async (req, res, next) => {
     }
 
     const passwordIsValid = bcrypt.compareSync(
-        req.body.TKKH_MaKHtKhau,
-        khachhang.TKKH_MaKHtKhau,
+        req.body.TKKH_MatKhau,
+        khachhang.TKKH_MatKhau,
     );
     console.log(passwordIsValid)
     if (!passwordIsValid) {
@@ -276,10 +324,10 @@ exports.signin = async (req, res, next) => {
     });
 
     res.status(200).send({
-        TKKH_MaKH: khachhang._id,
+        TKKH_MaKH: khachhang.TKKH_MaKH,
         TKKH_Ten: khachhang.TKKH_Ten,
         TKKH_Email: khachhang.TKKH_Email,
-        TKKH_GioHang: khachhang.TKKH_GioHang,
+        TKKH_TrangThai: khachhang.TKKH_TrangThai,
         accessToken: token,
     });
 };

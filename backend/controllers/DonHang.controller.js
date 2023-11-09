@@ -86,8 +86,58 @@ exports.findAll = async (req, res) => {
 
     return res.send(documents);
 };
+exports.findAllUnDone = async (req, res) => {
 
+    console.log('');
 
+    const condition = {
+        ownerId: req.userId,
+        DH_TrangThai: { $ne: 5 }
+    };
+    const DH_Email = req.query.ten;
+
+    if (DH_Email) {
+        condition.DH_Email = { $regex: new RegExp(DH_Email), $options: "i" };
+    }
+
+    const [error, documents] = await handle(
+        DonHang.find(condition, '-ownerId').sort({ 'DH_Email': 1 })
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất đơn hàng với mã ${req.params.DH_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
+exports.findAllDone = async (req, res) => {
+
+    console.log('');
+
+    const condition = {
+        ownerId: req.userId,
+        DH_TrangThai: 5
+    };
+    const DH_Email = req.query.ten;
+
+    if (DH_Email) {
+        condition.DH_Email = { $regex: new RegExp(DH_Email), $options: "i" };
+    }
+
+    const [error, documents] = await handle(
+        DonHang.find(condition, '-ownerId').sort({ 'DH_Email': 1 })
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất đơn hàng với mã ${req.params.DH_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
 
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {

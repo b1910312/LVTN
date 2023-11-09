@@ -1,31 +1,26 @@
 <template>
-    <div class="w-100 card p-1 m-2" style="background-color: rgba(255, 255, 255, 0.4  );">
-        <v-row>
-            <v-col cols="3">
-                <v-card class="" style="border-radius: 30px; font-weight: bolder; border: 3px solid yellow; background-color: rgb(243, 243, 98);">
-                    <h5 class="mt-2"><b>Sản phẩm nổi bật</b></h5>
-                </v-card>
-
-            </v-col>
-            <v-col cols="9"></v-col>
-
-        </v-row>
-        <div class="scroll">
-            <div class="item" v-for="product in products" :key="product.name">
-                <div class="card" style="    border-radius: 30px;
+    <div class="scroll">
+        <div class="item" v-for="pr in sach" :key="pr.S_Ma">
+            <div class="card text-white" style="    border-radius: 30px;border: 1px solid rgb(70, 194, 70); background-color: rgba(0, 0, 0, 0.4  );
 ">
-                    <div class="card-head p-3">
-                        <img :src="product.imageUrl" style="border-radius: 30px;" class="img-fluid" alt="">
-                    </div>
-                    <div class="card-body text-start">
-                        <h5>{{ product.name }}</h5>
-                        <p>Giá: {{ product.price }} VNĐ</p>
-                        <div class="row w-100">
-                                <button class=" col-7 mx-auto btn btn-success w-100">Chi tiết</button>
-                                <div class="col-1 "></div>
-                                <button class=" col-3 btn btn-info w-100">+</button>
-                        </div>
-                    </div>
+                <div class="card-head p-3">
+                    <img :src="GetThumNail(pr.S_Ma)" style="border-radius: 30px; " class="img-fluid imgcard" alt="">
+                </div>
+                <div class="card-body text-start">
+                    <h5>{{ pr.S_Ten }}</h5>
+                    <p>Giá: {{ pr.S_Gia }} VNĐ</p>
+                    <VRow>
+                        <VCol cols="8">
+                            <button style="background-color: rgb(0, 255, 4);" class="  mx-auto btn btn-success w-100"
+                                @click="this.$router.push(`/chitietsach/` + pr.S_Ma)">Chi tiết</button>
+                        </VCol>
+                        <VCol cols="4">
+                            <button class=" text-white btn btn-info w-100">
+                                <font-awesome-icon :icon="['fas', 'cart-shopping']" />
+                            </button>
+                            
+                        </VCol>
+                    </VRow>
                 </div>
             </div>
         </div>
@@ -35,12 +30,13 @@
 
 <script>
 
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
     name: 'ListSanPham_Ngang',
     data() {
         return {
-            products: [
+            prs: [
                 {
                     name: "Đừng để em cô đơn",
                     price: 120000,
@@ -85,16 +81,25 @@ export default {
             ]
         }
     },
+    props: {
+        sach: {
+            type: Array, // Kiểu dữ liệu là một mảng
+        },
+    },
     mounted() {
-        this.hide()
+        console.log(":!2313")
+        console.log(this.sach)
     },
     methods: {
-        hide() {
-            const vInputDetails = document.querySelector(".v-input__details");
-            vInputDetails.style.display = "none"; // Ẩn phần tử
-        }
+        GetThumNail(S_Ma) {
+            const logo = "http://localhost:3000/api/thumbnail/image/TB/" + S_Ma
+            // console.log(logo)
+            return logo
+        },
+
     }
-}
+
+})
 </script>
 <style>
 .scroll {
@@ -110,9 +115,5 @@ export default {
     min-width: 300px;
     max-width: 300px;
     margin: 10px 10px;
-}
-
-.v-input {
-    border-radius: 10px;
 }
 </style>

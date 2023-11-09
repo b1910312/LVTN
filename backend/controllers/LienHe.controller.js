@@ -3,6 +3,28 @@ const handle = require("../helpers/promise");
 const db = require("../models");
 const LienHe = db.LienHe;
 
+exports.getLastLHMa = async (req, res) => {
+    const [error, documents] = await handle(
+        LienHe.findOne().sort({ LH_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất nhap kho!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBLH000")
+    }
+    return res.send(documents.LH_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product

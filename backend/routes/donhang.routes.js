@@ -8,6 +8,10 @@ module.exports = (app) => {
 
     router.get("/", donhang.findAll);
 
+    router.get("/undone", donhang.findAllUnDone);
+
+    router.get("/done", donhang.findAllDone);
+
     router.get("/:DH_Ma", donhang.findOne);
 
     router.put("/:DH_Ma", donhang.update);

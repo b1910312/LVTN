@@ -8,13 +8,17 @@ module.exports = (app) => {
 
     router.get("/", sach.findAll);
 
+    router.get("/BestSale", sach.findLowestQuantityBooks)
+
+    router.get("/New", sach.findLatestBooks)
+
     router.get("/nhapkho", sach.findNhapKhoAll);
-    
+
     router.get("/nhapkho/:NK_MaSach", sach.findNhapKhoSMa);
 
 
     router.get('/getid/getlastsma', sach.getLastSMa);
-    
+
     router.get("/:S_Ma", sach.findOne);
 
     router.put("/:S_Ma", sach.update);

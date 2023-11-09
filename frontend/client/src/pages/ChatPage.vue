@@ -18,7 +18,7 @@
             </div>
 
         </div>
-        <div class="card-body msg_card_body" ref="messages">
+        <div class="card-body msg_card_body" ref="messages" style="height: 500px;">
             <div v-for="message in filteredTNs" :key="message.TN_Ma">
                 <div :class="GetSide1(message.TN_MaND)">
                     <div v-if="GetSide4(message.TN_MaND) == 1" class="d-flex">

@@ -8,7 +8,7 @@ const router = createRouter({
         },
         {
             path: '/',
-            component: () => import('../layouts/DefaultView.vue'),
+            component: () => import('../layouts/default1.vue'),
             children: [
                 {
                     path: 'trangchu',
@@ -38,12 +38,20 @@ const router = createRouter({
                     path: 'trochuyen',
                     component: () => import('../pages/ChatPage.vue'),
                 },
+                {
+                    path: 'profile/:id',
+                    component: () => import('../pages/ProFile.vue'),
+                },
+                {
+                    path: 'gioithieu',
+                    component: () => import('../pages/GioiThieu.vue'),
+                },
                 
             ]
         },
         {
             path: '/',
-            component: () => import('../layouts/BlackView.vue'),
+            component: () => import('../layouts/blank.vue'),
             children: [
                 {
                     path: 'dangnhap',
@@ -55,7 +63,7 @@ const router = createRouter({
                 },
                 {
                     path: '/:pathMatch(.*)*',
-                    component: () => import('../pages/BlankPage.vue'),
+                    component: () => import('../pages/[...all].vue'),
                   },
             ]
         }

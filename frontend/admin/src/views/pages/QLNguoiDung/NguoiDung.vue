@@ -426,6 +426,13 @@ export default defineComponent({
       });
       axios.delete("http://localhost:3000/api/thongtinkhachhang/" + KH_MaKH).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        alert(error);
+      });
+      axios.delete("http://localhost:3000/api/giohang/" + KH_MaKH).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
         alert("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
 
