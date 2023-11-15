@@ -1,6 +1,8 @@
 <script>
 import SPCarcousleBanner from '@/components/SPCarcousleBanner.vue';
 import ListSanPham_NgangVue from '@/components/ListSanPham_Ngang.vue';
+import moment from 'moment';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 export default {
     name: "ChiTietSach",
     data() {
@@ -46,14 +48,38 @@ export default {
             currentRating: 0,  // Số sao hiện tại
             reviews: [],
             TB: [],
+            SoLuong: 1,
+            CTGH: {
+                CTGH_Ma: "",
+                CTGH_MaGH: "",
+                CTGH_MaSach: "",
+                CTGH_SoLuong: "",
+                CTGH_NgayTao: "",
+                CTGH_NgayCapNhat: ""
+            },
+            nvv: "",
+            //Xử lý mã chi tiết giỏ hàng
+            LastID1: "",
+            NewID1: "",
+            So1: "",
+            Chu1: "",
+            //Xử lý mã đơn hàng
+            LastID: "",
+            NewID: "",
+            So: "",
+            Chu: "",
+            message: "",
 
         }
     },
     components: {
-        SPCarcousleBanner,
-        ListSanPham_NgangVue
-    },
+    SPCarcousleBanner,
+    ListSanPham_NgangVue,
+    FontAwesomeIcon
+},
     mounted() {
+        this.GetLastID1()
+        this.GetLastID()
         this.getSach(this.$route.params.id)
         this.GetHinhAnh()
     },
@@ -64,12 +90,134 @@ export default {
 
     },
     methods: {
+        ThemChiTietGioHang(MaSach) {
+            if (JSON.parse(localStorage.getItem("khachhang")) != null) {
+                this.nvv = JSON.parse(localStorage.getItem("khachhang"))
+                axios.get(`http://localhost:3000/api/giohang/getGH/` + this.nvv.TKKH_MaKH)
+                    .then(res => {
+                        this.CTGH.CTGH_MaGH = res.data
+                        axios.get(`http://localhost:3000/api/chitietgiohang/getbysach/` + MaSach + `/` + this.CTGH.CTGH_MaGH)
+                            .then(res => {
+                                if (res.data == "") {
+                                    this.CTGH.CTGH_Ma = this.NewID1
+                                    this.CTGH.CTGH_MaSach = MaSach
+                                    this.CTGH.CTGH_SoLuong = this.SoLuong
+                                    this.CTGH.CTGH_NgayTao = moment().format("DD-MM-YYYY")
+                                    axios.post(`http://localhost:3000/api/chitietgiohang`, this.CTGH).then(res => {
+                                        console.log("Thêm chi tiết giỏ hàng thành công")
+                                    })
+                                    this.message = " Thêm thành công sản phẩm vào giỏ hàng"
+                                    // console.log("CTGH")
+                                    // console.log(this.CTGH)
+
+                                }
+                                else {
+                                    this.CTGH = res.data
+                                    let SL = parseInt(this.CTGH.CTGH_SoLuong)
+                                    this.CTGH.CTGH_SoLuong = SL + this.SoLuong
+                                    this.CTGH.CTGH_NgayCapNhat = moment().format("DD-MM-YYYY")
+                                    axios.put(`http://localhost:3000/api/chitietgiohang/` + this.CTGH.CTGH_Ma, this.CTGH).then(res => {
+                                        console.log("Cập nhật số lượng chi tiết giỏ hàng thành công")
+                                    })
+                                    this.message = " Thêm thành công sản phẩm vào giỏ hàng"
+
+
+                                }
+                            })
+                            .catch((error) => {
+                                // handle error
+                                console.log(error);
+                            })
+                    })
+                    .catch((error) => {
+                        // handle error
+                        console.log(error);
+                    })
+
+
+
+            }
+
+
+        },
+        GetLastID1() {
+            axios.get(`http://localhost:3000/api/donhang/getid/getlastdhma`).then(res => {
+                this.LastID1 = res.data
+                this.TachKBS1()
+                this.Increase1()
+                this.LastID1 = this.NewID1
+                console.log('NewID')
+                console.log(this.NewID1)
+            })
+        },
+
+        Increase1() {
+            // Chuyển đổi chuỗi thành số nguyên
+            let SoNguyen = parseInt(this.So1);
+
+            // Tăng giá trị của số nguyên
+            SoNguyen += 1;
+
+            // Chuyển đổi số nguyên thành chuỗi
+            this.So1 = String(SoNguyen).padStart(3, "0");
+            this.NewID1 = this.Chu1 + this.So1;
+            console.log(this.NewID1)
+        },
+        TachKBS1() {
+            let [Text1, result1] = this.LastID1.split("0");
+            let [Text, result] = this.LastID1.split("DH");
+            this.So1 = result;
+            console.log(result);
+            this.Chu1 = Text1;
+            console.log(Text1);
+        },
+        GetLastID() {
+            axios.get(`http://localhost:3000/api/chitietgiohang/getid/getlastctghma`).then(res => {
+                this.LastID = res.data
+                this.TachKBS()
+                this.Increase()
+                this.LastID = this.NewID
+                console.log('NewID')
+                console.log(this.NewID)
+            })
+        },
+
+        Increase() {
+            // Chuyển đổi chuỗi thành số nguyên
+            let SoNguyen = parseInt(this.So);
+
+            // Tăng giá trị của số nguyên
+            SoNguyen += 1;
+
+            // Chuyển đổi số nguyên thành chuỗi
+            this.So = String(SoNguyen).padStart(3, "0");
+            this.NewID = this.Chu + this.So;
+            console.log(this.NewID)
+        },
+        TachKBS() {
+            let [Text1, result1] = this.LastID.split("0");
+            let [Text, result] = this.LastID.split("GH");
+            this.So = result;
+            console.log(result);
+            this.Chu = Text1;
+            console.log(Text1);
+        },
+        TangSL() {
+            if (this.SoLuong <= this.Sach.S_SoLuong) {
+                this.SoLuong++
+            }
+        },
+        GiamSL() {
+            if (this.SoLuong > 1) {
+                this.SoLuong--
+            }
+        },
         GetHinhAnh() {
             this.TB.push(this.GetThumNail(this.$route.params.id))
             for (let i = 0; i < 4; i++) {
-                this.TB.push(this.GetHMM(this.$route.params.id, i+1))
+                this.TB.push(this.GetHMM(this.$route.params.id, i + 1))
             }
-           
+
         },
         GetThumNail(S_Ma) {
             const logo = "http://localhost:3000/api/thumbnail/image/TB/" + S_Ma
@@ -110,7 +258,7 @@ export default {
 <template>
     <VRow>
         <VCol cols="6" class="my-auto">
-            <SPCarcousleBanner :img="TB"/>
+            <SPCarcousleBanner :img="TB" />
         </VCol>
         <VCol cols="6">
             <VCard :title="Sach.name" style="border-radius: 15px;">
@@ -145,10 +293,30 @@ export default {
                             <td class="col-4">Giá:</td>
                             <td class="col-7">{{ Sach.S_Gia }} VNĐ</td>
                         </tr>
-                        <tr class="row w-100">
+                        <tr class="row w-100 my-2 py-2">
                             <td class="col-1"></td>
                             <td class="col-4">Số lượng:</td>
-                            <td class="col-7">{{ Sach.S_SoLuong }}</td>
+                            <td class="col-4">
+                                <div class="d-flex" style="vertical-align: middle;">
+                                    <v-button class="mx-5 btn h-25 text-white" @click="TangSL()">
+                                        <h3>+</h3>
+                                    </v-button>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <!-- <v-text-field height="10" style="width: 300px;" v-model="SoLuong"></v-text-field> -->
+                                    <input type="text" class="mt-2 form-control text-center" v-model="SoLuong"
+                                        style="height: 30px; width: 100px;">
+                                    &nbsp; &nbsp; &nbsp;
+                                    <v-button class="mx-5 btn h-25 text-white" @click="GiamSL()">
+                                        <h3>-</h3>
+                                    </v-button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="row w-100 mt-5   ">
+                            <td class="col-12 text-center text-success  " v-if="message != ''">{{ message }}</td>
+                            <!-- <td class="col-6"> <v-button class="btn btn-primary w-100">Mua ngay</v-button></td> -->
+                            <td class="col-12"> <v-button class="btn btn-success w-100"
+                                    @click="ThemChiTietGioHang(Sach.S_Ma)">Thêm vào giỏ hàng</v-button></td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -164,25 +332,19 @@ export default {
                 <!-- Tab panes -->
                 <h3 class="mt-3 text-start ms-5">ĐÁNH GIÁ</h3>
 
-                <div class="row">
-                    <div class="col-4">
-                        <!-- Hiển thị số sao hiện tại -->
-                        <p>Số sao hiện tại: {{ currentRating }}</p>
-                        <!-- Hiển thị các nút đánh giá sao -->
-                        <div>
-                            <button v-for="star in 5" :key="star" @click="rateProduct(star)" class="btn btn-warning">
-                                {{ star }} ★
-                            </button>
-                        </div>
-
-                        <!-- Hiển thị đánh giá từ người dùng -->
-                        <!-- <div class="mt-3">
-                                        <div class="alert alert-info" v-for="(review, index) in reviews" :key="index">
-                                            {{ review.rating }} ★ - {{ review.comment }}
-                                        </div>
-                                    </div> -->
-                    </div>
-                </div>
+                <p>Rating: 
+                    <span class="star-rating">
+                        <label for="rate-1" style="--i:1"><font-awesome-icon :icon="['fas', 'star']" /></label>
+                        <input type="radio" name="rating" id="rate-1" value="1">
+                        <label for="rate-2" style="--i:2"><font-awesome-icon :icon="['fas', 'star']" /></label>
+                        <input type="radio" name="rating" id="rate-2" value="2" checked>
+                        <label for="rate-3" style="--i:3"><font-awesome-icon :icon="['fas', 'star']" /></label>
+                        <input type="radio" name="rating" id="rate-3" value="3">
+                        <label for="rate-4" style="--i:4"><font-awesome-icon :icon="['fas', 'star']" /></label>
+                        <input type="radio" name="rating" id="rate-4" value="4">
+                        <label for="rate-5" style="--i:5"><font-awesome-icon :icon="['fas', 'star']" /></label>
+                        <input type="radio" name="rating" id="rate-5" value="5">
+                    </span></p>
                 <h3 class=" text-start ms-5 mt-3">BÌNH LUẬN</h3>
                 <Vcard class=" text-white ">
                     <!-- <VRow style="border: 1px solid rgba(164, 164, 164, 0.3);" class="m-1">
@@ -274,6 +436,37 @@ export default {
 </template>
 
 <style>
+.star-rating {
+	white-space: nowrap;
+}
+.star-rating [type="radio"] {
+	appearance: none;
+}
+.star-rating i {
+	font-size: 1.2em;
+	transition: 0.3s;
+}
+
+.star-rating label:is(:hover, :has(~ :hover)) i {
+	transform: scale(1.35);
+	color: #fffdba;
+	animation: jump 0.5s calc(0.3s + (var(--i) - 1) * 0.15s) alternate infinite;
+}
+.star-rating label:has(~ :checked) i {
+	color: #faec1b;
+	text-shadow: 0 0 2px #ffffff, 0 0 10px #ffee58;
+}
+
+@keyframes jump {
+	0%,
+	50% {
+		transform: translatey(0) scale(1.35);
+	}
+	100% {
+		transform: translatey(-15%) scale(1.35);
+	}
+}
+
 .product-review {
     margin-bottom: 20px;
 }

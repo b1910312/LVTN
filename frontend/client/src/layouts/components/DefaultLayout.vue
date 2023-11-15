@@ -1,4 +1,5 @@
-<script setup>
+
+<script setup >
 import { useTheme } from 'vuetify'
 import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTitle.vue'
 import upgradeBannerDark from '@images/pro/upgrade-banner-dark.png'
@@ -9,15 +10,58 @@ import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
 import NavBar from './NavBar.vue'
-
-
+import axios from 'axios'
 const vuetifyTheme = useTheme()
+</script>
 
-// const upgradeBanner = computed(() => {
-//   return vuetifyTheme.global.name.value === 'light' ? upgradeBannerLight : upgradeBannerDark
-// })
-</script> 
+<script>
+export default {
+  name: "hello",
 
+  created() {
+    this.getNV()
+    this.CountGH()
+    // Create the interval
+    this.interval = setInterval(() => {
+      // Call the API
+      axios.get('http://localhost:3000/api/chitietgiohang/getbyMaKH/' + this.nvv.TKKH_MaKH).then((response) => {
+        // Update the value of the variable
+        this.count = response.data
+        console.log(this.count)
+      })
+    }, 1000)
+
+  },
+
+  beforeRouteLeave(to, from, next) {
+    // Clear the interval before leaving the page
+    clearInterval(this.interval)
+    next()
+  },
+
+  methods: {
+    getNV() {
+      if (JSON.parse(localStorage.getItem("khachhang")) != null) {
+        this.nvv = JSON.parse(localStorage.getItem("khachhang"))
+      }
+      console.log(this.nvv);
+    },
+    CountGH() {
+      axios.get(`http://localhost:3000/api/chitietgiohang/getbyMaKH/` + this.nvv.TKKH_MaKH).then(res => {
+        this.count = res.data
+        console.log("newid")
+        console.log(this.count.length)
+      })
+    },
+  },
+  data() {
+    return {
+      nvv: "",
+      count: "",
+    }
+  }
+}
+</script>
 
 <template>
   <VerticalNavLayout>
@@ -25,14 +69,11 @@ const vuetifyTheme = useTheme()
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
         <!-- 👉 Vertical nav toggle in overlay mode -->
-        <IconBtn
-          class="ms-n3 d-lg-none"
-          @click="toggleVerticalOverlayNavActive(true)"
-        >
+        <IconBtn class="ms-n3 d-lg-none" @click="toggleVerticalOverlayNavActive(true)">
           <VIcon icon="bx-menu" />
         </IconBtn>
 
-<!--         
+        <!--         
         <div
           class="d-flex align-center cursor-pointer"
           style="user-select: none;"
@@ -61,17 +102,24 @@ const vuetifyTheme = useTheme()
         <IconBtn class="me-2">
           <VIcon icon="bx-bell" />
         </IconBtn> -->
-          <NavBar></NavBar>
-        <NavbarThemeSwitcher class="me-2" />
+        <NavBar></NavBar>
+        <!-- <NavbarThemeSwitcher class="me-2" /> -->
+        <v-button class="p-2" @click="this.$router.push(`/giohang`)">
 
-        <UserProfile/>
+            <v-badge ref="badgeRef" color="error" class="mb-5" :content="count.length" inline>
+              <h5 class="mt-5">
+                <font-awesome-icon :icon="['fas', 'cart-shopping']" />
+              </h5>
+            </v-badge>
+        </v-button>
+        <UserProfile />
       </div>
     </template>
 
 
     <!-- <template #after-vertical-nav-items> -->
-      <!-- 👉 illustration -->
-      <!-- <a
+    <!-- 👉 illustration -->
+    <!-- <a
         href="https://themeselection.com/item/sneat-vuetify-vuejs-admin-template"
         target="_blank"
         rel="noopener noreferrer"
@@ -91,9 +139,7 @@ const vuetifyTheme = useTheme()
     <slot />
 
     <!-- 👉 Footer -->
-    <template #footer>
-    
-    </template>
+
   </VerticalNavLayout>
 </template>
 

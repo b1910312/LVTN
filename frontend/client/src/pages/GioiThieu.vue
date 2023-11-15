@@ -33,12 +33,12 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
 Để đạt được tầm nhìn này, Kingbook cần không ngừng nỗ lực phát triển, mở rộng quy mô kinh doanh, đồng thời nâng cao chất lượng sản phẩm, dịch vụ. Kingbook cũng cần xây dựng một đội ngũ nhân viên chuyên nghiệp, tận tâm, mang đến cho khách hàng những trải nghiệm mua sắm tuyệt vời.`,
 
             danhgia: [
-                { MaKH: "KBKH002", sosao: "5", Noidung: "Tốt" },
-                { MaKH: "KBKH002", sosao: "5", Noidung: "Tốt" },
-                { MaKH: "KBKH002", sosao: "5", Noidung: "Tốt" },
-                { MaKH: "KBKH002", sosao: "5", Noidung: "Tốt" },
-                { MaKH: "KBKH002", sosao: "5", Noidung: "Tốt" },
-                { MaKH: "KBKH002", sosao: "5", Noidung: "Tốt" },
+                { MaKH: "KBKH002", sosao: 5, Noidung: "Tốt" },
+                { MaKH: "KBKH002", sosao: 5, Noidung: "Tốt" },
+                { MaKH: "KBKH002", sosao: 5, Noidung: "Tốt" },
+                { MaKH: "KBKH002", sosao: 5, Noidung: "Tốt" },
+                { MaKH: "KBKH002", sosao: 5, Noidung: "Tốt" },
+                { MaKH: "KBKH002", sosao: 5, Noidung: "Tốt" },
 
             ]
         }
@@ -119,16 +119,25 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
     <VRow class="bggt">
         <VCol cols="12">
             <VCard style="background-color: rgba(0, 255, 4, 0);">
-                <VCardTitle class="text-center">ĐÁNH GIÁ CỬA HÀNG</VCardTitle>
+                <VCardTitle class="text-center"><h4>ĐÁNH GIÁ CỬA HÀNG</h4></VCardTitle>
                 <div class="row w-100">
-                    <div class="col-5"></div>
+                    <div class="col-4"></div>
                     <div class="col-4">
                         <!-- Hiển thị số sao hiện tại -->
                         <!-- Hiển thị các nút đánh giá sao -->
-                        <div>
-                            <button v-for="star in 5" :key="star" @click="rateProduct(star)" class="btn btn-warning">
-                                {{ star }} ★
-                            </button>
+                        <div class="row w-100">
+                            <!-- <button v-for="star in 5" class="mx-auto col" :key="star" @click="rateProduct(star)">
+                               <h3 :class="{ starbutton: star <= 5 }"> <font-awesome-icon :icon="['fas', 'star']" /></h3>
+                            </button> -->
+                            <div class="rating-stars">
+                                <input type="radio" name="rating" id="rs0"><label class="starlabel" for="rs0"></label>
+                                <input type="radio" name="rating" id="rs1"><label class="starlabel" for="rs1"></label>
+                                <input type="radio" name="rating" id="rs2"><label class="starlabel" for="rs2"></label>
+                                <input type="radio" name="rating" id="rs3" checked><label class="starlabel"
+                                    for="rs3"></label>
+                                <input type="radio" name="rating" id="rs4"><label class="starlabel" for="rs4"></label>
+                                <span class="number"></span>
+                            </div>
                         </div>
 
                         <!-- Hiển thị đánh giá từ người dùng -->
@@ -143,10 +152,13 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
                 <VRow class="mt-2 text-dark">
                     <VCol cols="2"></VCol>
                     <VCol cols="7">
-                        <VTextField label="Nội dung đánh giá" class="bg bg-white" placeholder="Nhập nội dung đánh giá tại đây"></VTextField>
+                        <VTextField label="Nội dung đánh giá" class="bg bg-white"
+                            placeholder="Nhập nội dung đánh giá tại đây"></VTextField>
                     </VCol>
                     <VCol cols="1">
-                        <v-button class="btn btn-info h-100 w-100"><h4>Gửi</h4></v-button>
+                        <v-button style="background-color: rgba(0, 255, 4, 1);" class="btn h-100 w-100 text-white ">
+                            <h4 class="my-auto">Gửi</h4>
+                        </v-button>
                     </VCol>
                 </VRow>
             </VCard>
@@ -154,7 +166,7 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
     </VRow>
     <VRow>
         <VCol cols="8" class="mx-auto">
-            <CarcousleDangGia :danhgia="danhgia"/>
+            <CarcousleDangGia :danhgia="danhgia" />
         </VCol>
     </VRow>
 </template>
@@ -162,5 +174,215 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
 .bggt {
     background-image: url("@/assets/images/bggt.png");
     background-size: cover;
+}
+
+/* .starbutton {
+    color: white
+}
+
+.starbutton:hover {
+    color: gold;
+} */
+
+.rating-stars {
+    display: block;
+    width: 65vmin;
+    
+    border-radius: 5vmin;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    transform: rotateX(15deg);
+}
+
+input {
+    display: none;
+}
+
+label.starlabel {
+    width: 10vmin;
+    height: 10vmin;
+    cursor: pointer;
+    margin: 0.5vmin 1.5vmin;
+    transition: var(--tran);
+    transition-delay: 0s;
+    position: relative;
+}
+
+label.starlabel:before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    content: "\2605";
+    z-index: 2;
+    font-size: 11vmin;
+    line-height: 11vmin;
+    color: #f2f1be;
+    text-align: center;
+    transform: translateY(0vmin);
+    transition: var(--tran);
+    text-shadow:
+        1px 1px 1px var(--tb),
+        -1px -1px 1px var(--tb),
+        -1px 0px 1px var(--tb),
+        1px 0px 1px var(--tb),
+        0vmin 0.1vmin 1px #ffeb3b,
+        0vmin 0.1vmin 1px #ffeb3b,
+        0vmin 0.2vmin 1px #ffd700,
+        0vmin 0.2vmin 1px #ffd700,
+        0vmin 0.3vmin 1px #ffd700,
+        0vmin 0.3vmin 1px #ffd700,
+        0vmin 0.4vmin 1px #ffd700,
+        0vmin 0.4vmin 1px #ffd700,
+        0vmin 0.5vmin 1px #ffd700,
+        0vmin 0.5vmin 1px #ffd700,
+        0vmin 0.6vmin 1px #ffd700,
+        0vmin 0.6vmin 1px #ffd700,
+        0vmin 0.7vmin 1px #ffd700,
+        0vmin 0.7vmin 1px #ffd700,
+        0vmin 0.8vmin 1px #ffd700,
+        0vmin 0.8vmin 1px #ffd700,
+        0vmin 0.9vmin 1px #ffd700,
+        0vmin 0.9vmin 1px #ffd700,
+        0vmin 1.0vmin 1px #ffd700,
+        0vmin 1.1vmin 1px #ffd700,
+        0vmin 1.1vmin 1px #ffd700,
+        0vmin 1.2vmin 1px #ffd700,
+        0vmin 1.2vmin 1px #ffd700,
+        0vmin 1.3vmin 1px #ffd700,
+        0vmin 1.3vmin 1px #ffd700,
+        0vmin 1.4vmin 1px #ffd700,
+        0vmin 1.4vmin 1px #ffd700,
+        0vmin 1.5vmin 1px #ffd700,
+        0vmin 1.5vmin 1px #ffd700,
+        0vmin 1.6vmin 1px #ffd700,
+        0vmin 1.6vmin 1px #ffd700,
+        0vmin 1.6vmin 3px #ffeb3b;
+
+    filter: drop-shadow(0px 5px 10px #f2ff00) drop-shadow(0px 5px 30px #ddff00);
+}
+
+label.starlabel:hover:before {
+    color: #e8fb36;
+    filter: drop-shadow(0px 5px 15px #b1ddff) drop-shadow(0px 5px 30px #b1ddff);
+}
+
+
+
+
+/*** unchecked:before ***/
+input:checked+label.starlabel~label.starlabel:before,
+input:checked+label.starlabel~label.starlabel:hover:active:before {
+    transition: var(--tran);
+    color: rgb(242, 255, 0);
+    color: #18242f;
+    transform: translateY(1.5vmin);
+    filter: none;
+    text-shadow:
+        1px 1px 1px var(--tbh),
+        -1px -1px 1px var(--tbh),
+        -1px 0px 1px var(--tbh),
+        1px 0px 1px var(--tbh),
+        0vmin 0.1vmin 1px #ffeb3b,
+0vmin 0.1vmin 1px #ffeb3b,
+0vmin 0.2vmin 1px #ffd700,
+0vmin 0.2vmin 1px #ffd700,
+0vmin 0.3vmin 1px #ffd700,
+0vmin 0.3vmin 1px #ffd700,
+0vmin 0.4vmin 1px #ffd700,
+0vmin 0.4vmin 1px #ffd700,
+0vmin 0.5vmin 1px #ffd700,
+0vmin 0.5vmin 1px #ffd700,
+0vmin 0.6vmin 1px #ffd700,
+0vmin 0.6vmin 1px #ffd700,
+0vmin 0.7vmin 1px #ffd700,
+0vmin 0.7vmin 1px #ffd700,
+0vmin 0.8vmin 1px #ffd700,
+0vmin 0.8vmin 1px #ffd700,
+0vmin 0.9vmin 1px #ffd700,
+0vmin 0.9vmin 1px #ffd700,
+0vmin 1.0vmin 1px #ffd700,
+0vmin 1.1vmin 1px #ffd700,
+0vmin 1.1vmin 1px #ffd700,
+0vmin 1.2vmin 1px #ffd700,
+0vmin 1.2vmin 1px #ffd700,
+0vmin 1.3vmin 1px #ffd700,
+0vmin 1.3vmin 1px #ffd700,
+0vmin 1.4vmin 1px #ffd700,
+0vmin 1.4vmin 1px #ffd700,
+0vmin 1.5vmin 1px #ffd700,
+0vmin 1.5vmin 1px #ffd700,
+0vmin 1.6vmin 1px #ffd700,
+0vmin 1.6vmin 1px #ffd700,
+0vmin 1.6vmin 3px #ffeb3b;
+
+}
+
+
+
+/*** unchecked:hover:before ***/
+input:checked+label.starlabel~label.starlabel:hover:before,
+label.starlabel~label.starlabel:hover:active:before {
+    color: #f2ff00;
+    transform: translateY(1vmin);
+    text-shadow:
+        1px 1px 1px var(--tbh),
+        -1px -1px 1px var(--tbh),
+        -1px 0px 1px var(--tbh),
+        1px 0px 1px var(--tbh),
+        0vmin 0.1vmin 1px #ffeb3b,
+0vmin 0.1vmin 1px #ffeb3b,
+0vmin 0.2vmin 1px #ffd700,
+0vmin 0.2vmin 1px #ffd700,
+0vmin 0.3vmin 1px #ffd700,
+0vmin 0.3vmin 1px #ffd700,
+0vmin 0.4vmin 1px #ffd700,
+0vmin 0.4vmin 1px #ffd700,
+0vmin 0.5vmin 1px #ffd700,
+0vmin 0.5vmin 1px #ffd700,
+0vmin 0.6vmin 1px #ffd700,
+0vmin 0.6vmin 1px #ffd700,
+0vmin 0.7vmin 1px #ffd700,
+0vmin 0.7vmin 1px #ffd700,
+0vmin 0.8vmin 1px #ffd700,
+0vmin 0.8vmin 1px #ffd700,
+0vmin 0.9vmin 1px #ffd700,
+0vmin 0.9vmin 1px #ffd700,
+0vmin 1.0vmin 1px #ffd700,
+0vmin 1.1vmin 1px #ffd700,
+0vmin 1.1vmin 1px #ffd700,
+0vmin 1.2vmin 1px #ffd700,
+0vmin 1.2vmin 1px #ffd700,
+0vmin 1.3vmin 1px #ffd700,
+0vmin 1.3vmin 1px #ffd700,
+0vmin 1.4vmin 1px #ffd700,
+0vmin 1.4vmin 1px #ffd700,
+0vmin 1.5vmin 1px #ffd700,
+0vmin 1.5vmin 1px #ffd700,
+0vmin 1.6vmin 1px #ffd700,
+0vmin 1.6vmin 1px #ffd700,
+0vmin 1.6vmin 3px #ffeb3b;
+
+}
+
+
+label.starlabel[for=rs1]:before {
+    transition-delay: 0.05s;
+}
+
+label.starlabel[for=rs2]:before {
+    transition-delay: 0.1s;
+}
+
+label.starlabel[for=rs3]:before {
+    transition-delay: 0.15s;
+}
+
+label.starlabel[for=rs4]:before {
+    transition-delay: 0.2s;
+}
+
+label.starlabel[for=rs5]:before {
+    transition-delay: 0.25s;
 }
 </style>

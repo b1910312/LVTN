@@ -8,11 +8,18 @@ module.exports = (app) => {
 
     router.get("/", giohang.findAll);
 
-    router.get("/:GH_MaKH", giohang.findOne);
+    router.get("/:GH_MaGH", giohang.findOne);
 
-    router.put("/:GH_MaKH", giohang.update);
+    router.get("/getid/getlastghma", giohang.getLastGHMa);
 
-    router.delete("/:GH_MaKH", giohang.delete);
+    router.get("/getGH/:GH_MaKH", giohang.getGioHangByMaKH);
+
+    router.put("/:GH_MaGH", giohang.update);
+
+    router.delete("/:GH_MaGH", giohang.delete);
+
+    router.delete("/deleteKH/:GH_MaKH", giohang.deletebyMaKH);
+
 
     app.use("/api/giohang", router);
 };

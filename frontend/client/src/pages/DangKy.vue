@@ -45,6 +45,7 @@ export default {
                 DC_TinhTP: "",
             },
             GH: {
+                GH_MaGH: "",
                 GH_MaKH: "",
                 GH_NgayTao: "",
                 GH_NgayCapNhat: ""
@@ -74,6 +75,7 @@ export default {
     },
     mounted() {
         this.GetLastID();
+        this.GetLastID1();
     },
     methods: {
         addKhachHang() {
@@ -187,6 +189,35 @@ export default {
 
             })
         },
+        GetLastID1() {
+            axios.get(`http://localhost:3000/api/giohang/getid/getlastghma`).then(res => {
+                this.LastID1 = res.data
+                this.TachKBS1()
+                this.Increase1()
+                this.GH.GH_MaGH = this.NewID1
+                console.log(this.GH.GH_MaGH)
+            })
+        },
+        Increase1() {
+            // Chuyển đổi chuỗi thành số nguyên
+            let SoNguyen = parseInt(this.So1);
+
+            // Tăng giá trị của số nguyên
+            SoNguyen += 1;
+
+            // Chuyển đổi số nguyên thành chuỗi
+            this.So1 = String(SoNguyen).padStart(3, "0");
+            this.NewID1 = this.Chu1 + this.So1;
+            console.log(this.NewID1)
+        },
+        TachKBS1() {
+            let [Text1, result1] = this.LastID1.split("0");
+            let [Text, result] = this.LastID1.split("GH");
+            this.So1 = result;
+            console.log(result1);
+            this.Chu1 = Text1;
+            console.log(Text1);
+        },
         async validateInput() {
             await this.GetEmailAccount(this.TKKH.TKKH_Email)
             this.errors.TKKH_Email = "";
@@ -280,7 +311,7 @@ export default {
                         <!-- TKNV_MaNV -->
                         <VCol cols="12">
                             <p class="text-success text-center">{{ message }}</p>
-                            </VCol>
+                        </VCol>
                         <VCol cols="12">
                             <VTextField autofocus v-model="TKKH.TKKH_Email" type="email" :error-messages="errors.TKKH_Email"
                                 placeholder="Nhập email của bạn tại đây" label="Email" />

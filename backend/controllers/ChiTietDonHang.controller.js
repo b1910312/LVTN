@@ -28,7 +28,28 @@ exports.create = async (req, res) => {
 
 }
 
-
+exports.getLastCTDHMa = async (req, res) => {
+    const [error, documents] = await handle(
+        ChiTietDonHang.findOne().sort({ CTDH_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBCTDH000")
+    }
+    return res.send(documents.CTDH_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
 //*--------Truy xuất tất cả sản phẩm trong cơ sở dữ liệu
 exports.findAll = async (req, res) => {
 
@@ -104,11 +125,11 @@ exports.update = async (req, res, next) => {
     };
 
     const [error, document] = await handle(
-        ChiTietDonHang.findOneAndUpdate(condition, req.body,  {
+        ChiTietDonHang.findOneAndUpdate(condition, req.body, {
             $set: {
                 'CTDH_NgayCapNhat': req.body.CTDH_NgayCapNhat,
             }
-        },{
+        }, {
             new: true,
             projection: "-ownerId",
         })
@@ -129,7 +150,7 @@ exports.update = async (req, res, next) => {
 
 
 //Xóa một sách bằng mã sách
-exports.delete = async (req,res) => {    
+exports.delete = async (req, res) => {
     const condition = {
         CTDH_Ma: req.params.CTDH_Ma
     };
@@ -140,7 +161,7 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được chi tiết đơn hàng có mã ${req.params.id}`)
+            new BadRequestError(500, `Không xóa được chi tiết đơn hàng có mã ${req.params.id}`)
         );
     }
 
@@ -150,3 +171,23 @@ exports.delete = async (req,res) => {
 
 };
 
+exports.deleteByDHMa = async (req, res) => {
+    const condition = {
+        CTDH_MaDH: req.params.DH_Ma
+    };
+
+    const [error, document] = await handle(
+        ChiTietDonHang.deleteMany(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Không xóa được chi tiết đơn hàng có mã ${req.params.id}`)
+        );
+    }
+
+    if (document) {
+        return res.send({ message: "Xóa chi tiết đơn hàng thành công" });
+    }
+
+};

@@ -5,6 +5,11 @@ module.exports = mongoose => {
                 type: String,
                 required: [true, "Ma cua don hang"],
             },
+            DH_MaKH: {
+                type: String,
+                required: [true, "Ma cua khach hang"],
+            },
+            
             DH_Ho: {
                 type: String,
                 required: [true, "Ho cua khach hang"],

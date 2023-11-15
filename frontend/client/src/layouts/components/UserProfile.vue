@@ -1,9 +1,9 @@
 <script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
-
 </script>
 <script>
 export default {
+  name: "userProfile",
   data() {
     return {
       nvv: {
@@ -55,7 +55,7 @@ export default {
 
     },
     getNV() {
-      if(JSON.parse(localStorage.getItem("khachhang")) != null){
+      if (JSON.parse(localStorage.getItem("khachhang")) != null) {
         this.nvv = JSON.parse(localStorage.getItem("khachhang"))
       }
       console.log(this.nvv);
@@ -70,41 +70,41 @@ export default {
 }
 </script>
 <template>
-    <VBadge v-if="nvv.TKKH_MaKH !== ''" dot location="bottom right" offset-x="3" offset-y="3" color="success" bordered>
-      <VAvatar class="cursor-pointer" color="primary" variant="tonal">
-        <VImg :src="GetLogo(NV.KH_MaKH)" />
-        <!-- SECTION Menu -->
-        <VMenu activator="parent" width="230" location="bottom end" offset="14px">
-          <VList>
-            <!-- 👉 User Avatar & Name -->
-            <VListItem>
-              <template #prepend>
-                <VListItemAction start>
-                  <VBadge dot location="bottom right" offset-x="3" offset-y="3" color="success">
-                    <VAvatar color="primary" variant="tonal">
-                      <VImg :src="GetLogo(NV.KH_MaKH)" />
-                    </VAvatar>
-                  </VBadge>
-                </VListItemAction>
-              </template>
+  <VBadge v-if="nvv.TKKH_MaKH !== ''" dot location="bottom right" offset-x="3" offset-y="3" color="success" bordered>
+    <VAvatar class="cursor-pointer" color="primary" variant="tonal">
+      <VImg :src="GetLogo(NV.KH_MaKH)" />
+      <!-- SECTION Menu -->
+      <VMenu activator="parent" width="230" location="bottom end" offset="14px">
+        <VList>
+          <!-- 👉 User Avatar & Name -->
+          <VListItem class="my-2 h-100">
+            <template #prepend>
+              <VListItemAction start>
+                <VBadge dot location="bottom right" offset-x="3" offset-y="3" color="success">
+                  <VAvatar color="primary" variant="tonal">
+                    <VImg :src="GetLogo(NV.KH_MaKH)" />
+                  </VAvatar>
+                </VBadge>
+              </VListItemAction>
+            </template>
 
-              <VListItemTitle class="font-weight-semibold">
-                {{ NV.KH_HoTen }}
-              </VListItemTitle>
-              <VListItemSubtitle>{{ VT.HM_TenHangMuc }}</VListItemSubtitle>
-            </VListItem>
-            <VDivider class="my-2" />
+            <VListItemTitle class="font-weight-semibold">
+              {{ NV.KH_HoTen }}
+            </VListItemTitle>
+            <VListItemSubtitle>Hạnh mức: {{ VT.HM_TenHangMuc }}</VListItemSubtitle>
+          </VListItem>
+          <VDivider class="my-2" />
 
-            <!-- 👉 Profile -->
-            <VListItem @click="profile()">
-              <template #prepend>
-                <VIcon class="me-2" icon="bx-user" size="22" />
-              </template>
+          <!-- 👉 Profile -->
+          <VListItem @click="profile()">
+            <template #prepend>
+              <VIcon class="me-2" icon="bx-user" size="22" />
+            </template>
 
-              <VListItemTitle>Profile</VListItemTitle>
-            </VListItem>
+            <VListItemTitle>Profile</VListItemTitle>
+          </VListItem>
 
-            <!--           
+          <!--           
           <VListItem link>
             <template #prepend>
               <VIcon class="me-2" icon="bx-cog" size="22" />
@@ -129,22 +129,23 @@ export default {
             <VListItemTitle>FAQ</VListItemTitle>
           </VListItem> -->
 
-            <!-- Divider -->
-            <VDivider class="my-2" />
+          <!-- Divider -->
+          <VDivider class="my-2" />
 
-            <!-- 👉 Logout -->
-            <!-- <VListItem @click="logout()"> -->
-            <VListItem @click="logout()">
+          <!-- 👉 Logout -->
+          <!-- <VListItem @click="logout()"> -->
+          <VListItem @click="logout()">
 
-              <template #prepend>
-                <VIcon class="me-2" icon="bx-log-out" size="22" />
-              </template>
-              <VListItemTitle>Logout</VListItemTitle>
-            </VListItem>
-          </VList>
-        </VMenu>
-        <!-- !SECTION -->
-      </VAvatar>
-    </VBadge>
-      <v-button v-if="nvv.TKKH_MaKH == ''" class="btn btn-success" @click="this.$router.push('/dangnhap')"><font-awesome-icon :icon="['fas', 'user-secret']" /></v-button>
+            <template #prepend>
+              <VIcon class="me-2" icon="bx-log-out" size="22" />
+            </template>
+            <VListItemTitle>Logout</VListItemTitle>
+          </VListItem>
+        </VList>
+      </VMenu>
+      <!-- !SECTION -->
+    </VAvatar>
+  </VBadge>
+  <v-button v-if="nvv.TKKH_MaKH == ''" class="btn btn-success" @click="this.$router.push('/dangnhap')"><font-awesome-icon
+      :icon="['fas', 'user-secret']" /></v-button>
 </template>

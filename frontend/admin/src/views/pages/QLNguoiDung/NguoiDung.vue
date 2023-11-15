@@ -175,7 +175,7 @@ height: 800px;">
                                     </VBtn>
                                   </div>
                                   <div class="d-flex gap-4 col-1">
-                                    <VBtn class="ms-5 bg bg-secondary" @click="cancel()">
+                                    <VBtn class="ms-5 bg bg-secondary" @click="dialog5 =false">
                                       Hủy
                                     </VBtn>
                                   </div>
@@ -268,8 +268,9 @@ export default defineComponent({
       GT: "",
       dialog3: false,
       dialog4: false,
-      dialog5: false
-
+      dialog5: false,
+      GHID: "",
+      imageFile: "",
     }
 
   },
@@ -321,7 +322,6 @@ export default defineComponent({
     },
     CapNhatThongTin() {
       const now = moment();
-
       this.KH.KH_NgayCapNhat = now.format("DD-MM-YYYY");
       this.DC.DC_NgayCapNhat = now.format("DD-MM-YYYY");
 
@@ -431,7 +431,7 @@ export default defineComponent({
       }).catch(error => {
         alert(error);
       });
-      axios.delete("http://localhost:3000/api/giohang/" + KH_MaKH).then(response => {
+      axios.delete("http://localhost:3000/api/giohang/deleteKH" + KH_MaKH).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         alert("Xóa thành công");
         // Sau đó, chuyển hướng người dùng

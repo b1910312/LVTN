@@ -1,35 +1,305 @@
 <script>
-
+import moment from 'moment'
 export default {
     name: "CuaHang",
     data() {
         return {
-            DanhMuc: [
-                { name: " Thông tin cá nhân", Value: "1" },
-                { name: " Danh sách đơn hàng", Value: "2" },
-                { name: " Lịch sử mua hàng", Value: "3" },
-                { name: " Đặt lại mật khẩu", Value: "4" },
-                { name: " Trò chuyện", Value: "5" },
-            ],
+
             GioiTinh: [
                 { name: "Nữ", value: "1" },
-                { name: "Name", value: "2" }
+                { name: "Nam", value: "2" }
             ],
-            products: [
-                { name: "Sách 1", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "42", gia: "120000" },
-                { name: "Sách 2", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "25", gia: "150000" },
-                { name: "Sách 3", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "42", gia: "1030000" },
-                { name: "Sách 4", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "23", gia: "102000" },
-                { name: "Sách 5", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "22", gia: "106000" },
-                { name: "Sách 6", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "12", gia: "108000" },
-                { name: "Sách 1", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "42", gia: "120000" },
-                { name: "Sách 2", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "25", gia: "150000" },
-                { name: "Sách 3", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "42", gia: "1030000" },
-                { name: "Sách 4", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "23", gia: "102000" },
-                { name: "Sách 5", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "22", gia: "106000" },
-                { name: "Sách 6", img: "https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg", soluong: "12", gia: "108000" }
-            ],
+            DonHang: [],
+            TatCaDonHang: [],
+            count: "",
+            nvv: "",
+            KH: "",
+            KH1: "",
+            VT: "",
+            DC: "",
+            DH_CT: "",
+            MatKhau: "",
+            MKMoi: "",
+            NhapLaiMKMoi: "",
+            CTDH: "",
+            DC1: "",
+            TongCong: 0,
+            dialog: false,
+            dialog5: false,
+            updateLogoMessage: "",
+            updateThongTinMessage: "",
         }
+    },
+    mounted() {
+        this.getNV()
+        this.GetOneNV(this.nvv.TKKH_MaKH)
+        this.GetOneNV1(this.nvv.TKKH_MaKH)
+        this.GetOneVT(this.nvv.TKKH_HangMuc)
+        this.GetDiaChi(this.nvv.TKKH_MaKH)
+        this.GetDiaChi1(this.nvv.TKKH_MaKH)
+        this.GetDonHang(this.nvv.TKKH_MaKH)
+        this.GetDonHangAll(this.nvv.TKKH_MaKH)
+        this.CountGH()
+        this.interval = setInterval(() => {
+            // Call the API
+            axios.get('http://localhost:3000/api/chitietgiohang/getbyMaKH/' + this.nvv.TKKH_MaKH).then((response) => {
+                // Update the value of the variable
+                this.count = response.data
+                console.log(this.count)
+            })
+        }, 1000)
+    },
+
+    methods: {
+        GetPass(){
+            
+        },
+        DaNhanHang(MaDH) {
+            const now = moment();
+            let data = {
+                DH_NgayCapNhat: now.format("DD-MM-YYYY"),
+                DH_TrangThai: 5
+            }
+            // Gọi API để cập nhật sản phẩm
+            axios.put("http://localhost:3000/api/donhang/capnhattrangthai/" + MaDH, data).then(response => {
+                // Nếu cập nhật thành công, thì hiển thị thông báo
+                console.log(data)
+                this.GetDonHang(this.nvv.TKKH_MaKH)
+                this.GetDonHangAll(this.nvv.TKKH_MaKH)
+                // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+                this.GetDonHang();
+            }).catch(error => {
+                alert(error);
+            });
+            this.dialog = false
+
+        },
+        HuyDonHang(DH_Ma) {
+            axios.delete("http://localhost:3000/api/donhang/" + DH_Ma).then(response => {
+                // Nếu cập nhật thành công, thì hiển thị thông báo
+
+            }).catch(error => {
+                alert(error);
+            });
+            axios.delete("http://localhost:3000/api/chitietdonhang//deletebyDH/" + DH_Ma).then(response => {
+                // Nếu cập nhật thành công, thì hiển thị thông báo
+                this.GetDonHang(this.nvv.TKKH_MaKH)
+                this.GetDonHangAll(this.nvv.TKKH_MaKH)
+                this.dialog = false
+                // Sau đó, chuyển hướng người dùng
+            }).catch(error => {
+                alert(error);
+            });
+        },
+        GetTrangThai(id) {
+            switch (id) {
+                case 0:
+                    return "Chưa xác nhận";
+                case 1:
+                    return "Đã xác nhận";
+                case 2:
+                    return "Đã thanh toán";
+                case 3:
+                    return "Đang vận chuyển";
+                case 4:
+                    return "Đang giao"
+                case 5:
+                    return "Đã giao";
+                default:
+                    return null;
+            }
+        },
+        CapNhatThongTin() {
+            const now = moment();
+            this.KH.KH_NgayCapNhat = now.format("DD-MM-YYYY");
+            this.DC.DC_NgayCapNhat = now.format("DD-MM-YYYY");
+            // Gọi API để cập nhật sản phẩm
+            axios.put("http://localhost:3000/api/thongtinkhachhang/" + this.KH.KH_MaKH, this.KH).then(response => {
+                // Nếu cập nhật thành công, thì hiển thị thông báo
+                // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+            }).catch(error => {
+                alert(error);
+            });
+
+            axios.put("http://localhost:3000/api/diachi/" + this.KH.KH_MaKH, this.DC).then(response => {
+                // Nếu cập nhật thành công, thì hiển thị thông báo
+                // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+            }).catch(error => {
+                alert(error);
+            });
+            this.updateThongTinMessage = "Cập nhật thông tin thành công"
+            this.GetOneNV(this.nvv.TKKH_MaKH)
+            this.GetDiaChi(this.nvv.TKKH_MaKH)
+            this.GetOneNV1(this.nvv.TKKH_MaKH)
+            this.GetDiaChi1(this.nvv.TKKH_MaKH)
+        },
+        XemChiTietDonHang(MaDH) {
+            this.dialog = true
+            this.GetOneDH(MaDH)
+            this.GetCTDH(MaDH)
+
+
+        },
+        async UpdateLogo() {
+            const formData = new FormData();
+            formData.append("image", this.imageFile);
+
+            try {
+                const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/KH/" + this.KH.KH_MaKH, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                });
+                // this.$router.push("/quanlynxb");
+                this.updateLogoMessage = "Cập nhật ảnh đại diện thành công"
+                console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+            } catch (error) {
+                console.error("Lỗi khi tải lên tệp ảnh:", error);
+            }
+
+        },
+
+        setImageFile(event) {
+            this.imageFile = event.target.files[0];
+        },
+        GetOneNV(id) {
+            axios.get('http://localhost:3000/api/thongtinkhachhang/' + id)
+                .then((response) => {
+                    this.KH = response.data;
+                    console.log(response);
+                    console.log(this.KH);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        GetCTDH(MaDH) {
+            axios.get('http://localhost:3000/api/chitietdonhang/getbyDHMa/' + MaDH)
+                .then((response) => {
+                    this.CTDH = response.data;
+                    this.TongCong = this.CTDH.reduce((acc, ctdh) => acc + ctdh.CTDH_ThanhTien, 0);
+                    console.log(response);
+                    console.log(this.CTDH);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        GetOneDH(id) {
+            axios.get('http://localhost:3000/api/donhang/' + id)
+                .then((response) => {
+                    this.DH_CT = response.data;
+                    console.log(response);
+                    console.log(this.DH_CT);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+
+        GetDonHang(id) {
+            axios.get('http://localhost:3000/api/donhang/undone/' + id)
+                .then((response) => {
+                    this.DonHang = response.data;
+                    console.log(response);
+                    console.log(this.DonHang);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        GetDonHangAll(id) {
+            axios.get('http://localhost:3000/api/donhang/all/' + id)
+                .then((response) => {
+                    this.TatCaDonHang = response.data;
+                    console.log(response);
+                    console.log(this.TatCaDonHang);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        GetOneNV1(id) {
+            axios.get('http://localhost:3000/api/thongtinkhachhang/' + id)
+                .then((response) => {
+                    this.KH1 = response.data;
+                    console.log(response);
+                    console.log(this.KH1);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        GetOneVT(id) {
+            axios.get('http://localhost:3000/api/hangmuc/' + id)
+                .then((response) => {
+                    this.VT = response.data;
+                    console.log(response);
+                    console.log(this.VT);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        GetDiaChi(id) {
+            axios.get('http://localhost:3000/api/diachi/' + id)
+                .then((response) => {
+                    this.DC = response.data;
+                    this.DC1 = response.data;
+                    console.log(response);
+                    console.log(this.DC);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        GetDiaChi1(id) {
+            axios.get('http://localhost:3000/api/diachi/' + id)
+                .then((response) => {
+                    this.DC1 = response.data;
+                    console.log(response);
+                    console.log(this.DC1);
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        GetAVT(KH_Ma) {
+            const logo = "http://localhost:3000/api/thumbnail/image/KH/" + KH_Ma
+            // console.log(logo)
+            return logo
+        },
+        getNV() {
+            if (JSON.parse(localStorage.getItem("khachhang")) != null) {
+                this.nvv = JSON.parse(localStorage.getItem("khachhang"))
+            }
+            console.log(this.nvv);
+        },
+        CountGH() {
+            axios.get(`http://localhost:3000/api/chitietgiohang/getbyMaKH/` + this.nvv.TKKH_MaKH).then(res => {
+                this.count = res.data
+                console.log("newid")
+                console.log(this.count.length)
+            })
+        },
     },
     components: {
     }
@@ -42,33 +312,30 @@ export default {
                 <Vrow>
                     <VCol cols="12">
                         <VRow>
-                            <VCol cols="5"> <img src="https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg"
-                                    class="img-fluid" style="border-radius: 50%; width: 100px; height: 100px;" alt="">
+                            <VCol cols="3"></VCol>
+                            <VCol cols="6"> <img :src="GetAVT(nvv.TKKH_MaKH)" class="img-fluid mx-auto"
+                                    style="border-radius: 50%; width: 150px; height: 150px;" alt="">
                             </VCol>
-                            <VCol cols="7">
+                            <VCol cols="3"></VCol>
+                            <VCol cols="12">
                                 <VRow>
                                     <VCol cols="6">
-                                        <VBtn class="pt-2">
-                                            <h5>
-                                                <font-awesome-icon :icon="['fas', 'cart-shopping']" />
-                                            </h5>
-                                            <template v-slot:append>
-                                                <v-badge color="error" class="mb-2" content="6" inline></v-badge>
-                                            </template>
-                                        </VBtn>
+                                        <v-button @click="this.$router.push(`/giohang`)">
+
+                                            <v-badge ref="badgeRef" color="error" class="mb-5" :content="count.length"
+                                                inline>
+                                                <h6 class="mt-5">
+                                                    <font-awesome-icon :icon="['fas', 'cart-shopping']" /> Giỏ hàng
+                                                </h6>
+                                            </v-badge>
+                                        </v-button>
+
                                     </VCol>
-                                    <VCol cols="6">
-                                        <VBtn class="pt-2">
-                                            <h5> <font-awesome-icon :icon="['fas', 'box']" /> </h5>
-                                            <template v-slot:append>
-                                                <v-badge color="error" class="mb-2" content="6" inline></v-badge>
-                                            </template>
-                                        </VBtn>
+
+                                    <VCol cols="6 mt-5">
+                                        <h6><font-awesome-icon :icon="['fas', 'medal']" /> Hạng mức: {{ VT.HM_TenHangMuc }}
+                                        </h6>
                                     </VCol>
-                                    <VCol cols="7">
-                                        <h4><font-awesome-icon :icon="['fas', 'medal']" /> Vàng</h4>
-                                    </VCol>
-                                    <VCol cols="5"></VCol>
                                 </VRow>
                             </VCol>
                             <VCol cols="12">
@@ -79,7 +346,7 @@ export default {
                                                 <tr class="row w-100 ps-4">
                                                     <td class="col-2"></td>
                                                     <th class="col-8">
-                                                        <h5 style="font-weight: bold;">Nguyễn Thanh Tín</h5>
+                                                        <h5 style="font-weight: bold;">{{ KH1.KH_HoTen }}</h5>
                                                     </th>
                                                     <td class="col-2"></td>
                                                 </tr>
@@ -87,16 +354,17 @@ export default {
                                                     <th class="col-2"><font-awesome-icon
                                                             :icon="['fas', 'map-location-dot']" />
                                                     </th>
-                                                    <td class="col-10">Song Lộc, Châu Thành, Trà Vinh</td>
+                                                    <td class="col-10">{{ DC1.DC_DiaChi }}, {{ DC1.DC_PhuongXa }}, {{
+                                                        DC1.DC_QuanHuyen }}, {{ DC1.DC_TinhTP }}</td>
                                                 </tr>
 
                                                 <tr class="row w-100 ps-4">
                                                     <th class="col-2"><font-awesome-icon :icon="['fas', 'phone']" /></th>
-                                                    <td class="col-10">0984442145</td>
+                                                    <td class="col-10">{{ KH1.KH_SoDienThoai }}</td>
                                                 </tr>
                                                 <tr class="row w-100 ps-4">
                                                     <th class="col-2"><font-awesome-icon :icon="['fas', 'envelope']" /></th>
-                                                    <td class="col-10">minhtran24680@gmai.com</td>
+                                                    <td class="col-10">{{ nvv.TKKH_Email }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -154,19 +422,24 @@ export default {
                                         <!-- 👉 Upload Photo -->
                                         <form class="d-flex flex-column justify-center gap-5">
                                             <div class="d-flex flex-wrap gap-2">
-                                                <VBtn color="primary">
+                                                <VBtn color="primary" @click="dialog5 = true">
                                                     <VIcon icon="bx-cloud-upload" class="d-sm-none" />
                                                     <span class="d-none d-sm-block">Cập nhật ảnh đại diện</span>
                                                 </VBtn>
                                                 <v-dialog v-model="dialog5">
-                                                    <div class="card w-75 mx-auto text-start bg bg-white p-5">
+                                                    <div class="card w-75 mx-auto text-start bg bg-white p-5"
+                                                        style="height: auto;">
                                                         <div class="col-11">
                                                             <h4>Cập nhật Ảnh đại diện</h4>
+                                                            
                                                         </div>
 
                                                         <VCol cols="12">
-                                                            <VForm>
-                                                                <VFileInput label="Avatar" type="file" ref="imageInput" />
+                                                            <VForm @submit.prevent="UpdateLogo">
+                                                                <p class="text-center text-success my-1"> {{
+                                                                    updateLogoMessage }}</p>
+                                                                <VFileInput label="Avatar" type="file" ref="imageInput"
+                                                                    @change="setImageFile" />
                                                                 <div class="row w-100 mt-2">
                                                                     <div class="col-8"></div>
                                                                     <div class="d-flex gap-4 col-2">
@@ -175,7 +448,8 @@ export default {
                                                                         </VBtn>
                                                                     </div>
                                                                     <div class="d-flex gap-4 col-1">
-                                                                        <VBtn class="ms-5 bg bg-secondary">
+                                                                        <VBtn class="ms-5 bg bg-secondary"
+                                                                            @click="dialog5 = false">
                                                                             Hủy
                                                                         </VBtn>
                                                                     </div>
@@ -204,68 +478,82 @@ export default {
                                         <!-- 👉 Form -->
                                         <VForm class="mt-6">
                                             <VRow>
+                                                <VCol cols="12" v-if="updateThongTinMessage != ''">
+                                                    <p class="text-center text-success my-1"> {{
+                                                        updateThongTinMessage }}</p>
+                                                </VCol>
                                                 <!-- 👉 Address -->
                                                 <VCol cols="12" md="6">
-                                                    <VTextField readonly label="Mã Nhân viên"
+                                                    <VTextField readonly label="Mã Khách hàng" v-model="KH.KH_MaKH"
                                                         placeholder="123 Main St, New York, NY 10001" />
                                                 </VCol>
                                                 <!-- 👉 First Name -->
                                                 <VCol md="6" cols="12">
-                                                    <VTextField placeholder="John" label="Họ tên" />
+                                                    <VTextField placeholder="Nhập họ tên" v-model="KH.KH_HoTen"
+                                                        label="Họ tên" />
                                                 </VCol>
 
                                                 <!-- 👉 Last Name -->
                                                 <VCol md="6" cols="12">
-                                                    <select class="form-control">
-                                                        <!-- <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}
-                                                        </option> -->
+                                                    <select class="form-control h-100 "
+                                                        style="background-color: rgba(0, 0, 0, 0.05 ); color: white; border-color: rgba(255, 255, 255,0.3);"
+                                                        v-model="KH.KH_GioiTinh">
+                                                        <option class="text-dark"
+                                                            style="background-color: rgba(0, 0, 0, 0.05 );"
+                                                            v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}
+                                                        </option>
                                                     </select>
                                                 </VCol>
 
                                                 <!-- 👉 Email -->
                                                 <VCol cols="12" md="6">
-                                                    <VTextField label="E-mail" placeholder="johndoe@gmail.com"
-                                                        type="email" />
+                                                    <VTextField label="E-mail" readonly v-model="nvv.TKKH_Email"
+                                                        placeholder="johndoe@gmail.com" type="email" />
                                                 </VCol>
 
                                                 <!-- 👉 Organization -->
                                                 <VCol cols="12" md="6">
-                                                    <VTextField label="Ngày sinh" placeholder="ThemeSelection" />
+                                                    <VTextField v-model="KH.KH_NgaySinh" type="date" label="Ngày sinh"
+                                                        placeholder="ThemeSelection" />
                                                 </VCol>
 
                                                 <!-- 👉 Phone -->
                                                 <VCol cols="12" md="6">
-                                                    <VTextField label="Số điện thoại" placeholder="+1 (917) 543-9876" />
+                                                    <VTextField v-model="KH.KH_SoDienThoai" label="Số điện thoại"
+                                                        placeholder="+1 (917) 543-9876" />
                                                 </VCol>
-
-
 
                                                 <!-- 👉 State -->
                                                 <VCol cols="12" md="6">
-                                                    <VTextField label="Địa chỉ" placeholder="New York" />
+                                                    <VTextField label="Địa chỉ" v-model="DC.DC_DiaChi"
+                                                        placeholder="New York" />
                                                 </VCol>
 
                                                 <!-- 👉 Zip Code -->
                                                 <VCol cols="12" md="6">
-                                                    <VTextField label="Phường Xã" placeholder="10001" />
+                                                    <VTextField label="Phường Xã" v-model="DC.DC_PhuongXa"
+                                                        placeholder="10001" />
                                                 </VCol>
 
                                                 <!-- 👉 Country -->
                                                 <VCol cols="12" md="6">
-                                                    <VTextField label="Quận Huyện" placeholder="Select Country" />
+                                                    <VTextField label="Quận Huyện" v-model="DC.DC_QuanHuyen"
+                                                        placeholder="Select Country" />
                                                 </VCol>
 
                                                 <!-- 👉 Language -->
                                                 <VCol cols="12" md="6">
-                                                    <VTextField label="Tỉnh Thành phố" placeholder="Select Language" />
+                                                    <VTextField label="Tỉnh Thành phố" v-model="DC.DC_TinhTP"
+                                                        placeholder="Select Language" />
                                                 </VCol>
 
-                                              
+                                                <VCol cols="8"></VCol>
                                                 <!-- 👉 Form Actions -->
-                                                <VCol cols="12" class="d-flex flex-wrap gap-4">
-                                                    <VBtn>Cập nhật</VBtn>
-                                                    
-          
+                                                <VCol cols="4" class="d-flex flex-wrap gap-4">
+                                                    <v-button class="w-100  btn btn-primary" @click="CapNhatThongTin()">Cập
+                                                        nhật</v-button>
+
+
                                                 </VCol>
                                             </VRow>
                                         </VForm>
@@ -290,12 +578,17 @@ export default {
                                                     <p class="text-center text-success"></p>
                                                 </div>
                                                 <VCol cols="12">
-                                                    <VTextField label="Nhập mật khẩu mới" placeholder="Nhập mật khẩu mới"
+                                                    <VTextField label="Nhập mật khẩu cũ" v-model="MatKhau"  placeholder="Nhập mật khẩu cũ"
                                                         type="password" />
 
                                                 </VCol>
                                                 <VCol cols="12">
-                                                    <VTextField label="Nhập lại mật khẩu mới"
+                                                    <VTextField label="Nhập mật khẩu mới" v-model="MKMoi" placeholder="Nhập mật khẩu mới"
+                                                        type="password" />
+
+                                                </VCol>
+                                                <VCol cols="12">
+                                                    <VTextField label="Nhập lại mật khẩu mới" v-model="NhapLaiMKMoi"
                                                         placeholder="Nhập lại mật khẩu mới" type="password" />
                                                 </VCol>
                                             </VRow>
@@ -324,76 +617,299 @@ export default {
 
                     </div>
                     <div class="tab-pane" id="DanhSachDonHang" role="tabpanel" aria-labelledby="DanhSachDonHang-tab">
-                        <v-table fixed-header height="500px">
-                    <thead>
-                        <tr>
-                            <th class="text-left">
-                                Name
-                            </th>
-                            <th class="text-left">
-                                Name
-                            </th>
-                            <th class="text-left">
-                                Name
-                            </th>
-                            <th class="text-left">
-                                Calories
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item,i in products" :key="item.name">
-                            <td>
-                              {{ i+1 }}
-                            </td>
-                            <td><img :src="item.img" class="img-fluid" style="width: 100px; height: 100px;" alt=""
-                                    srcset=""></td>
-                            <td>{{ item.name }}</td>
-                            <td>
-                                {{ item.soluong }}
-                            </td>
-                            <td>{{ item.gia }}</td>
-                            
-                        </tr>
-                    </tbody>
-                </v-table></div>
+                        <v-table fixed-header height="650">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">
+                                        STT
+                                    </th>
+                                    <th class="text-left">
+                                        Mã Đơn hàng
+                                    </th>
+                                    <th class="text-left">
+                                        Số điện thoại
+                                    </th>
+                                    <th class="text-left">
+                                        Địa chỉ
+                                    </th>
+                                    <th class="text-left">
+                                        Ngày Tạo
+                                    </th>
+                                    <th class="text-left">
+                                        Trạng Thái
+                                    </th>
+                                    <th class="text-left">
+                                        Chi tiết
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item, i in DonHang" :key="item.name">
+                                    <td>
+                                        {{ i + 1 }}
+                                    </td>
+                                    <td>{{ item.DH_Ma }}</td>
+                                    <td>
+                                        {{ item.DH_SoDienThoai }}
+                                    </td>
+                                    <td>{{ item.DH_DiaChi }}, {{ item.DH_PhuongXa }}, {{ item.DH_QuanHuyen }}, {{
+                                        item.DH_TinhTP }}</td>
+                                    <td>{{ item.DH_NgayTao }}</td>
+                                    <td>{{ GetTrangThai(item.DH_TrangThai) }}</td>
+                                    <td>
+                                        <v-button @click="XemChiTietDonHang(item.DH_Ma)" class="btn btn-success">
+                                            <font-awesome-icon :icon="['fas', 'eye']" />
+
+                                        </v-button>
+                                        <v-dialog v-model="dialog" class="w-75">
+                                            <VCard>
+                                                <VRow>
+                                                    <VCol cols="11">
+                                                        <VCardText>
+                                                            <h4>Chi tiết đơn hàng #{{ DH_CT.DH_Ma }}</h4>
+                                                        </VCardText>
+                                                    </VCol>
+                                                    <VCol cols="1">
+                                                        <v-button class="btn btn-danger mt-3"
+                                                            @click="dialog = false">Đóng</v-button>
+                                                    </VCol>
+                                                </VRow>
+                                                <VContainer>
+                                                    <h5>Thông tin người nhận</h5>
+                                                    <VRow>
+                                                        <VCol cols="12">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-dark">
+
+                                                                    <tbody>
+                                                                        <tr class=" w-100">
+                                                                            <td class="col-2">Người nhận: </td>
+                                                                            <td>{{ DH_CT.DH_Ho }} {{ DH_CT.DH_Ten }}</td>
+                                                                        </tr>
+                                                                        <tr class="">
+                                                                            <td>Số điện thoại: </td>
+                                                                            <td>{{ DH_CT.DH_SoDienThoai }}</td>
+                                                                        </tr>
+                                                                        <tr class="">
+                                                                            <td>Địa chỉ: </td>
+                                                                            <td>
+                                                                                {{ DH_CT.DH_DiaChi }},
+                                                                                {{ DH_CT.DH_PhuongXa }},
+                                                                                {{ DH_CT.DH_QuanHuyen }},
+                                                                                {{ DH_CT.DH_TinhTP }}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </VCol>
+                                                    </VRow>
+                                                    <h5 class="mt-3">Thông tin đơn hàng</h5>
+                                                    <VRow>
+                                                        <VCol cols="12">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-dark">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>STT</th>
+                                                                            <th>Tên sách</th>
+                                                                            <th>Số lượng</th>
+                                                                            <th>Giá</th>
+                                                                            <th>Thành tiền</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr v-for="(ctdh, index) in CTDH"
+                                                                            :key="ctdh.CTDH_Ma">
+                                                                            <td>{{ index + 1 }}</td>
+                                                                            <td>{{ ctdh.CTDH_TenSach }}</td>
+                                                                            <td>{{ ctdh.CTDH_SoLuong }}</td>
+                                                                            <td>{{ ctdh.CTDH_Gia }} VNĐ</td>
+                                                                            <td>{{ ctdh.CTDH_ThanhTien }} VNĐ</td>
+                                                                        </tr>
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </VCol>
+                                                    </VRow>
+                                                    <VRow>
+                                                        <VCol cols="4">
+                                                            <h5>Tổng cộng: {{ TongCong }} VNĐ</h5>
+                                                        </VCol>
+                                                        <VCol cols="4">
+                                                            <h5>Trạng thái: &nbsp{{ GetTrangThai(DH_CT.DH_TrangThai) }}</h5>
+                                                        </VCol>
+                                                        <VCol cols="4" v-if="DH_CT.DH_TrangThai != 0">
+                                                            <v-button class="btn text-white w-100" @click="DaNhanHang(DH_CT.DH_Ma)"
+                                                                style="background-color: rgba(0,255,125,0.4)">Đã nhận được
+                                                                hàng</v-button>
+                                                        </VCol>
+                                                        <VCol cols="4" v-if="DH_CT.DH_TrangThai == 0">
+                                                            <v-button class="btn text-white w-50" @click="DaNhanHang(DH_CT.DH_Ma)"
+                                                                style="background-color: rgba(0,255,125,0.4)">Đã nhận được
+                                                                hàng</v-button>
+                                                            <v-button class="btn btn-danger text-white w-50"
+                                                                @click="HuyDonHang(DH_CT.DH_Ma)">Hủy đơn
+                                                                hàng</v-button>
+
+                                                        </VCol>
+                                                    </VRow>
+                                                </VContainer>
+                                            </VCard>
+                                        </v-dialog>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                    </div>
                     <div class="tab-pane" id="LichSuMuaHang" role="tabpanel" aria-labelledby="LichSuMuaHang-tab">
-                        <v-table fixed-header height="500px">
+                        <v-table fixed-header height="650">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">
+                                        STT
+                                    </th>
+                                    <th class="text-left">
+                                        Mã Đơn hàng
+                                    </th>
+                                    <th class="text-left">
+                                        Số điện thoại
+                                    </th>
+                                    <th class="text-left">
+                                        Địa chỉ
+                                    </th>
+                                    <th class="text-left">
+                                        Ngày Tạo
+                                    </th>
+                                    <th class="text-left">
+                                        Trạng Thái
+                                    </th>
+                                    <th class="text-left">
+                                        Chi tiết
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item, i in TatCaDonHang" :key="item.name">
+                                    <td>
+                                        {{ i + 1 }}
+                                    </td>
+                                    <td>{{ item.DH_Ma }}</td>
+                                    <td>
+                                        {{ item.DH_SoDienThoai }}
+                                    </td>
+                                    <td>{{ item.DH_DiaChi }}, {{ item.DH_PhuongXa }}, {{ item.DH_QuanHuyen }}, {{
+                                        item.DH_TinhTP }}</td>
+                                    <td>{{ item.DH_NgayTao }}</td>
+                                    <td>{{ GetTrangThai(item.DH_TrangThai) }}</td>
+                                    <td>
+                                        <v-button @click="XemChiTietDonHang(item.DH_Ma)" class="btn btn-success">
+                                            <font-awesome-icon :icon="['fas', 'eye']" />
+
+                                        </v-button>
+                                        <v-dialog v-model="dialog" class="w-75">
+                                            <VCard>
+                                                <VRow>
+                                                    <VCol cols="11">
+                                                        <VCardText>
+                                                            <h4>Chi tiết đơn hàng #{{ DH_CT.DH_Ma }}</h4>
+                                                        </VCardText>
+                                                    </VCol>
+                                                    <VCol cols="1">
+                                                        <v-button class="btn btn-danger mt-3"
+                                                            @click="dialog = false">Đóng</v-button>
+                                                    </VCol>
+                                                </VRow>
+                                                <VContainer>
+                                                    <h5>Thông tin người nhận</h5>
+                                                    <VRow>
+                                                        <VCol cols="12">
+                                                            <div class="table-responsive">
+                                                                <v-table fixed-header class="table table-dark">
+
+                            <tbody>
+                                <tr class=" w-100">
+                                    <td class="col-2">Người nhận: </td>
+                                    <td>{{ DH_CT.DH_Ho }} {{ DH_CT.DH_Ten }}</td>
+                                </tr>
+                                <tr class="">
+                                    <td>Số điện thoại: </td>
+                                    <td>{{ DH_CT.DH_SoDienThoai }}</td>
+                                </tr>
+                                <tr class="">
+                                    <td>Địa chỉ: </td>
+                                    <td>
+                                        {{ DH_CT.DH_DiaChi }},
+                                        {{ DH_CT.DH_PhuongXa }},
+                                        {{ DH_CT.DH_QuanHuyen }},
+                                        {{ DH_CT.DH_TinhTP }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                    </div>
+        </VCol>
+    </VRow>
+    <h5 class="mt-3">Thông tin đơn hàng</h5>
+    <VRow>
+        <VCol cols="12">
+            <div class="table-responsive">
+                <table class="table table-dark">
                     <thead>
                         <tr>
-                            <th class="text-left">
-                                Name
-                            </th>
-                            <th class="text-left">
-                                Name
-                            </th>
-                            <th class="text-left">
-                                Name
-                            </th>
-                            <th class="text-left">
-                                Calories
-                            </th>
+                            <th>STT</th>
+                            <th>Tên sách</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
+                            <th>Thành tiền</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item,i in products" :key="item.name">
-                            <td>
-                              {{ i+1 }}
-                            </td>
-                            <td><img :src="item.img" class="img-fluid" style="width: 100px; height: 100px;" alt=""
-                                    srcset=""></td>
-                            <td>{{ item.name }}</td>
-                            <td>
-                                {{ item.soluong }}
-                            </td>
-                            <td>{{ item.gia }}</td>
-                            
+                        <tr v-for="(ctdh, index) in CTDH" :key="ctdh.CTDH_Ma">
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ ctdh.CTDH_TenSach }}</td>
+                            <td>{{ ctdh.CTDH_SoLuong }}</td>
+                            <td>{{ ctdh.CTDH_Gia }} VNĐ</td>
+                            <td>{{ ctdh.CTDH_ThanhTien }} VNĐ</td>
                         </tr>
+
                     </tbody>
-                </v-table></div>
-                </div>
-            </VCard>
+                </table>
+            </div>
         </VCol>
+    </VRow>
+    <VRow>
+        <VCol cols="4">
+            <h5>Tổng cộng: {{ TongCong }} VNĐ</h5>
+        </VCol>
+        <VCol cols="4">
+            <h5>Trạng thái: &nbsp{{ GetTrangThai(DH_CT.DH_TrangThai) }}</h5>
+        </VCol>
+        <VCol cols="4" v-if="DH_CT.DH_TrangThai == 5">
+            <v-button class="btn w-100" style="background-color: rgb(251, 255, 0)">Đánh giá sách</v-button>
+
+        </VCol>
+        <VCol cols="4" v-if="DH_CT.DH_TrangThai != 0 && DH_CT.DH_TrangThai != 5">
+            <v-button class="btn text-white w-100" @click="DaNhanHang(DH_CT.DH_Ma)" style="background-color: rgba(0,255,4,1)">Đã nhận được hàng</v-button>
+        </VCol>
+        <VCol cols="4" v-if="DH_CT.DH_TrangThai == 0">
+            <v-button class="btn text-white w-50" @click="DaNhanHang(DH_CT.DH_Ma)" style="background-color: rgba(0,255,4,1)">Đã nhận được hàng</v-button>
+            <v-button class="btn btn-danger text-white w-50" @click="HuyDonHang(DH_CT.DH_Ma)">Hủy đơn hàng</v-button>
+
+        </VCol>
+    </VRow>
+    </VContainer>
+    </VCard>
+    </v-dialog>
+    </td>
+    </tr>
+    </tbody>
+    </v-table>
+    </div>
+    </div>
+    </VCard>
+    </VCol>
 
     </VRow>
 </template>
@@ -411,5 +927,4 @@ export default {
     color: var(--bs-table-color);
     border-color: var(--bs-table-border-color);
 }
-
 </style>

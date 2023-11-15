@@ -59,7 +59,33 @@ exports.findAll = async (req, res) => {
 
     return res.send(documents);
 };
+//*--------Truy xuất tất cả sách trong cơ sở dữ liệu
+exports.FindSachByNoiDung = async (req, res) => {
 
+    console.log('');
+
+    const condition = {
+        ownerId: req.userId
+    };
+
+    const ND = req.params.NoiDung;
+
+    if (ND) {
+        condition.S_Ten = { $regex: new RegExp(ND, "i") };
+    }
+
+    const [error, documents] = await handle(
+        Sach.find(condition, '-ownerId').sort({ 'S_Ma': 1 })
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
 exports.findLatestBooks = async (req, res) => {
     const condition = {
         ownerId: req.userId
@@ -244,6 +270,30 @@ exports.findOne = async (req, res) => {
         return res.send("Không tìm thấy sách")
     }
     return res.send(documents);
+};
+exports.findOneName = async (req, res) => {
+    const condition = {
+        S_Ma: req.params.S_Ma,
+    };
+    const [error, documents] = await handle(
+        Sach.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy sách")
+    }
+    // Chỉ trả về giá trị của thuộc tính S_Ten
+    const tenSach = documents.S_Ten;
+
+    // Chuyển đổi object thành chuỗi
+    const tenSachString = tenSach.toString();
+
+    return res.send(tenSachString);
 };
 exports.findNhapKhoSMa = async (req, res) => {
     const condition = {

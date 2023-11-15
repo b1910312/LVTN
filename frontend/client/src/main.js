@@ -20,10 +20,10 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import 'vuetify/dist/vuetify.min.css'
 
 /* import specific icons */
-import { faPen, faGears, faTrash, faBook, faNotesMedical, faRightToBracket, faUserSecret, faTruckFast, faBookBookmark, faPlus,faHouse, faShoppingCart, faLinkSlash, faReply, faStar, faMapLocationDot, faPhone, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faLock, faUnlock, faSpinner, faMedal, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faPen, faGears, faTrash, faBook, faNotesMedical , faMagnifyingGlass, faBox, faCircleExclamation, faCircleCheck, faRightToBracket, faUserSecret, faTruckFast, faBookBookmark, faPlus,faHouse, faShoppingCart, faLinkSlash, faReply, faStar, faMapLocationDot, faPhone, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faLock, faUnlock, faSpinner, faMedal, faCheck } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
-library.add(faPen, faGears, faTrash, faBook, faNotesMedical, faRightToBracket, faUserSecret, faTruckFast, faBookBookmark, faPlus,faHouse, faShoppingCart, faLinkSlash, faReply, faStar, faMapLocationDot, faPhone, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faLock, faUnlock, faSpinner, faMedal, faCheck)
+library.add(faPen, faGears, faTrash, faBook, faNotesMedical , faMagnifyingGlass, faBox, faCircleCheck,faCircleExclamation, faRightToBracket, faUserSecret, faTruckFast, faBookBookmark, faPlus,faHouse, faShoppingCart, faLinkSlash, faReply, faStar, faMapLocationDot, faPhone, faEye, faSquareMinus, faEnvelope, faPaperPlane, faEllipsis, faXmark, faArrowsRotate, faLock, faUnlock, faSpinner, faMedal, faCheck)
 window.axios = axios;
 loadFonts()
 

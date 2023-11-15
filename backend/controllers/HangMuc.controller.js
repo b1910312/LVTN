@@ -76,7 +76,7 @@ exports.getLastID = async (req, res) => {
     // console.log(newSMa);
 };
 //*----- Truy xuất một sản phẩm bằng mã sách
-exports.findOne = async (req, res) => {
+exports.findOne = async (req, res, next) => {
     const condition = {
         HM_Ma: req.params.HM_Ma,
     };

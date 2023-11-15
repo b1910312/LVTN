@@ -327,6 +327,7 @@ exports.signin = async (req, res, next) => {
         TKKH_MaKH: khachhang.TKKH_MaKH,
         TKKH_Ten: khachhang.TKKH_Ten,
         TKKH_Email: khachhang.TKKH_Email,
+        TKKH_HangMuc: khachhang.TKKH_HangMuc,
         TKKH_TrangThai: khachhang.TKKH_TrangThai,
         accessToken: token,
     });

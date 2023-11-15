@@ -4,6 +4,29 @@ const db = require("../models");
 const ChiTietGioHang = db.ChiTietGioHang;
 
 
+exports.getLastCTGHMa = async (req, res) => {
+    const [error, documents] = await handle(
+        ChiTietGioHang.findOne().sort({ CTGH_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất sách!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBCTGH000")
+    }
+    return res.send(documents.CTGH_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
+
 //*-------------Thêm sản phẩm
 exports.create = async (req, res) => {
     // Create a product
@@ -54,7 +77,31 @@ exports.findAll = async (req, res) => {
     return res.send(documents);
 };
 
+exports.findAllByID = async (req, res) => {
 
+    console.log('');
+
+    const condition = {
+        ownerId: req.userId
+    };
+    const CTGH_MaGH = req.params.CTGH_MaGH;
+
+    if (CTGH_MaGH) {
+        condition = condition.and({ CTGH_MaGH: CTGH_MaGH });
+    }
+
+    const [error, documents] = await handle(
+        ChiTietGioHang.find(condition, '-ownerId').sort({ 'CTGH_MaGH': 1 })
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất chi tiết giỏ hàng với mã ${req.params.CTGH_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
 
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
@@ -75,7 +122,25 @@ exports.findOne = async (req, res) => {
     }
     return res.send(documents);
 };
+exports.findOneByMaSach = async (req, res) => {
+    const condition = {
+        CTGH_MaSach: req.params.MaSach,
+        CTGH_MaGH: req.params.MaGH
+    };
+    const [error, documents] = await handle(
+        ChiTietGioHang.findOne(condition)
+    );
 
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất chi tiết giỏ hàng!")
+        );
+    }
+    if (!documents) {
+        return res.send(null)
+    }
+    return res.send(documents);
+};
 //*--- Cập nhật thông tin sách thông qua mã sách
 exports.update = async (req, res, next) => {
 
@@ -84,11 +149,11 @@ exports.update = async (req, res, next) => {
     };
 
     const [error, document] = await handle(
-        ChiTietGioHang.findOneAndUpdate(condition, req.body,  {
+        ChiTietGioHang.findOneAndUpdate(condition, req.body, {
             $set: {
                 'CTGH_NgayCapNhat': req.body.CTGH_NgayCapNhat,
             }
-        },{
+        }, {
             new: true,
             projection: "-ownerId",
         })
@@ -106,10 +171,37 @@ exports.update = async (req, res, next) => {
 
     return res.send({ message: "Cập nhật thông tin chi tiết giỏ hàng thành công." });
 };
+exports.updateSoLuong = async (req, res, next) => {
 
+    const condition = {
+        CTGH_Ma: req.params.CTGH_Ma
+    };
+    const [error, document] = await handle(
+        ChiTietGioHang.findOneAndUpdate(condition, {
+            'CTGH_SoLuong': req.body.CTGH_SoLuong,
+            'CTGH_NgayCapNhat': req.body.CTGH_NgayCapNhat,
+
+        }, {
+            new: true,
+            projection: "-ownerId",
+        })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình cập nhật sách có mã =${req.params.id}`
+            )
+        );
+    }
+
+    if (!document) {
+        return next(new BadRequestError(404, "Không tìm thấy sách"));
+    }
+
+    return res.send({ message: "Cập nhật sách thành công." });
+};
 
 //Xóa một sách bằng mã sách
-exports.delete = async (req,res) => {    
+exports.delete = async (req, res) => {
     const condition = {
         CTGH_Ma: req.params.CTGH_Ma
     };
@@ -120,7 +212,7 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được chi tiết giỏ hàng có mã ${req.params.id}`)
+            new BadRequestError(500, `Không xóa được chi tiết giỏ hàng có mã ${req.params.id}`)
         );
     }
 

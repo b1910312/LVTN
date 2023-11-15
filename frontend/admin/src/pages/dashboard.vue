@@ -74,6 +74,10 @@ export default {
   },
 
   methods: {
+    LamTron(number, decimals) {
+      let precision = 10 ** decimals;
+      return Math.round(number * precision) / precision;
+    },
     GetThangHienTai() {
       const now = moment();
       this.LastMonth = now.month();
@@ -104,7 +108,7 @@ export default {
       for (let month = 1; month <= 12; month++) {
         const monthDataKey = `${month}`;
         this.monthlyData[monthDataKey] = {};
-        this.DoanhSothis[0]= 0
+        this.DoanhSothis[0] = 0
         this.filterOrdersByMonth(month);
 
         this.monthlyData[monthDataKey].SachSauKhiLoc = this.SachSauKhiLoc;
@@ -263,8 +267,8 @@ export default {
             // stats: CurrentTongDoanhSo,
             // change: ((CurrentTongDoanhSo - LastMonthTongDoanhSo) / (LastMonthTongDoanhSo)) * 100,
 
-            stats: DoanhSothis[selectedMonth],
-            change: ((DoanhSothis[selectedMonth] - DoanhSothis[LastMonth]) / (DoanhSothis[LastMonth])) * 100,
+            stats:LamTron( DoanhSothis[selectedMonth],0),
+            change: LamTron( ((DoanhSothis[selectedMonth] - DoanhSothis[LastMonth]) / (DoanhSothis[LastMonth])) * 100,0),
           }" />
         </VCol>
 
@@ -273,8 +277,8 @@ export default {
           <CardStatisticsVertical v-bind="{
             title: 'Sách đã bản',
             image: wallet,
-            stats: SoLuongthis[selectedMonth],
-            change: ((SoLuongthis[selectedMonth] - SoLuongthis[LastMonth]) / (SoLuongthis[LastMonth])) * 100,
+            stats: LamTron(SoLuongthis[selectedMonth],0),
+            change: LamTron((((SoLuongthis[selectedMonth] - SoLuongthis[LastMonth]) / (SoLuongthis[LastMonth])) * 100),0),
             // stats: 0,
             // change: 0,
           }" />
@@ -283,8 +287,8 @@ export default {
           <CardStatisticsVertical v-bind="{
             title: 'Lợi nhuận',
             image: wallet,
-            stats: LoiNhuanthis[selectedMonth],
-            change: ((LoiNhuanthis[selectedMonth] - LoiNhuanthis[LastMonth]) / (LoiNhuanthis[LastMonth])) * 100,
+            stats: LamTron(LoiNhuanthis[selectedMonth],0),
+            change: LamTron((((LoiNhuanthis[selectedMonth] - LoiNhuanthis[LastMonth]) / (LoiNhuanthis[LastMonth])) * 100),0),
             // stats: 0,
             // change: 0,
           }" />
@@ -293,15 +297,15 @@ export default {
           <CardStatisticsVertical v-bind="{
             title: 'Giá nhập kho',
             image: wallet,
-            stats: NhapKhothis[selectedMonth],
-            change: ((NhapKhothis[selectedMonth] - NhapKhothis[LastMonth]) / (NhapKhothis[LastMonth])) * 100,
+            stats: LamTron(NhapKhothis[selectedMonth],0),
+            change: LamTron((((NhapKhothis[selectedMonth] - NhapKhothis[LastMonth]) / (NhapKhothis[LastMonth])) * 100),0),
             // stats: 0,
             // change: 0,
           }" />
         </VCol>
       </VRow>
     </VCol>
-    <VCol cols="12" md="12" sm="12" >
+    <VCol cols="12" md="12" sm="12">
       <AnalyticsFinanceTabs :incomeData="DoanhSothis" :MaxVL=1000000 :MinVL=10000 />
     </VCol>
     <!-- <AnalyticsTotalRevenue/>> -->
@@ -331,7 +335,7 @@ export default {
       <VRow>
         <!-- 👉 Profit Report -->
         <VCol cols="12" sm="12">
-          <AnalyticsProfitReport  />
+          <AnalyticsProfitReport />
         </VCol>
       </VRow>
     </VCol>
@@ -342,7 +346,7 @@ export default {
     </VCol>
 
     <!-- 👉 Tabs chart -->
-    
+
 
     <!-- 👉 Transactions -->
     <VCol cols="12" md="4" sm="6" order="3">

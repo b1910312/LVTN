@@ -8,7 +8,7 @@ const GioHang = db.GioHang;
 exports.create = async (req, res) => {
     // Create a product
     const giohang = new GioHang({
-        
+        GH_MaGH: req.body.GH_MaGH,
         GH_MaKH: req.body.GH_MaKH,
         GH_NgayTao: req.body.GH_NgayTao,
         GH_NgayCapNhat: req.body.GH_NgayCapNhat,
@@ -58,7 +58,7 @@ exports.findAll = async (req, res) => {
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
-        GH_MaKH: req.params.GH_MaKH,
+        GH_MaGH: req.params.GH_MaGH,
     };
     const [error, documents] = await handle(
         GioHang.findOne(condition)
@@ -76,7 +76,7 @@ exports.findOne = async (req, res) => {
 };
 exports.getLastGHMa = async (req, res) => {
     const [error, documents] = await handle(
-        GioHang.findOne().sort({ GH_MaKH: -1 })
+        GioHang.findOne().sort({ GH_MaGH: -1 })
     );
     if (error) {
         return next(
@@ -86,7 +86,7 @@ exports.getLastGHMa = async (req, res) => {
     if (!documents) {
         return res.send("KBGH000")
     }
-    return res.send(documents.GH_MaKH);
+    return res.send(documents.GH_MaGH);
     // if (!lastRecord) {
     //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
     // }
@@ -101,15 +101,15 @@ exports.getLastGHMa = async (req, res) => {
 exports.update = async (req, res, next) => {
 
     const condition = {
-        GH_MaKH: req.params.GH_MaKH
+        GH_MaGH: req.params.GH_MaGH
     };
 
     const [error, document] = await handle(
-        GioHang.findOneAndUpdate(condition, req.body,  {
+        GioHang.findOneAndUpdate(condition, req.body, {
             $set: {
                 'GH_NgayCapNhat': req.body.GH_NgayCapNhat,
             }
-        },{
+        }, {
             new: true,
             projection: "-ownerId",
         })
@@ -130,7 +130,29 @@ exports.update = async (req, res, next) => {
 
 
 //Xóa một sách bằng mã sách
-exports.delete = async (req,res) => {    
+exports.delete = async (req, res) => {
+    const condition = {
+        GH_MaGH: req.params.GH_MaGH
+    };
+
+    const [error, document] = await handle(
+        GioHang.deleteOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Không xóa được giỏ hảng có mã ${req.params.id}`)
+        );
+    }
+
+    if (document) {
+        return res.send({ message: "Xóa giỏ hảng thành công" });
+    }
+
+};
+
+exports.deletebyMaKH = async (req, res) => {
+
     const condition = {
         GH_MaKH: req.params.GH_MaKH
     };
@@ -141,7 +163,7 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được giỏ hảng có mã ${req.params.id}`)
+            new BadRequestError(500, `Không xóa được giỏ hảng có mã ${req.params.id}`)
         );
     }
 
@@ -150,4 +172,25 @@ exports.delete = async (req,res) => {
     }
 
 };
+exports.getGioHangByMaKH = async (req, res) => {
 
+    const GH_MaKH = req.params.GH_MaKH;
+
+    const condition = {
+        GH_MaKH: GH_MaKH
+    };
+
+    const [error, document] = await handle(GioHang.findOne(condition));
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình lấy giỏ hàng với mã KH ${GH_MaKH}`)
+        );
+    }
+
+    if (document) {
+        return res.send(document.GH_MaGH);
+    } else {
+        return res.send(null);
+    }
+};

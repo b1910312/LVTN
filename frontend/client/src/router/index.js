@@ -23,12 +23,20 @@ const router = createRouter({
                     component: () => import('../pages/ChiTietSach.vue'),
                 },
                 {
+                    path: 'thanhtoanthanhcong',
+                    component: () => import('../pages/thanhtoanthanhcong.vue'),
+                },
+            
+                {
                     path: 'giohang',
                     component: () => import('../pages/GioHang.vue'),
                 },
                 {
                     path: 'donhang/:id',
                     component: () => import('../pages/DonHang.vue'),
+                    props: (route) => ({
+                        productsThanhToan: route.query.productsThanhToan,
+                    }),
                 },
                 {
                     path: 'lienhe',
@@ -39,6 +47,10 @@ const router = createRouter({
                     component: () => import('../pages/ChatPage.vue'),
                 },
                 {
+                    path: 'timkiem',
+                    component: () => import('../pages/TimKiem.vue'),
+                },
+                {
                     path: 'profile/:id',
                     component: () => import('../pages/ProFile.vue'),
                 },
@@ -46,7 +58,7 @@ const router = createRouter({
                     path: 'gioithieu',
                     component: () => import('../pages/GioiThieu.vue'),
                 },
-                
+
             ]
         },
         {
@@ -64,7 +76,7 @@ const router = createRouter({
                 {
                     path: '/:pathMatch(.*)*',
                     component: () => import('../pages/[...all].vue'),
-                  },
+                },
             ]
         }
     ],

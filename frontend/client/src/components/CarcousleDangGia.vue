@@ -2,32 +2,27 @@
     <v-carousel cycle hide-delimiter-background show-arrows="hover" style="border-radius: 50px;" height="380"
         cycleInterval="1000" v-model="activeIndex">
         <v-carousel-item v-for="item in danhgia" :key="item.name" auto>
-            <VCard class="h-100" style="background-color: rgba(0, 255,125,0.5);">
-                <VRow class="mx-auto my-auto">
-                    <VCol cols="12">
-                        <VCard class="m-5 " style="background-color: rgba(0, 255,125,0);">
-
-                            <div class=" row w-100">
-                                <div class="col-4">
-                                    <img :src="GetThumNail(item.MaKH)"
-                                        style="border-radius: 15px; height: 200px; width: 200px;" class="img-fluid" alt="">
-                                </div>
-                                <div class="col-8 py-5">
-                                    <VRow>
-                                        <h3>Nguyễn Thanh Tín</h3>
-                                    </VRow>
-                                    <VRow>
-                                        <h3>Số sao: {{ item.sosao }}</h3>
-                                    </VRow>
-                                    <VRow>
-                                        <h3>{{ item.Noidung }}</h3>
-                                    </VRow>
-                                </div>
-                            </div>
-                        </VCard>
-                    </VCol>
-                </VRow>
-            </VCard>
+            <VContainer class="bg bg-white h-100">
+                <section class="l-card__user mb-5 mx-5">
+                    <div class="l-card__userImage">
+                        <img :src="GetThumNail(item.MaKH)" alt="Naruto">
+                    </div>
+                    <div class="l-card__userInfo">
+                        <h3>{{ item.MaKH }}</h3>
+                        <div class="d-flex">
+                            <h5 style="color: gold;" v-for="i of item.sosao" :key="i">
+                            <font-awesome-icon :icon="['fas', 'star']" />
+                        </h5>
+                        </div>
+                    </div>
+                </section>
+                <section class="l-card__text">
+                    <p>
+                        {{ item.Noidung }}
+                    </p>
+                </section>
+               
+            </VContainer>
         </v-carousel-item>
     </v-carousel>
 </template>
@@ -68,7 +63,83 @@ export default defineComponent(
 
 </script>
 <style>
-.v-input {
-    border-radius: 10px;
+img {
+    width: 100%;
+    height: auto;
+}
+
+.l-card {
+    width: auto;
+    min-width: 360px;
+    max-width: 480px;
+    height: auto;
+    background: #f5f5f5;
+    color: #272727;
+    padding: 50px;
+    box-shadow: 0px 7px 24px rgba(100, 100, 100, 0.4);
+}
+
+.l-card__text p {
+    font-size: 30px;
+    font-family: "Vollkorn", serif;
+    font-weight: 400;
+    color: #3f3f55;
+    margin: auto;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.l-card__text p::after {
+    content: "\201D";
+    display: inline;
+    color: #999;
+}
+
+.l-card__text p::before {
+    content: "\201C";
+    display: inline;
+    color: #999;
+}
+
+.l-card__user {
+    display: flex;
+    flex-direction: row;
+    padding-top: 24px;
+    margin-top: 12px;
+    /* border-top: 1px solid #c1c1c1; */
+    align-items: center;
+}
+
+.l-card__userImage {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.l-card__userImage img {
+    width: 100%;
+    height: 100%;
+    object-filt: cover;
+}
+
+.l-card__userInfo {
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+}
+
+.l-card__userInfo span:nth-child(1) {
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 14px;
+    color: #3f3f55;
+}
+
+.l-card__userInfo span:nth-child(2) {
+    color: #adada6;
+    font-family: sans-serif;
+    font-size: 12px;
+    margin-top: 2px;
 }
 </style>

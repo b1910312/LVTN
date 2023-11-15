@@ -8,9 +8,17 @@ module.exports = (app) => {
 
     router.get("/", chitietgiohang.findAll);
 
+    router.get("/getbyMaKH/:CTGH_MaKH", chitietgiohang.findAllByID);
+
+    router.get("/getid/getlastctghma", chitietgiohang.getLastCTGHMa);
+
     router.get("/:CTGH_Ma", chitietgiohang.findOne);
 
+    router.get("/GetbySach/:MaSach/:MaGH", chitietgiohang.findOneByMaSach);
+
     router.put("/:CTGH_Ma", chitietgiohang.update);
+
+    router.put("/CapNhatSoLuong/:CTGH_Ma", chitietgiohang.updateSoLuong);
 
     router.delete("/:CTGH_Ma", chitietgiohang.delete);
 

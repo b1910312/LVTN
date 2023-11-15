@@ -6,15 +6,17 @@
         <input type="text" class="form-control w-100" v-model.trim="FitlerDHs" name="" id="" aria-describedby="helpId"
           placeholder="Tìm kiếm theo tên">
       </VCol>
-      <VCol cols="5"></VCol>
-      <VCol cols="1" class="pe-4">
+      <VCol cols="4"></VCol>
+      <VCol cols="2" class="pe-4">
+        <button class="btn btn-outline-primary w-50" @click="GetDonHang()" style="float: right; right: 0;"><font-awesome-icon
+            :icon="['fas', 'arrows-rotate']" /></button>
         <RouterLink :to="{ name: 'NXBThem' }">
-          <button class="btn btn-outline-primary w-100" style="float: right; right: 0;"><font-awesome-icon
+          <button class="btn btn-outline-primary w-50" style="float: right; right: 0;"><font-awesome-icon
               :icon="['fas', 'plus']" /></button>
         </RouterLink>
       </VCol>
     </VRow>
-    <VTable height="750" fixed-header>
+    <VTable height="600" fixed-header>
       <thead>
         <tr>
           <th>
@@ -184,8 +186,8 @@
             <VCol cols="12">
               <div class="mb-3">
                 <label for="" class="form-label">Trạng thái đơn hàng</label>
-                <select class="form-select form-select-lg" name="" id="" @change="updateTrangThai()">
-                  <option selected>{{ GetTrangThai(DH.DH_TrangThai) }}</option>
+                <select class="form-select form-select-lg" v-model="DH.DH_TrangThai" name="" id=""
+                  @change="updateTrangThai()">
                   <option value="0">Chưa xác nhận</option>
                   <option value="1">Đã xác nhận</option>
                   <option value="2">Đã thanh toán</option>
@@ -197,7 +199,7 @@
             </VCol>
 
             <VCol cols="12 mb-5">
-              <VBtn @click="CapNhatTrangThai()" class="me-2 float-end btn btn-primary mb-5">
+              <VBtn @click="CapNhatTrangThai(DH_MaActive)" class="me-2 float-end btn btn-primary mb-5">
                 Cập nhật trạng thái
               </VBtn>
 
@@ -275,14 +277,14 @@ export default defineComponent({
       this.dialogHeight = "900px"
       window.print()
     },
-    CapNhatTrangThai() {
+    CapNhatTrangThai(MaDH) {
       const now = moment();
       let data = {
         DH_NgayCapNhat: now.format("DD-MM-YYYY"),
         DH_TrangThai: this.DH.DH_TrangThai
       }
       // Gọi API để cập nhật sản phẩm
-      axios.put("http://localhost:3000/api/donhang/capnhattrangthai/" + this.DH_MaActive, data).then(response => {
+      axios.put("http://localhost:3000/api/donhang/capnhattrangthai/" + MaDH, data).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log(data)
         alert("Cập nhật thành công");
@@ -382,6 +384,12 @@ export default defineComponent({
     },
     XoaDonHang(DH_Ma) {
       axios.delete("http://localhost:3000/api/donhang/" + DH_Ma).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+
+      }).catch(error => {
+        alert(error);
+      });
+      axios.delete("http://localhost:3000/api/chitietdonhang//deletebyDH/" + DH_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         alert("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
