@@ -1,14 +1,22 @@
 <script>
 import ListDichVu from '@/components/ListDichVu.vue';
 import CarcousleDangGia from '@/components/CarcousleDangGia.vue';
+import LoginSmall from '@/components/LoginSmall.vue';
+import moment from 'moment';
 export default {
     name: "GioiThieu",
     components: {
         ListDichVu,
-        CarcousleDangGia
+        CarcousleDangGia,
+        LoginSmall
     },
     data() {
         return {
+            LastID3: "",
+            NewID3: "",
+            So3: "",
+            Chu3: "",
+            NoidungDanhGia: "",
             tab: 'option-1',
             TenCuaHang: "",
             Logo: "",
@@ -40,9 +48,144 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
                 { MaKH: "KBKH002", sosao: 5, Noidung: "Tốt" },
                 { MaKH: "KBKH002", sosao: 5, Noidung: "Tốt" },
 
-            ]
+            ],
+            RateStar: 0,
+            DGs: [],
+            DaDanhGia: false,
+            nvv: "",
+            DGMessage: "",
+            DGMessageSuccess: "",
+            DanhGiaXong: false,
         }
-    }
+    },
+    mounted() {
+        this.getNV()
+        this.GetLastID3()
+        this.GetDG()
+        this.CheckKH1(this.nvv.TKKH_MaKH)
+
+    },
+    methods: {
+        getNV() {
+            if (JSON.parse(localStorage.getItem("khachhang")) != null) {
+                this.nvv = JSON.parse(localStorage.getItem("khachhang"))
+            }
+            console.log(this.nvv);
+        },
+
+        CheckKH(KH_Ma) {
+            axios.get(`http://localhost:3000/api/danhgiacuahang/checkKH/` + KH_Ma)
+                .then(res => {
+                    this.DaDanhGia = res.data
+                    this.GetDG()
+
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+        CheckKH1(KH_Ma) {
+            axios.get(`http://localhost:3000/api/danhgiacuahang/checkKH/` + KH_Ma)
+                .then(res => {
+                    this.DaDanhGia = res.data
+                    if(res.data == true){
+                        this.DGMessage = "Bạn đã đánh giá cho cửa hàng trước đó, bạn không thể đáng giá thêm"
+                    }
+                    this.GetDG()
+
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+        SetStar(SoSao) {
+            this.RateStar = SoSao
+        },
+        GetDG() {
+            axios.get(`http://localhost:3000/api/danhgiacuahang`)
+                .then(res => {
+                    this.DGs = res.data
+                    console.log("Đánh giá")
+                    console.log(this.DGs)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        },
+        CapNhatLastID3() {
+            this.TachKBS3()
+            this.Increase3()
+            this.LastID3 = this.NewID3
+            console.log('NewID3')
+            console.log(this.NewID3)
+        },
+        GetLastID3() {
+            axios.get(`http://localhost:3000/api/danhgiacuahang/getid/getlastdgma`).then(res => {
+                this.LastID3 = res.data
+                this.TachKBS3()
+                this.Increase3()
+                console.log(this.LastID3)
+                console.log("ID NEW" + this.NewID3)
+                console.log(this.So3)
+                console.log(this.Chu3)
+            })
+        },
+        Increase3() {
+            // Chuyển đổi chuoi thành số nguyên
+            let SoNguyen = parseInt(this.So3);
+
+            // Tăng giá trị của số nguyên
+            SoNguyen += 1;
+
+            // Chuyển đổi số nguyên thành chuoi
+            this.So3 = String(SoNguyen).padStart(3, "0");
+            this.NewID3 = this.Chu3 + this.So3;
+            console.log(this.NewID3)
+        },
+        TachKBS3() {
+            let [Text1, result1] = this.LastID3.split("0");
+            let [Text, result] = this.LastID3.split("DGCH");
+            this.So3 = result;
+            this.Chu3 = Text1;
+        },
+        DanhGiaCH() {
+            const data = {
+                DG_Ma: this.NewID3,
+                DG_MaKH: this.nvv.TKKH_MaKH,
+                DG_NoiDung: this.NoidungDanhGia,
+                DG_SoSao: this.RateStar,
+                DG_NgayTao: moment().format("DD-MM-YYYY")
+            }
+            if (this.DaDanhGia == false) {
+                axios.post(`http://localhost:3000/api/danhgiacuahang`, data)
+                    .then(res => {
+                        this.GetDG()
+                        this.DanhGiaXong = true
+                        this.DGMessageSuccess ="Bạn đã đáng thành công cho cửa hàng, chúc bạn một ngày mua sắm vui vẻ!"
+                        this.CheckKH(data.DG_MaKH)
+                        console.log("Đánh giá thành công")
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            }
+
+        },
+        CheckValueDG() {
+            if (this.RateStar == 0) {
+                this.DGMessage = "Bạn chưa chọn số sao muốn đánh giá"
+                return false;
+            }
+            if (this.NoidungDanhGia == "") {
+                this.DGMessage = "Bạn chưa nhập nội dung muốn đánh giá"
+                return false;
+            }
+            this.DanhGiaCH()
+        }
+
+    },
+
 }
 </script>
 <template>
@@ -117,9 +260,13 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
         </VCol>
     </VRow>
     <VRow class="bggt">
-        <VCol cols="12">
+        <VCol cols="12" v-if="nvv!=''" >
             <VCard style="background-color: rgba(0, 255, 4, 0);">
-                <VCardTitle class="text-center"><h4>ĐÁNH GIÁ CỬA HÀNG</h4></VCardTitle>
+                <VCardTitle class="text-center">
+                    <h4>ĐÁNH GIÁ CỬA HÀNG</h4>
+                    <!-- <p class="text-success text-center" v-if="DanhGiaXong == true">{{ DGMessageSuccess }}</p> -->
+                    <p class="text-danger text-center" v-if="DaDanhGia == true || RateStar == 0 || NoidungDanhGia == '' ">{{ DGMessage }}</p>
+                </VCardTitle >
                 <div class="row w-100">
                     <div class="col-4"></div>
                     <div class="col-4">
@@ -130,12 +277,16 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
                                <h3 :class="{ starbutton: star <= 5 }"> <font-awesome-icon :icon="['fas', 'star']" /></h3>
                             </button> -->
                             <div class="rating-stars">
-                                <input type="radio" name="rating" id="rs0"><label class="starlabel" for="rs0"></label>
-                                <input type="radio" name="rating" id="rs1"><label class="starlabel" for="rs1"></label>
-                                <input type="radio" name="rating" id="rs2"><label class="starlabel" for="rs2"></label>
-                                <input type="radio" name="rating" id="rs3" checked><label class="starlabel"
+                                <input type="radio" @click="SetStar(1)" name="rating" id="rs0"><label class="starlabel"
+                                    for="rs0"></label>
+                                <input type="radio" @click="SetStar(2)" name="rating" id="rs1"><label class="starlabel"
+                                    for="rs1"></label>
+                                <input type="radio" @click="SetStar(3)" name="rating" id="rs2" checked><label
+                                    class="starlabel" for="rs2"></label>
+                                <input type="radio" @click="SetStar(4)" name="rating" id="rs3"><label class="starlabel"
                                     for="rs3"></label>
-                                <input type="radio" name="rating" id="rs4"><label class="starlabel" for="rs4"></label>
+                                <input type="radio" @click="SetStar(5)" name="rating" id="rs4"><label class="starlabel"
+                                    for="rs4"></label>
                                 <span class="number"></span>
                             </div>
                         </div>
@@ -152,21 +303,25 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
                 <VRow class="mt-2 text-dark">
                     <VCol cols="2"></VCol>
                     <VCol cols="7">
-                        <VTextField label="Nội dung đánh giá" class="bg bg-white"
+                        <VTextField v-model="NoidungDanhGia" label="Nội dung đánh giá" class="bg bg-white"
                             placeholder="Nhập nội dung đánh giá tại đây"></VTextField>
                     </VCol>
                     <VCol cols="1">
-                        <v-button style="background-color: rgba(0, 255, 4, 1);" class="btn h-100 w-100 text-white ">
-                            <h4 class="my-auto">Gửi</h4>
+                        <v-button @click="CheckValueDG()" style="background-color: rgba(0, 255, 4, 1);" class="btn h-100 w-100 text-white ">
+                            <h4 class="my-auto" >Gửi
+                            </h4>
                         </v-button>
                     </VCol>
                 </VRow>
             </VCard>
         </VCol>
+        <VCol cols="7" class="mx-auto" v-if="nvv==''" >
+                <LoginSmall/>
+        </VCol>
     </VRow>
     <VRow>
         <VCol cols="8" class="mx-auto">
-            <CarcousleDangGia :danhgia="danhgia" />
+            <CarcousleDangGia :danhgia="DGs" />
         </VCol>
     </VRow>
 </template>
@@ -187,7 +342,7 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
 .rating-stars {
     display: block;
     width: 65vmin;
-    
+
     border-radius: 5vmin;
     position: relative;
     display: flex;
@@ -284,37 +439,37 @@ input:checked+label.starlabel~label.starlabel:hover:active:before {
         -1px 0px 1px var(--tbh),
         1px 0px 1px var(--tbh),
         0vmin 0.1vmin 1px #ffeb3b,
-0vmin 0.1vmin 1px #ffeb3b,
-0vmin 0.2vmin 1px #ffd700,
-0vmin 0.2vmin 1px #ffd700,
-0vmin 0.3vmin 1px #ffd700,
-0vmin 0.3vmin 1px #ffd700,
-0vmin 0.4vmin 1px #ffd700,
-0vmin 0.4vmin 1px #ffd700,
-0vmin 0.5vmin 1px #ffd700,
-0vmin 0.5vmin 1px #ffd700,
-0vmin 0.6vmin 1px #ffd700,
-0vmin 0.6vmin 1px #ffd700,
-0vmin 0.7vmin 1px #ffd700,
-0vmin 0.7vmin 1px #ffd700,
-0vmin 0.8vmin 1px #ffd700,
-0vmin 0.8vmin 1px #ffd700,
-0vmin 0.9vmin 1px #ffd700,
-0vmin 0.9vmin 1px #ffd700,
-0vmin 1.0vmin 1px #ffd700,
-0vmin 1.1vmin 1px #ffd700,
-0vmin 1.1vmin 1px #ffd700,
-0vmin 1.2vmin 1px #ffd700,
-0vmin 1.2vmin 1px #ffd700,
-0vmin 1.3vmin 1px #ffd700,
-0vmin 1.3vmin 1px #ffd700,
-0vmin 1.4vmin 1px #ffd700,
-0vmin 1.4vmin 1px #ffd700,
-0vmin 1.5vmin 1px #ffd700,
-0vmin 1.5vmin 1px #ffd700,
-0vmin 1.6vmin 1px #ffd700,
-0vmin 1.6vmin 1px #ffd700,
-0vmin 1.6vmin 3px #ffeb3b;
+        0vmin 0.1vmin 1px #ffeb3b,
+        0vmin 0.2vmin 1px #ffd700,
+        0vmin 0.2vmin 1px #ffd700,
+        0vmin 0.3vmin 1px #ffd700,
+        0vmin 0.3vmin 1px #ffd700,
+        0vmin 0.4vmin 1px #ffd700,
+        0vmin 0.4vmin 1px #ffd700,
+        0vmin 0.5vmin 1px #ffd700,
+        0vmin 0.5vmin 1px #ffd700,
+        0vmin 0.6vmin 1px #ffd700,
+        0vmin 0.6vmin 1px #ffd700,
+        0vmin 0.7vmin 1px #ffd700,
+        0vmin 0.7vmin 1px #ffd700,
+        0vmin 0.8vmin 1px #ffd700,
+        0vmin 0.8vmin 1px #ffd700,
+        0vmin 0.9vmin 1px #ffd700,
+        0vmin 0.9vmin 1px #ffd700,
+        0vmin 1.0vmin 1px #ffd700,
+        0vmin 1.1vmin 1px #ffd700,
+        0vmin 1.1vmin 1px #ffd700,
+        0vmin 1.2vmin 1px #ffd700,
+        0vmin 1.2vmin 1px #ffd700,
+        0vmin 1.3vmin 1px #ffd700,
+        0vmin 1.3vmin 1px #ffd700,
+        0vmin 1.4vmin 1px #ffd700,
+        0vmin 1.4vmin 1px #ffd700,
+        0vmin 1.5vmin 1px #ffd700,
+        0vmin 1.5vmin 1px #ffd700,
+        0vmin 1.6vmin 1px #ffd700,
+        0vmin 1.6vmin 1px #ffd700,
+        0vmin 1.6vmin 3px #ffeb3b;
 
 }
 
@@ -331,37 +486,37 @@ label.starlabel~label.starlabel:hover:active:before {
         -1px 0px 1px var(--tbh),
         1px 0px 1px var(--tbh),
         0vmin 0.1vmin 1px #ffeb3b,
-0vmin 0.1vmin 1px #ffeb3b,
-0vmin 0.2vmin 1px #ffd700,
-0vmin 0.2vmin 1px #ffd700,
-0vmin 0.3vmin 1px #ffd700,
-0vmin 0.3vmin 1px #ffd700,
-0vmin 0.4vmin 1px #ffd700,
-0vmin 0.4vmin 1px #ffd700,
-0vmin 0.5vmin 1px #ffd700,
-0vmin 0.5vmin 1px #ffd700,
-0vmin 0.6vmin 1px #ffd700,
-0vmin 0.6vmin 1px #ffd700,
-0vmin 0.7vmin 1px #ffd700,
-0vmin 0.7vmin 1px #ffd700,
-0vmin 0.8vmin 1px #ffd700,
-0vmin 0.8vmin 1px #ffd700,
-0vmin 0.9vmin 1px #ffd700,
-0vmin 0.9vmin 1px #ffd700,
-0vmin 1.0vmin 1px #ffd700,
-0vmin 1.1vmin 1px #ffd700,
-0vmin 1.1vmin 1px #ffd700,
-0vmin 1.2vmin 1px #ffd700,
-0vmin 1.2vmin 1px #ffd700,
-0vmin 1.3vmin 1px #ffd700,
-0vmin 1.3vmin 1px #ffd700,
-0vmin 1.4vmin 1px #ffd700,
-0vmin 1.4vmin 1px #ffd700,
-0vmin 1.5vmin 1px #ffd700,
-0vmin 1.5vmin 1px #ffd700,
-0vmin 1.6vmin 1px #ffd700,
-0vmin 1.6vmin 1px #ffd700,
-0vmin 1.6vmin 3px #ffeb3b;
+        0vmin 0.1vmin 1px #ffeb3b,
+        0vmin 0.2vmin 1px #ffd700,
+        0vmin 0.2vmin 1px #ffd700,
+        0vmin 0.3vmin 1px #ffd700,
+        0vmin 0.3vmin 1px #ffd700,
+        0vmin 0.4vmin 1px #ffd700,
+        0vmin 0.4vmin 1px #ffd700,
+        0vmin 0.5vmin 1px #ffd700,
+        0vmin 0.5vmin 1px #ffd700,
+        0vmin 0.6vmin 1px #ffd700,
+        0vmin 0.6vmin 1px #ffd700,
+        0vmin 0.7vmin 1px #ffd700,
+        0vmin 0.7vmin 1px #ffd700,
+        0vmin 0.8vmin 1px #ffd700,
+        0vmin 0.8vmin 1px #ffd700,
+        0vmin 0.9vmin 1px #ffd700,
+        0vmin 0.9vmin 1px #ffd700,
+        0vmin 1.0vmin 1px #ffd700,
+        0vmin 1.1vmin 1px #ffd700,
+        0vmin 1.1vmin 1px #ffd700,
+        0vmin 1.2vmin 1px #ffd700,
+        0vmin 1.2vmin 1px #ffd700,
+        0vmin 1.3vmin 1px #ffd700,
+        0vmin 1.3vmin 1px #ffd700,
+        0vmin 1.4vmin 1px #ffd700,
+        0vmin 1.4vmin 1px #ffd700,
+        0vmin 1.5vmin 1px #ffd700,
+        0vmin 1.5vmin 1px #ffd700,
+        0vmin 1.6vmin 1px #ffd700,
+        0vmin 1.6vmin 1px #ffd700,
+        0vmin 1.6vmin 3px #ffeb3b;
 
 }
 

@@ -1,88 +1,93 @@
 <template>
-   <VContainer>
-    <div class="card h-100">
-        <div class="card-header msg_head">
-            <div class="d-flex bd-highlight">
-                <div class="img_cont">
-                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img">
-                    <span class="online_icon"></span>
-                </div>
-                <div class="user_info">
-                    <span>{{ name }}</span>
-                    <p>{{ TinNhanLenght }} tin nhắn</p>
-                </div>
-                <VCol cols="8" class=" ms-5 ps-4">
-                    <input type="text" class="form-control w-100" v-model.trim="FitlerTNs" name="" id=""
-                        aria-describedby="helpId" placeholder="Tìm kiếm tin nhắn">
-                </VCol>
-            </div>
-
-        </div>
-        <div class="card-body msg_card_body" ref="messages" style="height: 500px;">
-            <div v-for="message in filteredTNs" :key="message.TN_Ma">
-                <div :class="GetSide1(message.TN_MaND)">
-                    <div v-if="GetSide4(message.TN_MaND) == 1" class="d-flex">
-                        <div :class="GetSide2(message.TN_MaND)">
-                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                class="rounded-circle user_img_msg">
-                        </div>
-                        <div class="msg_cotainer">
-                            {{ message.TN_NoiDung }}
-                            <br>
-                            <span :class="GetSide3(message.TN_MaND)"> {{ message.TN_NgayTao }}
-                                <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <font-awesome-icon :icon="['fas', 'ellipsis']" />
-
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-start" aria-labelledby="triggerId">
-                                    <button class="dropdown-item btn btn-outline-danger" @click="XoaTinNhan(message.TN_Ma)">
-                                        <font-awesome-icon :icon="['fas', 'trash']"></font-awesome-icon>&nbsp; Xóa tin nhắn
-                                    </button>
-                                </div>
-                            </span>
-                        </div>
-
+    <VContainer>
+        <div class="card h-100">
+            <div class="card-header msg_head">
+                <div class="d-flex bd-highlight">
+                    <div class="img_cont">
+                        <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                            class="rounded-circle user_img">
+                        <span class="online_icon"></span>
                     </div>
-                    <div v-if="GetSide4(message.TN_MaND) == 2" class="d-flex">
+                    <div class="user_info">
+                        <span>{{ name }}</span>
+                        <p>{{ TinNhanLenght }} tin nhắn</p>
+                    </div>
+                    <VCol cols="8" class=" ms-5 ps-4">
+                        <input type="text" class="form-control w-100" v-model.trim="FitlerTNs" name="" id=""
+                            aria-describedby="helpId" placeholder="Tìm kiếm tin nhắn">
+                    </VCol>
+                </div>
 
-                        <div class="msg_cotainer">
+            </div>
+            <div class="card-body msg_card_body" ref="messages" style="height: 500px;">
+                <div v-for="message in filteredTNs" :key="message.TN_Ma">
+                    <div :class="GetSide1(message.TN_MaND)">
+                        <div v-if="GetSide4(message.TN_MaND) == 1" class="d-flex">
+                            <div :class="GetSide2(message.TN_MaND)">
+                                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                    class="rounded-circle user_img_msg">
+                            </div>
+                            <div class="msg_cotainer">
+                                {{ message.TN_NoiDung }}
+                                <br>
+                                <span :class="GetSide3(message.TN_MaND)"> {{ message.TN_NgayTao }}
+                                    <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <font-awesome-icon :icon="['fas', 'ellipsis']" />
 
-                            {{ message.TN_NoiDung }}
-
-                            <span :class="GetSide3(message.TN_MaND)"> {{ message.TN_NgayTao }}
-
-                                <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <font-awesome-icon :icon="['fas', 'ellipsis']" />
-
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-start" aria-labelledby="triggerId">
-                                    <button class="dropdown-item btn btn-outline-danger" @click="XoaTinNhan(message.TN_Ma)">
-                                        <font-awesome-icon :icon="['fas', 'trash']"></font-awesome-icon>&nbsp; Xóa tin nhắn
                                     </button>
-                                </div>
-                            </span>
+                                    <div class="dropdown-menu dropdown-menu-start" aria-labelledby="triggerId">
+                                        <button class="dropdown-item btn btn-outline-danger"
+                                            @click="XoaTinNhan(message.TN_Ma)">
+                                            <font-awesome-icon :icon="['fas', 'trash']"></font-awesome-icon>&nbsp; Xóa tin
+                                            nhắn
+                                        </button>
+                                    </div>
+                                </span>
+                            </div>
 
                         </div>
-                        <div :class="GetSide2(message.TN_MaND)">
-                            <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-                                class="rounded-circle user_img_msg">
+                        <div v-if="GetSide4(message.TN_MaND) == 2" class="d-flex">
+
+                            <div class="msg_cotainer">
+
+                                {{ message.TN_NoiDung }}
+
+                                <span :class="GetSide3(message.TN_MaND)"> {{ message.TN_NgayTao }}
+
+                                    <button data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <font-awesome-icon :icon="['fas', 'ellipsis']" />
+
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-start" aria-labelledby="triggerId">
+                                        <button class="dropdown-item btn btn-outline-danger"
+                                            @click="XoaTinNhan(message.TN_Ma)">
+                                            <font-awesome-icon :icon="['fas', 'trash']"></font-awesome-icon>&nbsp; Xóa tin
+                                            nhắn
+                                        </button>
+                                    </div>
+                                </span>
+
+                            </div>
+                            <div :class="GetSide2(message.TN_MaND)">
+                                <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
+                                    class="rounded-circle user_img_msg">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-footer">
-            <div class="input-group">
-                <textarea name="" class="form-control type_msg" v-model="inputMessage"
-                    placeholder="Nhập tin nhắn..."></textarea>
-                <div class="input-group-append">
-                    <button class="input-group-text send_btn" @click="sendMessage()"><font-awesome-icon
-                            :icon="['fas', 'paper-plane']" /></button>
+            <div class="card-footer">
+                <div class="input-group">
+                    <textarea name="" class="form-control type_msg" v-model="inputMessage"
+                        placeholder="Nhập tin nhắn..."></textarea>
+                    <div class="input-group-append">
+                        <button class="input-group-text send_btn" @click="sendMessage()"><font-awesome-icon
+                                :icon="['fas', 'paper-plane']" /></button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-   </VContainer>
+    </VContainer>
 </template>
   
 <style>
@@ -391,6 +396,12 @@ export default defineComponent({
         //     this.GetLastID();
         //     this.getMessages();
         // }, 1000);
+    },
+    created() {
+        const khachhangchitiet = JSON.parse(localStorage.getItem("khachhang"))
+        if (khachhangchitiet.TKKH_Ma == '') {
+            this.$router.push("/");
+        }
     },
     methods: {
 

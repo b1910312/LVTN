@@ -53,8 +53,50 @@ exports.findAll = async (req, res) => {
     return res.send(documents);
 };
 
+exports.TBDanhGia = async (req, res) => {
+    const condition = {
+        DG_MaSach: req.params.DG_MaSach,
+    };
 
+    const [error, documents] = await handle(
+        DanhGia.find(condition)
+    );
 
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất đánh giá!")
+        );
+    }
+
+    if (!documents || documents.length === 0) {
+        return res.send("Không tìm thấy đánh giá");
+    }
+
+    // Tính trung bình số sao đánh giá
+    const totalStars = documents.reduce((sum, danhGia) => sum + danhGia.DG_SoSao, 0);
+    const averageStars = totalStars / documents.length;
+
+    return res.status(200).send(String(averageStars));
+
+};
+exports.findOneBySach = async (req, res) => {
+    const condition = {
+        DG_MaSach: req.params.DG_MaSach,
+    };
+    const [error, documents] = await handle(
+        DanhGia.find(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất đánh giá!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy đánh giá")
+    }
+    return res.send(documents);
+};
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {
@@ -74,7 +116,47 @@ exports.findOne = async (req, res) => {
     }
     return res.send(documents);
 };
+exports.getLastDGMa = async (req, res) => {
+    const [error, documents] = await handle(
+        DanhGia.findOne().sort({ DG_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất nhap kho!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBDG000")
+    }
+    return res.send(documents.DG_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
+//*----- Truy xuất một sản phẩm bằng mã sách
+exports.CheckKH = async (req, res) => {
+    const condition = {
+        DG_MaSach: req.params.DG_MaSach,
+        DG_MaKH: req.params.DG_MaKH
+    };
 
+    const [error, documents] = await handle(
+        DanhGia.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất đánh giá!")
+        );
+    }
+
+    return res.send(documents ? true : false);
+};
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {

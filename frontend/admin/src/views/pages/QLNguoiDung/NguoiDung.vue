@@ -175,7 +175,7 @@ height: 800px;">
                                     </VBtn>
                                   </div>
                                   <div class="d-flex gap-4 col-1">
-                                    <VBtn class="ms-5 bg bg-secondary" @click="dialog5 =false">
+                                    <VBtn class="ms-5 bg bg-secondary" @click="dialog5 = false">
                                       Hủy
                                     </VBtn>
                                   </div>
@@ -238,8 +238,27 @@ height: 800px;">
                     </Vrow>
                   </div>
                 </v-dialog>
-                <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.KH_MaKH)">
+                <button class="dropdown-item btn bg bg-danger text-white" @click="dialog7 = true">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
+                <v-dialog v-model="dialog7" class="w-50 h-25">
+                  <div class="card text-start bg bg-white p-5">
+                    <h2>Bạn có chắc muốn xóa thông tin khách hàng này không?</h2>
+                    <p class="mt-3">thông tin khách hàng sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa thông tin khách hàng này</p>
+                    <div class="row w-100">
+                      <div class="col-2"></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                          @click="XoaSach(item.KH_MaKH)">
+                          <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                          @click="dialog7 = false">
+                          <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                      <div class="col-2"></div>
+
+                    </div>
+                  </div>
+
+                </v-dialog>
               </div>
             </div>
           </td>
@@ -247,6 +266,21 @@ height: 800px;">
       </tbody>
     </VTable>
   </div>
+  <v-dialog v-model="dialog6" class="w-50 h-25">
+      <div class="card text-center bg bg-white p-5">
+        <h3 class="text-success">Bạn đã cập nhật thông tin khách hàng thành công</h3>
+        <div class="row w-100">
+          <div class="col-4"></div>
+          <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+              @click="dialog6 = false">
+              <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
+          <div class="col-4"></div>
+
+        </div>
+      </div>
+
+    </v-dialog>
+    
 </template>
 
 <script>
@@ -269,6 +303,8 @@ export default defineComponent({
       dialog3: false,
       dialog4: false,
       dialog5: false,
+      dialog6: false,
+      dialog7: false,
       GHID: "",
       imageFile: "",
     }
@@ -330,16 +366,17 @@ export default defineComponent({
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
 
       axios.put("http://localhost:3000/api/diachi/" + this.KH.KH_MaKH, this.DC).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       this.dialog4 = false
+      this.dialog6 = true
       this.GetKH()
     },
     GetDiaChi(id) {
@@ -415,29 +452,29 @@ export default defineComponent({
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/diachi/" + KH_MaKH).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/thongtinkhachhang/" + KH_MaKH).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/giohang/deleteKH" + KH_MaKH).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
+        console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       window.location.reload();
     }

@@ -90,6 +90,25 @@ exports.findOneByID = async (req, res, next) => {
     return res.send(documents);
 };
 
+exports.findOneNameByID = async (req, res, next) => {
+    const condition = {
+        KH_MaKH: req.params.KH_MaKH,
+    };
+    const [error, documents] = await handle(
+        ThongTinKhachHang.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất thông tin khách hàng!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy thông tin khách hàng");
+    }
+    const name = documents.KH_HoTen
+    return res.send(name);
+};
 
 //*-----Update a customer by the is in the request
 exports.update = async (req, res, next) => {

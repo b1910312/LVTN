@@ -180,8 +180,27 @@
 
                   </div>
                 </v-dialog>
-                <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.TKKH_MaKH)">
+                <button class="dropdown-item btn bg bg-danger text-white" @click="dialog7 = true">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
+                  <v-dialog v-model="dialog7" class="w-50 h-25">
+                  <div class="card text-start bg bg-white p-5">
+                    <h2>Bạn có chắc muốn xóa khách hàng này không?</h2>
+                    <p class="mt-3">khách hàng sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa khách hàng này</p>
+                    <div class="row w-100">
+                      <div class="col-2"></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                          @click="XoaSach(item.TKKH_MaKH)">
+                          <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                          @click="dialog7 = false">
+                          <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                      <div class="col-2"></div>
+
+                    </div>
+                  </div>
+
+                </v-dialog>
               </div>
             </div>
           </td>
@@ -212,6 +231,8 @@ export default defineComponent({
       dialog2: false,
       dialog3: false,
       dialog4: false,
+      dialog7: false,
+
       password1: "",
       password2: "",
       CapNhatMatKhau: ""
@@ -244,7 +265,7 @@ export default defineComponent({
       this.dialog4 = false
       this.GetKH()
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
 
     },
@@ -409,23 +430,23 @@ export default defineComponent({
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/diachi/" + KH_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/thongtinkhachhang/" + KH_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
+        console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
 
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       window.location.reload();
     }

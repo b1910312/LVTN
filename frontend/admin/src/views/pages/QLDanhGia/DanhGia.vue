@@ -31,11 +31,11 @@
           <th>
             số sao
           </th>
-           
+
           <th>
             Ngày tạo
           </th>
-          
+
           <th>
             Thao Tác
           </th>
@@ -48,11 +48,31 @@
           <td>{{ item.DG_Ma }}</td>
           <td>{{ getKHName(item.DG_MaKH) }}</td>
           <td>{{ getSachName(item.DG_MaSach) }}</td>
-          <td>{{ item.DG_SoSao }} <font-awesome-icon  class="text-warning" :icon="['fas', 'star']" /></td>
+          <td>{{ item.DG_SoSao }} <font-awesome-icon class="text-warning" :icon="['fas', 'star']" /></td>
           <td>{{ item.DG_NgayTao }}</td>
           <td>
-            <v-btn class="dropdown-item btn bg bg-danger text-white mt-1" @click="XoaSach(item.DG_Ma)"> <font-awesome-icon
-                    :icon="['fas', 'trash']" /> &nbsp; Xóa</v-btn>
+            <v-btn class="dropdown-item btn bg bg-danger text-white mt-1" @click="dialog3 = true"> <font-awesome-icon
+                :icon="['fas', 'trash']" /> &nbsp; Xóa</v-btn>
+
+            <v-dialog v-model="dialog3" class="w-50 h-25">
+              <div class="card text-start bg bg-white p-5">
+                <h2>Bạn có chắc muốn xóa đánh giá này không?</h2>
+                <p class="mt-3">đánh giá sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                  chắn rằng bạn muốn xóa đánh giá này</p>
+                <div class="row w-100">
+                  <div class="col-2"></div>
+                  <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                      @click="XoaSach(item.DG_Ma)">
+                      <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                  <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                      @click="dialog3 = false">
+                      <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                  <div class="col-2"></div>
+
+                </div>
+              </div>
+
+            </v-dialog>
           </td>
         </tr>
       </tbody>
@@ -70,11 +90,12 @@ export default defineComponent({
   name: "DanhSachSach",
   data() {
     return {
-     
+
       DanhGias: [],
       Sachs: [],
       NguoiDungs: [],
       NhanViens: [],
+      dialog3: false,
       FitlerDanhGias: "",
     };
   },
@@ -148,8 +169,8 @@ export default defineComponent({
     AnBL(id) {
       const now = moment();
       let data = {
-          DG_NgayCapNhat: now.format("DD-MM-YYYY"),
-          DG_TrangThai: 2
+        DG_NgayCapNhat: now.format("DD-MM-YYYY"),
+        DG_TrangThai: 2
       }
       // Gọi API để cập nhật sản phẩm
       axios.put("http://localhost:3000/api/DanhGia/capnhattrangthai/" + id, data).then(response => {
@@ -165,8 +186,8 @@ export default defineComponent({
     HienBL(id) {
       const now = moment();
       let data = {
-          DG_NgayCapNhat: now.format("DD-MM-YYYY"),
-          DG_TrangThai: 1
+        DG_NgayCapNhat: now.format("DD-MM-YYYY"),
+        DG_TrangThai: 1
       }
       // Gọi API để cập nhật sản phẩm
       axios.put("http://localhost:3000/api/DanhGia/capnhattrangthai/" + id, data).then(response => {
@@ -179,7 +200,7 @@ export default defineComponent({
         alert(error);
       });
     },
-    GetTrangThai(id){
+    GetTrangThai(id) {
       switch (id) {
         case 1:
           return "Đang hiển thị";

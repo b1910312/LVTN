@@ -7,7 +7,9 @@ module.exports = (app) => {
     router.post("/", binhluan.create);
 
     router.get("/", binhluan.findAll);
-    
+
+    router.get("/getbyMasach/:MaSach", binhluan.findAllByMaSach);
+
     router.get('/getid/getlastblma', binhluan.getLastBLMa);
 
     router.get("/:BL_Ma", binhluan.findOne);

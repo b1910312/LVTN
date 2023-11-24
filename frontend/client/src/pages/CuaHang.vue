@@ -1,5 +1,4 @@
 <script>
-import ListSanPham_Ngang from '@/components/ListSanPham_Ngang.vue';
 import ListSanPham_Doc from '@/components/ListSanPham_Doc.vue';
 import axios from 'axios';
 import { defineComponent } from 'vue';
@@ -8,21 +7,31 @@ export default defineComponent({
     name: "CuaHang",
     data() {
         return {
-            DanhMuc: [
-                { name: " Sách giáo khoa", Value: "1" },
-                { name: " Sách giáo khoa", Value: "1" },
-                { name: " Sách giáo khoa", Value: "1" },
-                { name: " Sách giáo khoa", Value: "1" },
-                { name: " Sách giáo khoa", Value: "1" },
-            ],
             sachs: [],
             BestSale: [],
             TLs: {},
-
+            FitlerSachs: "",
+            DanhMucSelect: "",
+            GiaTu: 0,
+            GiaDen: 1000000
         }
     },
+    computed: {
+        filteredSachs() {
+            return this.sachs.filter((item) => {
+                return (
+                    (item.S_Ma.toLowerCase().includes(this.FitlerSachs.toLowerCase()) ||
+                        item.S_Ten.toLowerCase().includes(this.FitlerSachs.toLowerCase()) ||
+                        item.S_TacGia.toLowerCase().includes(this.FitlerSachs.toLowerCase())) &&
+                    (this.DanhMucSelect === "" || item.S_TheLoai === this.DanhMucSelect) &&
+                    // Thêm điều kiện lọc theo giá
+                    (this.GiaTu === 0 || item.S_Gia >= this.GiaTu) &&
+                    (this.GiaDen === 1000000 || item.S_Gia <= this.GiaDen)
+                );
+            });
+        },
+    },
     components: {
-        ListSanPham_Ngang,
         ListSanPham_Doc
     },
     created() {
@@ -71,42 +80,75 @@ export default defineComponent({
                     console.log(error);
                 })
         },
-
+        LamTron(number, decimals) {
+            let precision = 10 ** decimals;
+            return Math.round(number * precision) / precision;
+        },
 
     }
 })
 </script>
 <template>
     <VRow>
-        <VCol cols="12">
-            <VCard class="mt-3 text-white  text-center" style="background-color: rgb(0, 255, 4);">
-                <h3 class="mt-2">BestSaler</h3>
-            </VCard>
-            <VCard>
-                <ListSanPham_Ngang :sach="BestSale" />
-            </VCard>
-        </VCol>
-    </VRow>
-    <VRow>
-        <div  class="col-3">
-            <VCard class=" mt-1 text-white text-center" >
+        <div class="col-3">
+            <VCard class=" mt-1 text-white text-center">
                 <VCard>
-                    <h3 class="mt-2 p-2" style="background-color: rgb(0, 255, 4); border-radius: 10px;"  >Danh mục Sách</h3>
+                    <h3 class="mt-2 p-2" style="background-color: rgb(0, 255, 4); border-radius: 10px;">Tìm kiếm</h3>
                 </VCard>
-                <v-button class="item w-100 btn navlink" v-for="danhmuc in TLs" :key="danhmuc.TL_Ma">{{ danhmuc.TL_Ten }}</v-button>
+                <VTextField v-model.trim="FitlerSachs" placeholder="Nhập tên sách dể tìm kiếm"></VTextField>
             </VCard>
+            <VCard class=" mt-1 text-white text-center">
+                <VCard>
+                    <h3 class="mt-2 p-2" style="background-color: rgb(0, 255, 4); border-radius: 10px;">Tìm kiếm theo giá
+                    </h3>
+                </VCard>
+                <VRow class="mt-2">
+                    <VCol cols="12">
+                        <h6 class="text-white">Giá thấp nhất</h6>
+                    </VCol>
+                    <VCol cols="8">
+                        <v-slider color="success" max="1000000" v-model="GiaTu"></v-slider>
+                    </VCol>
+                    <Vcol cols="1" class="my-auto">
+                        <h6>{{ LamTron(GiaTu, 0) }} VNĐ</h6>
+                    </Vcol>
+                    <VCol cols="12">
+                        <h6 class="text-white">Giá cao nhất</h6>
+                    </VCol>
+                    <VCol cols="8">
+                        <v-slider color="success" max="1000000" v-model="GiaDen"></v-slider>
+                    </VCol>
+                    <Vcol cols="1" class="my-auto">
+                        <h6>{{ LamTron(GiaDen, 0) }} VNĐ</h6>
+                    </Vcol>
+                </VRow>
+            </VCard>
+            <VCard class=" mt-1 text-white text-center">
+                <VCard>
+                    <h3 class="mt-2 p-2" style="background-color: rgb(0, 255, 4); border-radius: 10px;">Danh mục Sách</h3>
+                </VCard>
+                <v-button class="item text-start w-100 btn navlink" @click="DanhMucSelect = ''">Tất cả</v-button>
+                <v-button class="item text-start w-100 btn navlink" v-for="danhmuc in TLs" @click="DanhMucSelect = danhmuc.TL_Ma"
+                    :key="danhmuc.TL_Ma">{{ danhmuc.TL_Ten
+                    }}</v-button>
+            </VCard>
+
         </div>
         <!-- </div> -->
         <VCol cols="9">
             <v-row>
                 <v-col cols="12">
-                    <v-card class="" style="border-radius: 10px; font-weight: bolder; background-color: rgb(0, 255, 4); ">
-                        <h2 class="mt-2 ms-4 text-center text-white" >Danh sách sản phẩm</h2>
-                    </v-card>
 
+                    <v-card class="" style="border-radius: 10px; font-weight: bolder; color: rgba(0, 255, 4, 0.8); ">
+                        <h2 class="mt-2 ms-4 text-center ">Danh sách sản phẩm</h2>
+                    </v-card>
+                    <v-card class="mx-auto text-center py-12 mt-2" v-if="filteredSachs == ''">
+                        <h3> không có sản phẩm phù hợp</h3>
+                    </v-card>
                 </v-col>
             </v-row>
-            <ListSanPham_Doc :sach="sachs" />
+                <ListSanPham_Doc :sach="filteredSachs" />
+
         </VCol>
 
     </VRow>

@@ -63,7 +63,15 @@ export default {
         this.GetOneKH(this.nvv.TKKH_MaKH)
         this.GetDiaChi(this.nvv.TKKH_MaKH)
     },
-
+    created() {
+        const khachhangchitiet = JSON.parse(localStorage.getItem("khachhang"))
+        if (!khachhangchitiet ) {
+            this.$router.push("/");
+        }
+        if (khachhangchitiet.TKKH_TrangThai != 1 ) {
+            this.$router.push("/");
+        }
+    },
     methods: {
         XoaDonHang(DH_Ma) {
             axios.delete(`http://localhost:3000/api/donhang/` + DH_Ma).then(res => {
@@ -256,8 +264,6 @@ export default {
                     this.KH = response.data;
                     console.log(response);
                     console.log(this.KH);
-                    this.GT = this.GetGT(this.KH.KH_GioiTinh)
-                    this.Email = this.getEmail(this.KH.KH_MaKH)
 
                 })
                 .catch((error) => {

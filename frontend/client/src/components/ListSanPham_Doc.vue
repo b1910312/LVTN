@@ -3,36 +3,37 @@
 
         <div style=" height: 600px; overflow-y: auto;" class="ps-5 ">
             <div class="row w-100 ">
-                <template v-for="pr in sach" :key="pr.S_Ma">
-                    <div v-if="pr.S_SoLuong >0" class=" card col-12 col-md-3 p-3 mt-2 text-white"
-                        style="border-radius: 30px; border: 1px solid rgb(0, 255, 0); background-color: rgba(0, 0, 0, 0.4  );">
-                        <div>
-                            <img :src="GetThumNail(pr.S_Ma)" class="img-fluid imgcard" alt="">
-                            <div style="height: 30px;">
-                                <h5 class="text-start mt-3 mb-3">{{ pr.S_Ten }}</h5>
-                            </div>
-                            <div>
-                                <p class="text-start mt-3 mb-3">Giá: {{ pr.S_Gia }} VNĐ</p>
-                                <!-- <p class="text-start mt-3 mb-3">Thể loại: {{ GetThumNail(pr.S_TheLoai) }} VNĐ</p> -->
-                            </div>
-                            <VRow>
-                                <VCol cols="8">
-                                    <button style="background-color: rgb(0, 255, 4);"
-                                        class="  mx-auto btn btn-success w-100"
-                                        @click="this.$router.push(`/chitietsach/` + pr.S_Ma)">Chi tiết</button>
-                                </VCol>
-                                <VCol cols="4">
-                                    <button class=" text-white btn btn-info w-100" @click="ThemChiTietGioHang(pr.S_Ma)">
-                                        <font-awesome-icon :icon="['fas', 'cart-shopping']" />
-                                    </button>
+                <v-card v-for="pr in sach" :key="pr.S_Ma" class="mx-1 my-2" style="border: 2px solid green;"  max-width="340">
+                    <template v-slot:loader="{ isActive }">
+                        <v-progress-linear :active="isActive" color="deep-purple" height="4"
+                            indeterminate></v-progress-linear>
+                    </template>
+                    <v-img cover height="250" :src="GetThumNail(pr.S_Ma)"></v-img>
+                    <v-card-item>
+                        <v-card-title>{{ pr.S_Ten }}</v-card-title>
+                        <v-card-subtitle>
+                            <span class="me-1">{{ pr.S_TacGia }}</span>
+                        </v-card-subtitle>
+                    </v-card-item>
+                    <v-card-item>
+                        <h5>Giá: {{ pr.S_Gia }} VNĐ</h5>
+                    </v-card-item>
 
-                                </VCol>
-                            </VRow>
-                        </div>
-                    </div>
-                </template>
+                    <v-divider class="mx-4 mb-1"></v-divider>
 
 
+
+
+                    <v-card-actions>
+                         <v-btn class="w-50 btn btn-success" color="deep-green-lighten-1" variant="text" @click="this.$router.push(`/chitietsach/` + pr.S_Ma)">
+                            Chi tiết
+                        </v-btn>
+                         <v-btn class="w-50 btn btn-success" color="deep-green-lighten-2" variant="text" @click="ThemChiTietGioHang(pr.S_Ma)">
+                            <font-awesome-icon :icon="['fas', 'cart-shopping']" />
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+                
             </div>
         </div>
     </div>
@@ -61,6 +62,7 @@ export default defineComponent(
                 NewID1: "",
                 So1: "",
                 Chu1: "",
+            
 
             }
         },
@@ -73,6 +75,7 @@ export default defineComponent(
             },
         },
         methods: {
+            
             ThemChiTietGioHang(MaSach) {
                 if (JSON.parse(localStorage.getItem("khachhang")) != null) {
                     this.nvv = JSON.parse(localStorage.getItem("khachhang"))

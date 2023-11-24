@@ -39,11 +39,6 @@ export default defineComponent({
         S_NgayCapNhat: ""
       },
       nhanvien: {},
-      imageFile: null,
-      imageFile1: null,
-      imageFile2: null,
-      imageFile3: null,
-
       imageThumbnail: null,
       TL: [],
       NXB: []
@@ -153,11 +148,24 @@ export default defineComponent({
           // Nếu API trả về thành công
           if (response.status === 200) {
             // Thông báo thành công
-            this.$router.push("/quanlysach");
+            console.log("Thêm sách thành công")
           }
         })
         .catch((error) => {
           // Nếu API trả về lỗi
+          console.log(error)
+        })
+      axios.post(`http://localhost:5000/add_product`, this.Sach)
+        .then((response) => {
+          // Nếu API trả về thành công
+          if (response.status === 200) {
+            // Thông báo thành công
+            console.log("Lưu sách vào csv thành công")
+          }
+        })
+        .catch((error) => {
+          // Nếu API trả về lỗi
+          console.log("Lưu sách vào csv không thành công")
           console.log(error)
         })
       this.NK.NK_MaSach = this.Sach.S_Ma
@@ -169,31 +177,11 @@ export default defineComponent({
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log("NHAPKHO")
         console.log(this.NK)
-        alert("Cập nhật thành công");
-        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-        this.$router.push("/quanlysach");
+     
       }).catch(error => {
         alert(error);
       });
       const formData = new FormData();
-      // formData.append("images", this.imageFile);
-      // try {
-      //   const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/sach/HMH/" + this.Sach.S_Ma + "/1", formData, {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data"
-      //     }
-      //   });
-      //   alert('Thêm dữ liệu thành công!')
-      //   console.log("Tệp ảnh đã được tải lên thành công:", response.data);
-      // } catch (error) {
-      //   alert('LỖI!')
-
-      //   console.error("Lỗi khi tải lên tệp ảnh:", error);
-      // }
-      this.LuuHMM(formData, 1, this.imageFile)
-      this.LuuHMM(formData, 2, this.imageFile1)
-      this.LuuHMM(formData, 3, this.imageFile2)
-      this.LuuHMM(formData, 4, this.imageFile3)
       // formData.delete("images")
       formData.append("image", this.imageThumbnail);
       try {
@@ -202,8 +190,10 @@ export default defineComponent({
             "Content-Type": "multipart/form-data"
           }
         });
-        alert('Thêm dữ liệu thành công!')
+    
         console.log("Tệp ảnh đã được tải lên thành công:", response.data);
+               // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+               this.$router.push("/quanlysach");
       } catch (error) {
         console.error("Lỗi khi tải lên tệp ảnh:", error);
       }
@@ -212,37 +202,10 @@ export default defineComponent({
       // this.LuuHMM(3,this.imageFile3)
 
     },
-    async LuuHMM(form, STT, File) {
-      form.append("images", File);
-      try {
-        const response = await axios.post("http://localhost:3000/api/thumbnail/upload_images/sach/HMH/" + this.Sach.S_Ma + "/" + STT, form, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        });
-        alert('Thêm dữ liệu thành công!')
-        console.log("Tệp ảnh đã được tải lên thành công:", response.data);
-      } catch (error) {
-        alert('LỖI!')
-
-        console.error("Lỗi khi tải lên tệp ảnh:", error);
-      }
-    },
     setImageThumbNail(event) {
       this.imageThumbnail = event.target.files[0];
     },
-    setImageHMH(event) {
-      this.imageFile = event.target.files[0];
-    },
-    setImageHMH1(event) {
-      this.imageFile1 = event.target.files[0];
-    },
-    setImageHMH2(event) {
-      this.imageFile2 = event.target.files[0];
-    },
-    setImageHMH3(event) {
-      this.imageFile3 = event.target.files[0];
-    },
+   
   }
 
 });
@@ -280,38 +243,26 @@ export default defineComponent({
           
         </VCol> -->
         <VCol cols="1">
-            <label for="" class="h-100 my-3">Thể loại</label>
-          </VCol>
-          <VCol cols="5">
-            <select class="form-control h-100" v-model="Sach.S_TheLoai">
-              <option v-for="gt in TL" :value="gt.TL_Ma">{{ gt.TL_Ten }}</option>
-            </select>
-          </VCol>
+          <label for="" class="h-100 my-3">Thể loại</label>
+        </VCol>
+        <VCol cols="5">
+          <select class="form-control h-100" v-model="Sach.S_TheLoai">
+            <option v-for="gt in TL" :value="gt.TL_Ma">{{ gt.TL_Ten }}</option>
+          </select>
+        </VCol>
         <!-- <VCol cols="12">
           <VTextField v-model="Sach.S_NXB" label="Nhà xuất bản" placeholder="+1 123 456 7890" />
         </VCol> -->
         <VCol cols="1">
-            <label for="" class="h-100 my-3">NXB</label>
-          </VCol>
-          <VCol cols="5">
-            <select class="form-control h-100" v-model="Sach.S_NXB">
-              <option v-for="gt in NXB" :value="gt.NXB_Ma">{{ gt.NXB_Ten }}</option>
-            </select>
-          </VCol>
+          <label for="" class="h-100 my-3">NXB</label>
+        </VCol>
+        <VCol cols="5">
+          <select class="form-control h-100" v-model="Sach.S_NXB">
+            <option v-for="gt in NXB" :value="gt.NXB_Ma">{{ gt.NXB_Ten }}</option>
+          </select>
+        </VCol>
         <VCol cols="12">
           <VFileInput label="ThumbNail Sách" type="file" ref="imageInput" @change="setImageThumbNail" />
-        </VCol>
-        <VCol cols="12">
-          <VFileInput label="Hình minh họa" type="file" ref="imageInput1" @change="setImageHMH" />
-        </VCol>
-        <VCol cols="12">
-          <VFileInput label="Hình minh họa" type="file" ref="imageInput2" @change="setImageHMH1" />
-        </VCol>
-        <VCol cols="12">
-          <VFileInput label="Hình minh họa" type="file" ref="imageInput3" @change="setImageHMH2" />
-        </VCol>
-        <VCol cols="12">
-          <VFileInput label="Hình minh họa" type="file" ref="imageInput4" @change="setImageHMH3" />
         </VCol>
         <VCol cols="10"></VCol>
         <VCol cols="2" class="d-flex gap-4">

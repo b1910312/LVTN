@@ -295,7 +295,26 @@ exports.signup = async (req, res, next) => {
 
     res.send({ message: "Đăng ký tài khoản khách hàng thành công" });
 };
+exports.FindSachHangMuc = async (req, res) => {
 
+    console.log('');
+
+    const condition = {
+        TKKH_HangMuc: req.params.TKKH_HangMuc
+    };
+
+
+    const [error, documents] = await handle(
+        KhachHang.find(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+    return res.send(documents);
+};
 exports.signin = async (req, res, next) => {
     const [error, khachhang] = await handle(
         KhachHang.findOne({

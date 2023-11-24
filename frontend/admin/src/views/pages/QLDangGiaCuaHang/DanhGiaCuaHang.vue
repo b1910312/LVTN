@@ -31,11 +31,12 @@
           <th>
             số sao
           </th>
-           
+          <th>
+            Phân tích đánh giá
+          </th>
           <th>
             Ngày tạo
           </th>
-          
           <th>
             Thao Tác
           </th>
@@ -48,11 +49,32 @@
           <td>{{ item.DG_Ma }}</td>
           <td>{{ getKHName(item.DG_MaKH) }}</td>
           <td>{{ item.DG_NoiDung }}</td>
-          <td>{{ item.DG_SoSao }} <font-awesome-icon  class="text-warning" :icon="['fas', 'star']" /></td>
+          <td>{{ item.DG_SoSao }} <font-awesome-icon class="text-warning" :icon="['fas', 'star']" /></td>
+          <td class="text-danger" v-if="Toxic[i] == 1"> Đánh giá tiêu cực </td>
+          <td class="text-success" v-if="Toxic[i] == 0"> Đánh giá tích cực </td>
           <td>{{ item.DG_NgayTao }}</td>
           <td>
-            <v-btn class="dropdown-item btn bg bg-danger text-white mt-1" @click="XoaSach(item.DG_Ma)"> <font-awesome-icon
-                    :icon="['fas', 'trash']" /> &nbsp; Xóa</v-btn>
+            <v-btn class="dropdown-item btn bg bg-danger text-white mt-1" @click="dialog3 = true"> <font-awesome-icon
+                :icon="['fas', 'trash']" /> &nbsp; Xóa</v-btn>
+            <v-dialog v-model="dialog3" class="w-50 h-25">
+              <div class="card text-start bg bg-white p-5">
+                <h2>Bạn có chắc muốn xóa đánh giá này không?</h2>
+                <p class="mt-3">đánh giá sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                  chắn rằng bạn muốn xóa đánh giá này</p>
+                <div class="row w-100">
+                  <div class="col-2"></div>
+                  <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                      @click="XoaSach(item.DG_Ma)">
+                      <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                  <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                      @click="dialog3 = false">
+                      <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                  <div class="col-2"></div>
+
+                </div>
+              </div>
+
+            </v-dialog>
           </td>
         </tr>
       </tbody>
@@ -61,21 +83,22 @@
 </template>
 
 <script>
-import { defineComponent, vModelRadio } from 'vue';
-import { defineAsyncComponent, ref } from 'vue';
 import moment from "moment";
+import { defineComponent } from 'vue';
 
 // Tạo component
 export default defineComponent({
   name: "DanhSachSach",
   data() {
     return {
-     
+
       DanhGiaCuaHangs: [],
       Sachs: [],
       NguoiDungs: [],
       NhanViens: [],
       FitlerDanhGiaCuaHangs: "",
+      Toxic: [],
+      dialog3: false
     };
   },
   computed: {
@@ -96,6 +119,18 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    PhanTichDanhGia(binhluan) {
+      axios.post(`http://localhost:5000/predict`, { comment: binhluan })
+        .then(res => {
+          console.log("PhanTichDanhGiaThanhCong")
+          this.Toxic.push(res.data)
+          console.log(this.Toxic)
+        })
+        .catch(err => {
+          console.log("PhanTichDanhGia")
+          console.log(err)
+        })
+    },
     openDialog() {
       this.GetDanhGiaCuaHangID(this.DG_MaActive);
       this.dialog = true;
@@ -148,8 +183,8 @@ export default defineComponent({
     AnBL(id) {
       const now = moment();
       let data = {
-          DG_NgayCapNhat: now.format("DD-MM-YYYY"),
-          DG_TrangThai: 2
+        DG_NgayCapNhat: now.format("DD-MM-YYYY"),
+        DG_TrangThai: 2
       }
       // Gọi API để cập nhật sản phẩm
       axios.put("http://localhost:3000/api/DanhGiaCuaHang/capnhattrangthai/" + id, data).then(response => {
@@ -165,8 +200,8 @@ export default defineComponent({
     HienBL(id) {
       const now = moment();
       let data = {
-          DG_NgayCapNhat: now.format("DD-MM-YYYY"),
-          DG_TrangThai: 1
+        DG_NgayCapNhat: now.format("DD-MM-YYYY"),
+        DG_TrangThai: 1
       }
       // Gọi API để cập nhật sản phẩm
       axios.put("http://localhost:3000/api/DanhGiaCuaHang/capnhattrangthai/" + id, data).then(response => {
@@ -179,7 +214,7 @@ export default defineComponent({
         alert(error);
       });
     },
-    GetTrangThai(id){
+    GetTrangThai(id) {
       switch (id) {
         case 1:
           return "Đang hiển thị";
@@ -233,6 +268,10 @@ export default defineComponent({
       axios.get('http://localhost:3000/api/DanhGiaCuaHang')
         .then((response) => {
           this.DanhGiaCuaHangs = response.data;
+          for (let i = 0; i <= this.DanhGiaCuaHangs.length; i++) {
+            this.PhanTichDanhGia(this.DanhGiaCuaHangs[i].DG_NoiDung)
+            console.log(this.Toxic)
+          }
           console.log(response);
           console.log(this.DanhGiaCuaHangs);
         })

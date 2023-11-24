@@ -65,7 +65,7 @@ exports.getlastTheLoaima = async (req, res) => {
         );
     }
     if (!documents) {
-        return res.send("Không tìm thấy Thể loại")
+        return res.send("KBTL000")
     }
     return res.send(documents.TL_Ma);
     // if (!lastRecord) {

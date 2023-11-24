@@ -8,12 +8,9 @@
       </VCol>
       <VCol cols="4"></VCol>
       <VCol cols="2" class="pe-4">
-        <button class="btn btn-outline-primary w-50" @click="GetDonHang()" style="float: right; right: 0;"><font-awesome-icon
-            :icon="['fas', 'arrows-rotate']" /></button>
-        <RouterLink :to="{ name: 'NXBThem' }">
-          <button class="btn btn-outline-primary w-50" style="float: right; right: 0;"><font-awesome-icon
-              :icon="['fas', 'plus']" /></button>
-        </RouterLink>
+        <button class="btn btn-outline-primary w-50" @click="GetDonHang()"
+          style="float: right; right: 0;"><font-awesome-icon :icon="['fas', 'arrows-rotate']" /></button>
+
       </VCol>
     </VRow>
     <VTable height="600" fixed-header>
@@ -66,7 +63,7 @@
                 aria-haspopup="true" aria-expanded="false" @click="setActiveDH(item.DH_Ma)">
                 <font-awesome-icon :icon="['fas', 'gears']" />
               </button>
-              <div class="dropdown-menu p-2 border border-primary" aria-labelledby="triggerId">
+              <div class="dropdown-menu p-2 border border-secondary" aria-labelledby="triggerId">
                 <button class="dropdown-item btn bg bg-primary text-white mb-1" @click="dialog5 = true"><font-awesome-icon
                     :icon="['fas', 'eye']" /> Chi tiết</button>
                 <v-dialog ref="contentToPrint" v-model="dialog5" class=" mt-5" :style="dialogHeight">
@@ -151,6 +148,7 @@
                                 </th>
                               </tr>
                             </thead>
+
       <tbody>
         <tr v-for="(item, i) in CTDH" :key="CTDH_Ma">
           <td>{{ i + 1 }}</td>
@@ -211,8 +209,27 @@
     </v-card>
   </v-dialog>
 
-  <button class="dropdown-item btn bg bg-danger text-white" @click="XoaDonHang(item.DH_Ma)">
+  <button class="dropdown-item btn bg bg-danger text-white" @click="dialog8 = true">
     <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
+  <v-dialog v-model="dialog8" class="w-50 h-25">
+    <div class="card text-start bg bg-white p-5">
+      <h2>Bạn có chắc muốn xóa đơn hàng này không?</h2>
+      <p class="mt-3">đơn hàng sẽ bị xóa và không thể khôi phục lại, hãy chắc
+        chắn rằng bạn muốn xóa đơn hàng này</p>
+      <div class="row w-100">
+        <div class="col-2"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+            @click="XoaDonHang(DH_MaActive)">
+            <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+            @click="dialog8 = false">
+            <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+        <div class="col-2"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
   </div>
   </div>
   </td>
@@ -238,6 +255,7 @@ export default defineComponent({
       FitlerDHs: "",
       DH_MaActive: "",
       dialog5: false,
+      dialog8: false,
       dialog2: false,
       dialogHeight: "700px"
     }
@@ -287,11 +305,11 @@ export default defineComponent({
       axios.put("http://localhost:3000/api/donhang/capnhattrangthai/" + MaDH, data).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log(data)
-        alert("Cập nhật thành công");
+        console.log("Cập nhật thành công");
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
         this.GetDonHang();
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       this.dialog2 = false
 
@@ -379,7 +397,7 @@ export default defineComponent({
         this.CTDH = response.data
         console.log(this.CTDH)
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
     },
     XoaDonHang(DH_Ma) {
@@ -387,17 +405,18 @@ export default defineComponent({
         // Nếu cập nhật thành công, thì hiển thị thông báo
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/chitietdonhang//deletebyDH/" + DH_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
+        console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
         this.GetDonHang();
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
+      this.dialog8 = false
     }
   }
 });

@@ -11,6 +11,9 @@ module.exports = (app) => {
 
     //Retrieve a single customer with id
     router.get("/:TKNV_MaNV", nhanvien.findOneByID);
+
+    router.get("/GetByVaiTro/:TKNV_VaiTro", nhanvien.FindSachVaiTro)
+
     //Update a customer with id
     router.put("/:TKNV_MaNV", nhanvien.update);
     //Update a customer with id

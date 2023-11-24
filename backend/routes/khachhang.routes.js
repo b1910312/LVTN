@@ -17,6 +17,7 @@ module.exports = (app) => {
 
     router.get("/GetPass/:TKKH_Email/:TKKH_MatKhau", khachhang.findPassByEmail);
 
+    router.get("/GetByHangMuc/:TKKH_HangMuc", khachhang.FindSachHangMuc)
 
     router.put("/CapNhatTrangThai/:TKKH_MaKH", khachhang.updateTrangThai);
 

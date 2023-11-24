@@ -1,4 +1,5 @@
 <script>
+import axios from 'axios'
 import moment from 'moment'
 export default {
     name: "CuaHang",
@@ -20,14 +21,26 @@ export default {
             DH_CT: "",
             MatKhau: "",
             MKMoi: "",
+            CorrectPassMessage: "",
             NhapLaiMKMoi: "",
+            Correct: false,
             CTDH: "",
             DC1: "",
             TongCong: 0,
             dialog: false,
             dialog5: false,
+            ResetPassMessage: "",
             updateLogoMessage: "",
             updateThongTinMessage: "",
+        }
+    },
+    created() {
+        const khachhangchitiet = JSON.parse(localStorage.getItem("khachhang"))
+        if (!khachhangchitiet ) {
+            this.$router.push("/");
+        }
+        if (khachhangchitiet.TKKH_TrangThai != 1 ) {
+            this.$router.push("/");
         }
     },
     mounted() {
@@ -51,8 +64,47 @@ export default {
     },
 
     methods: {
-        GetPass(){
-            
+        DanhGia(MaSach){
+            window.open(`http://localhost:8080/chitietsach/` + MaSach)
+        },
+        checkPasswordMatch() {
+            if (this.MKMoi == "") {
+                return false;
+            }
+            if (this.NhapLaiMKMoi == "") {
+                return false;
+            }
+            return this.MKMoi === this.NhapLaiMKMoi;
+        },
+
+        updatePassword(id) {
+            const now = moment()
+            const data = {
+                TKKH_MatKhau: this.NhapLaiMKMoi,
+                TKKH_NgayCapNhat: now.format("DD-MM-YYYY")
+            }
+            axios.put('http://localhost:3000/api/khachhang/ResetPassword/' + id, data)
+                .then((response) => {
+                    this.ResetPassMessage = "Đã cập nhật mật khẩu thành công"
+                })
+                .catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+            this.MatKhau = ""
+            this.MKMoi = ""
+            this.NhapLaiMKMoi = ""
+        },
+        GetPass() {
+            axios.get(`http://localhost:3000/api/khachhang/getpass/` + this.nvv.TKKH_Email + `/` + this.MatKhau)
+                .then(res => {
+                    this.Correct = res.data
+                    if (!res.data) {
+                        this.CorrectPassMessage = "Mật khẩu không chính xác"
+                    } else {
+                        this.CorrectPassMessage = ""
+                    }
+                })
         },
         DaNhanHang(MaDH) {
             const now = moment();
@@ -313,8 +365,8 @@ export default {
                     <VCol cols="12">
                         <VRow>
                             <VCol cols="3"></VCol>
-                            <VCol cols="6"> <img :src="GetAVT(nvv.TKKH_MaKH)" class="img-fluid mx-auto"
-                                    style="border-radius: 50%; width: 150px; height: 150px;" alt="">
+                            <VCol cols="6"> <img :src="GetAVT(nvv.TKKH_MaKH)"  class="img-fluid mx-auto"
+                                    style="border-radius: 15px; width: auto; height: 250px;" alt="">
                             </VCol>
                             <VCol cols="3"></VCol>
                             <VCol cols="12">
@@ -431,7 +483,7 @@ export default {
                                                         style="height: auto;">
                                                         <div class="col-11">
                                                             <h4>Cập nhật Ảnh đại diện</h4>
-                                                            
+
                                                         </div>
 
                                                         <VCol cols="12">
@@ -575,16 +627,17 @@ export default {
                                             <!-- 👉 New Password -->
                                             <VRow>
                                                 <div class="col-12">
-                                                    <p class="text-center text-success"></p>
+                                                    <p class="text-center text-success">{{ ResetPassMessage }}</p>
                                                 </div>
                                                 <VCol cols="12">
-                                                    <VTextField label="Nhập mật khẩu cũ" v-model="MatKhau"  placeholder="Nhập mật khẩu cũ"
-                                                        type="password" />
+                                                    <VTextField label="Nhập mật khẩu cũ" v-model="MatKhau"
+                                                        @change="GetPass()" :error-messages="CorrectPassMessage"
+                                                        placeholder="Nhập mật khẩu cũ" type="password" />
 
                                                 </VCol>
                                                 <VCol cols="12">
-                                                    <VTextField label="Nhập mật khẩu mới" v-model="MKMoi" placeholder="Nhập mật khẩu mới"
-                                                        type="password" />
+                                                    <VTextField label="Nhập mật khẩu mới" v-model="MKMoi"
+                                                        placeholder="Nhập mật khẩu mới" type="password" />
 
                                                 </VCol>
                                                 <VCol cols="12">
@@ -602,7 +655,8 @@ export default {
 
                                                 </div>
                                                 <div class=col-3>
-                                                    <VBtn class="bg bg-primary">
+                                                    <VBtn class="bg bg-primary" @click="updatePassword(KH.KH_MaKH)"
+                                                        :disabled="!checkPasswordMatch() || !Correct">
                                                         Tạo mật khẩu
                                                     </VBtn>
                                                 </div>
@@ -741,12 +795,14 @@ export default {
                                                             <h5>Trạng thái: &nbsp{{ GetTrangThai(DH_CT.DH_TrangThai) }}</h5>
                                                         </VCol>
                                                         <VCol cols="4" v-if="DH_CT.DH_TrangThai != 0">
-                                                            <v-button class="btn text-white w-100" @click="DaNhanHang(DH_CT.DH_Ma)"
+                                                            <v-button class="btn text-white w-100"
+                                                                @click="DaNhanHang(DH_CT.DH_Ma)"
                                                                 style="background-color: rgba(0,255,125,0.4)">Đã nhận được
                                                                 hàng</v-button>
                                                         </VCol>
                                                         <VCol cols="4" v-if="DH_CT.DH_TrangThai == 0">
-                                                            <v-button class="btn text-white w-50" @click="DaNhanHang(DH_CT.DH_Ma)"
+                                                            <v-button class="btn text-white w-50"
+                                                                @click="DaNhanHang(DH_CT.DH_Ma)"
                                                                 style="background-color: rgba(0,255,125,0.4)">Đã nhận được
                                                                 hàng</v-button>
                                                             <v-button class="btn btn-danger text-white w-50"
@@ -863,6 +919,7 @@ export default {
                             <th>Số lượng</th>
                             <th>Giá</th>
                             <th>Thành tiền</th>
+                            <th v-if="DH_CT.DH_TrangThai == 5">Đánh giá</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -872,6 +929,12 @@ export default {
                             <td>{{ ctdh.CTDH_SoLuong }}</td>
                             <td>{{ ctdh.CTDH_Gia }} VNĐ</td>
                             <td>{{ ctdh.CTDH_ThanhTien }} VNĐ</td>
+                            <td v-if="DH_CT.DH_TrangThai == 5">
+                                <v-button class="btn text-white" @click="DanhGia(ctdh.CTDH_MaSach)">
+                                    <font-awesome-icon style="color:gold" :icon="['fas', 'star']" /> Đánh giá
+                                </v-button>
+                            </td>
+
                         </tr>
 
                     </tbody>
@@ -886,15 +949,14 @@ export default {
         <VCol cols="4">
             <h5>Trạng thái: &nbsp{{ GetTrangThai(DH_CT.DH_TrangThai) }}</h5>
         </VCol>
-        <VCol cols="4" v-if="DH_CT.DH_TrangThai == 5">
-            <v-button class="btn w-100" style="background-color: rgb(251, 255, 0)">Đánh giá sách</v-button>
 
-        </VCol>
         <VCol cols="4" v-if="DH_CT.DH_TrangThai != 0 && DH_CT.DH_TrangThai != 5">
-            <v-button class="btn text-white w-100" @click="DaNhanHang(DH_CT.DH_Ma)" style="background-color: rgba(0,255,4,1)">Đã nhận được hàng</v-button>
+            <v-button class="btn text-white w-100" @click="DaNhanHang(DH_CT.DH_Ma)"
+                style="background-color: rgba(0,255,4,1)">Đã nhận được hàng</v-button>
         </VCol>
         <VCol cols="4" v-if="DH_CT.DH_TrangThai == 0">
-            <v-button class="btn text-white w-50" @click="DaNhanHang(DH_CT.DH_Ma)" style="background-color: rgba(0,255,4,1)">Đã nhận được hàng</v-button>
+            <v-button class="btn text-white w-50" @click="DaNhanHang(DH_CT.DH_Ma)"
+                style="background-color: rgba(0,255,4,1)">Đã nhận được hàng</v-button>
             <v-button class="btn btn-danger text-white w-50" @click="HuyDonHang(DH_CT.DH_Ma)">Hủy đơn hàng</v-button>
 
         </VCol>

@@ -27,12 +27,27 @@
                   Thêm
                 </VBtn>
               </VCol>
+
             </VRow>
+
           </VCardText>
         </VCard>
       </v-dialog>
     </VRow>
+    <v-dialog v-model="dialog4" class="w-50 h-25">
+      <div class="card text-center bg bg-white p-5">
+        <h3 class="text-success">Bạn đã thêm banner thành công</h3>
+        <div class="row w-100">
+          <div class="col-4"></div>
+          <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+              @click="dialog4 = false">
+              <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
+          <div class="col-4"></div>
 
+        </div>
+      </div>
+
+    </v-dialog>
     <VTable height="500" fixed-header>
       <thead>
         <tr>
@@ -62,14 +77,33 @@
         <tr class="text-center" v-for="(item, i) in filteredHMs" :key="BN_Ma">
           <td>{{ i + 1 }}</td>
           <td>{{ item.BN_Ma }}</td>
-          <td><img :src="GetBanner( item.BN_Ma )" class="img-fluid" alt="..." style="max-width: 300px"></td>
+          <td><img :src="GetBanner(item.BN_Ma)" class="img-fluid" alt="..." style="max-width: 300px"></td>
           <td>{{ item.BN_TrangThai }}</td>
           <td>{{ item.BN_NgayTao }}</td>
           <td>
             <div class="dropdown open">
-              <button class="dropdown-item btn bg bg-danger text-white" @click="XoaHangMuc(item.BN_Ma)">
+              <button class="dropdown-item btn bg bg-danger text-white" @click="dialog3 = true">
                 <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
             </div>
+            <v-dialog v-model="dialog3" class="w-50 h-25">
+              <div class="card text-start bg bg-white p-5">
+                <h2>Bạn có chắc muốn xóa banner này không?</h2>
+                <p class="mt-3">banner sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                  chắn rằng bạn muốn xóa banner này</p>
+                <div class="row w-100">
+                  <div class="col-2"></div>
+                  <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                      @click="XoaHangMuc(item.BN_Ma)">
+                      <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                  <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                      @click="dialog3 = false">
+                      <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                  <div class="col-2"></div>
+
+                </div>
+              </div>
+
+            </v-dialog>
           </td>
         </tr>
       </tbody>
@@ -92,6 +126,8 @@ export default defineComponent({
       Chu: "",
       TenHangMuc: "",
       dialog: false,
+      dialog3: false,
+      dialog4: false,
       HMs: [],
       FitlerHMs: "",
       imageBanner: "",
@@ -131,7 +167,6 @@ export default defineComponent({
             "Content-Type": "multipart/form-data"
           }
         });
-        alert('Thêm dữ liệu thành công!')
         console.log("Tệp ảnh đã được tải lên thành công:", response.data);
       } catch (error) {
         console.error("Lỗi khi tải lên tệp ảnh:", error);
@@ -159,10 +194,9 @@ export default defineComponent({
     XoaHangMuc(BN_Ma) {
       axios.delete("http://localhost:3000/api/banner/" + BN_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
         this.GetHM();
-
+        this.dialog3 = false
       }).catch(error => {
         alert(error);
       });
@@ -177,7 +211,7 @@ export default defineComponent({
         console.log(this.Chu)
       })
     },
-    
+
     GetBanner(S_Ma) {
       const logo = "http://localhost:3000/api/thumbnail/image/BN/" + S_Ma
       return logo;
@@ -219,6 +253,7 @@ export default defineComponent({
         alert(error);
       });
       this.setBanner()
+      this.dialog4 = true
     }
   }
 });

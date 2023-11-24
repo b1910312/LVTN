@@ -28,7 +28,26 @@ exports.create = async (req, res) => {
 }
 
 
+exports.FindSachVaiTro = async (req, res) => {
 
+    console.log('');
+
+    const condition = {
+        TKNV_VaiTro: req.params.TKNV_VaiTro
+    };
+
+
+    const [error, documents] = await handle(
+        NhanVien.find(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+    return res.send(documents);
+};
 //*--------Truy xuất toàn bộ tài khoản nhân viên có trong cơ sở dữ liệu
 exports.findAll = async (req, res, next) => {
     const condition = { ownerId: req.userId };

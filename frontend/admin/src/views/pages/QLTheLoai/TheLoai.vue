@@ -3,13 +3,14 @@
   <div>
     <VRow>
       <VCol cols="6" class="ps-4">
-        <input type="text" class="form-control w-100" v-model.trim="FitlerTheLoais" name="" id="" aria-describedby="helpId"
-          placeholder="Tìm kiếm theo tên">
+        <input type="text" class="form-control w-100" v-model.trim="FitlerTheLoais" name="" id=""
+          aria-describedby="helpId" placeholder="Tìm kiếm theo tên">
       </VCol>
       <VCol cols="5"></VCol>
       <VCol cols="1" class="pe-4">
         <RouterLink :to="{ name: 'TheLoaiThem' }">
-          <button class="btn btn-outline-primary w-100" style="float: right; right: 0;"><font-awesome-icon :icon="['fas', 'plus']" /></button>
+          <button class="btn btn-outline-primary w-100" style="float: right; right: 0;"><font-awesome-icon
+              :icon="['fas', 'plus']" /></button>
         </RouterLink>
       </VCol>
     </VRow>
@@ -48,21 +49,74 @@
           <td>
             <div class="dropdown open">
               <button class="btn btn-outline-info dropdown-toggle" type="button" id="triggerId" data-bs-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+                aria-haspopup="true" aria-expanded="false" @click="setActiveTL(item.TL_Ma)">
                 <font-awesome-icon :icon="['fas', 'gears']" />
-               </button>
+              </button>
               <div class="dropdown-menu p-2 border border-primary" aria-labelledby="triggerId">
                 <RouterLink :to="{ name: 'TheLoaiSua', params: { id: item.TL_Ma } }">
-                  <button class="dropdown-item btn bg bg-success text-white mb-1"><font-awesome-icon :icon="['fas', 'pen']" /> Chỉnh sửa</button>
+                  <button class="dropdown-item btn bg bg-success text-white mb-1"><font-awesome-icon
+                      :icon="['fas', 'pen']" /> Chỉnh sửa</button>
                 </RouterLink>
-                <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.TL_Ma)"> <font-awesome-icon :icon="['fas', 'trash']" />  Xóa</button>
+                <button class="dropdown-item btn bg bg-danger text-white" @click="dialog3 = true"> <font-awesome-icon
+                    :icon="['fas', 'trash']" /> Xóa</button>
+                <v-dialog v-model="dialog3" class="w-50 h-25">
+                  <div class="card text-start bg bg-white p-5">
+                    <h2>Bạn có chắc muốn xóa thể loại này không?</h2>
+                    <p class="mt-3">Thể loại sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa thể loại này</p>
+                    <div class="row w-100">
+                      <div class="col-2"></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                          @click="XoaSach(TL.TL_Ma)">
+                          <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                          @click="dialog3 = false">
+                          <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                      <div class="col-2"></div>
+
+                    </div>
+                  </div>
+
+                </v-dialog>
               </div>
+
             </div>
           </td>
         </tr>
       </tbody>
     </VTable>
   </div>
+
+  <v-dialog v-model="dialog4" class="w-50 h-25">
+    <div class="card text-start bg bg-white p-5">
+      <h2 class="text-center">Không thể xóa thể loại</h2>
+      <p class="mt-3">Thể loại bạn muốn xóa còn tồn tại sách, không thể tiếp tục xóa, hãy đảm bảo rằng không còn sách trực
+        thuộc trước khi xóa</p>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+            @click="dialog4 = false">
+            <font-awesome-icon :icon="['fas', 'circle-check']" /> Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
+  <v-dialog v-model="dialog6" class="w-100 h-100">
+    <div class="card text-center bg bg-white p-5">
+      <h2>Bạn không có quyền truy cập vào trang này!!</h2>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+            @click="this.$router.push(`/`)">
+            <font-awesome-icon :icon="['fas', '213-291']" />Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
 </template>
 
 <script>
@@ -75,7 +129,12 @@ export default defineComponent({
   data() {
     return {
       TheLoais: [],
-      FitlerTheLoais: ""
+      FitlerTheLoais: "",
+      dialog3: false,
+      dialog4: false,
+      dialog6: false,
+      TL_MaActive: "",
+      TL: []
     }
 
   },
@@ -88,11 +147,32 @@ export default defineComponent({
     },
   },
   mounted() {
+
     this.GetTheLoai()
     // Lấy ngày hiện tại
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
+  created() {
+    const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
+    if (nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
+      this.dialog6 = true
+    }
+  },
   methods: {
+    GetOneTL(TL_Ma) {
+      axios.get(`http://localhost:3000/api/theloai/` + TL_Ma)
+      .then(res=>{
+          this.TL = res.data
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+    },
+    setActiveTL(data) {
+      this.TL_MaActive = data;
+      console.log("S_Ma" + this.TL_MaActive)
+      this.GetOneTL(this.TL_MaActive)
+    },
     GetTheLoai() {
       axios.get('http://localhost:3000/api/TheLoai')
         .then((response) => {
@@ -106,10 +186,23 @@ export default defineComponent({
         })
     },
     XoaSach(TL_Ma) {
-      axios.delete("http://localhost:3000/api/TheLoai/" + TL_Ma).then(response => {
+      axios.get("http://localhost:3000/api/sach/GetByDanhMuc/" + TL_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
-        // Sau đó, chuyển hướng người dùng
+        if (response.data != "") {
+          this.dialog4 = true
+          this.dialog3 = false
+        }
+        else {
+          axios.delete("http://localhost:3000/api/theloai/" + TL_Ma).then(response => {
+            // Nếu cập nhật thành công, thì hiển thị thông báo
+            this.dialog3 = false
+            // Sau đó, chuyển hướng người dùng
+            this.GetTheLoai();
+
+          }).catch(error => {
+            alert(error);
+          });
+        }
         this.GetTheLoai();
 
       }).catch(error => {

@@ -50,14 +50,22 @@ export default {
 
         }
     },
-    created() {
+    mounted() {
         this.getNV()
         this.CountGH()
         this.GetLastID1()
     },
-
+    created() {
+        const khachhangchitiet = JSON.parse(localStorage.getItem("khachhang"))
+        if (!khachhangchitiet ) {
+            this.$router.push("/");
+        }
+        if (khachhangchitiet.TKKH_TrangThai != 1 ) {
+            this.$router.push("/");
+        }
+    },
     methods: {
-        
+
         DeleteCTGH(id) {
             axios.delete(`http://localhost:3000/api/chitietgiohang/` + id).then(res => {
 
@@ -201,7 +209,7 @@ export default {
             })
         },
         addThanhToan(id, sl, gia) {
-
+            
             if (this.productsThanhToan.includes(this.count[id].CTGH_Ma)) {
                 this.productsThanhToan.splice(this.productsThanhToan.indexOf(this.count[id].CTGH_Ma), 1);
                 this.SoLuong = this.SoLuong - sl;
@@ -259,13 +267,9 @@ export default {
                     <tbody class="text-white">
                         <tr v-for="(item, index) in count" :key="item.MaSach">
                             <td>
-                                <div class="form-check">
-                                    <input class="form-check-input"
-                                        @click=" addThanhToan(index, item.CTGH_SoLuong, SachGia[index])" type="checkbox"
-                                        value="" id="">
-                                    <label class="form-check-label" for="">
-                                    </label>
-                                </div>
+                                <input type="checkbox"  @change="addThanhToan(index, item.CTGH_SoLuong, SachGia[index])"  name="" id="">
+                  
+
 
                             </td>
                             <td><img :src="GetThumNail(item.CTGH_MaSach)" class="img-fluid"

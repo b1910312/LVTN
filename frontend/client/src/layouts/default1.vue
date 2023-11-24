@@ -1,14 +1,34 @@
 <script setup>
 import DefaultLayout from './components/DefaultLayout.vue'
 import Footer from './components/FooterPage.vue';
-
+</script>
+<script>
+export default {
+  name: "DFPage",
+  data(){
+    return{
+      NXB: []
+    }
+  },
+  mounted(){
+    this.GetNXB()
+  },
+  methods:{
+    GetNXB(){
+      axios.get(`http://localhost:3000/api/nxb`)
+      .then(res=>{
+        this.NXB = res.data
+      })
+    }
+  }
+}
 </script>
 
 <template>
   <DefaultLayout>
     <RouterView />
   </DefaultLayout>
-  <Footer/> 
+  <Footer :NXB="NXB"/> 
 
 </template>
 

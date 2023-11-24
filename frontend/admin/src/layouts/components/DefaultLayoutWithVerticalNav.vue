@@ -145,13 +145,13 @@ const vuetifyTheme = useTheme()
           to: '/quanlydanhgia',
         }"
       />
-      <VerticalNavLink
+      <!-- <VerticalNavLink
         :item="{
           title: 'QL Trò chuyện',
           icon: 'bx-chat',
           to: '/quanlycuoctrochuyen',
         }"
-      />
+      /> -->
       <VerticalNavLink
         :item="{
           title: 'QL Vai Trò',

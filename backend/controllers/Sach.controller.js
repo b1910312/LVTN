@@ -86,6 +86,48 @@ exports.FindSachByNoiDung = async (req, res) => {
 
     return res.send(documents);
 };
+exports.FindSachByDanhMuc = async (req, res) => {
+
+    console.log('');
+
+    const condition = {
+        S_TheLoai: req.params.S_TheLoai
+    };
+
+
+    const [error, documents] = await handle(
+        Sach.find(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
+exports.FindSachByNXB = async (req, res) => {
+
+    console.log('');
+
+    const condition = {
+        S_NXB: req.params.S_NXB
+    };
+
+
+    const [error, documents] = await handle(
+        Sach.find(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
 exports.findLatestBooks = async (req, res) => {
     const condition = {
         ownerId: req.userId
@@ -100,6 +142,25 @@ exports.findLatestBooks = async (req, res) => {
         Sach.find(condition, '-ownerId')
             .sort({ 'S_NgayTao': -1 }) // Sắp xếp theo ngày tạo giảm dần (mới nhất lên đầu)
             .limit(20) // Giới hạn kết quả trả về 20 dòng đầu tiên
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất sách với mã ${req.params.S_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
+exports.SapBanHet = async (req, res) => {
+    const condition = {
+        S_SoLuong: { $lt: 10 } 
+    };
+   
+
+    const [error, documents] = await handle(
+        Sach.find(condition, '-ownerId') // Sắp xếp theo ngày tạo giảm dần (mới nhất lên đầu)
+             // Giới hạn kết quả trả về 20 dòng đầu tiên
     );
 
     if (error) {

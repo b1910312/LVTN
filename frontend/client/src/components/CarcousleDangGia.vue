@@ -1,27 +1,27 @@
 <template>
     <v-carousel cycle hide-delimiter-background show-arrows="hover" style="border-radius: 50px;" height="380"
         cycleInterval="1000" v-model="activeIndex">
-        <v-carousel-item v-for="item in danhgia" :key="item.name" auto>
+        <v-carousel-item v-for="item in danhgia" :key="item.DG_Ma" auto>
             <VContainer class="bg bg-white h-100">
                 <section class="l-card__user mb-5 mx-5">
                     <div class="l-card__userImage">
-                        <img :src="GetThumNail(item.MaKH)" alt="Naruto">
+                        <img :src="GetThumNail(item.DG_MaKH)" alt="Naruto">
                     </div>
-                    <div class="l-card__userInfo">
-                        <h3>{{ item.MaKH }}</h3>
-                        <div class="d-flex">
-                            <h5 style="color: gold;" v-for="i of item.sosao" :key="i">
-                            <font-awesome-icon :icon="['fas', 'star']" />
-                        </h5>
+                    <div class="l-card__userInfo px-5">
+                        <h3>{{ getKHName(item.DG_MaKH) }}</h3>
+                        <div class="d-flex ">
+                            <h5 style="color: gold;" v-for="i of item.DG_SoSao" :key="i">
+                                <font-awesome-icon :icon="['fas', 'star']" />
+                            </h5>
                         </div>
                     </div>
                 </section>
-                <section class="l-card__text">
+                <section class="l-card__text w-75 mx-auto">
                     <p>
-                        {{ item.Noidung }}
+                        {{ item.DG_NoiDung }}
                     </p>
                 </section>
-               
+
             </VContainer>
         </v-carousel-item>
     </v-carousel>
@@ -38,6 +38,7 @@ export default defineComponent(
         data() {
             return {
                 activeIndex: 0,
+                NguoiDungs: "",
                 image: [
                     { name: 'image1', srcc: 'https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg' },
                     { name: 'image2', srcc: 'https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg' },
@@ -45,6 +46,9 @@ export default defineComponent(
                     { name: 'image4', srcc: 'https://lephuongdung.com/wp-content/uploads/2022/02/doc-sach.jpg' },
                 ],
             }
+        },
+        mounted() {
+            this.getNguoiDung()
         },
         props: {
             danhgia: {
@@ -55,6 +59,20 @@ export default defineComponent(
             GetThumNail(S_Ma) {
                 const logo = "http://localhost:3000/api/thumbnail/image/KH/" + S_Ma
                 return logo;
+            },
+            getKHName(BL_MaKH) {
+                // return this.NguoiDungs.find(item => item.KH_MaKH === BL_MaKH).KH_HoTen;
+
+                return this.NguoiDungs.find(item => item.KH_MaKH === BL_MaKH).KH_HoTen;
+
+
+            },
+            getNguoiDung() {
+                // Sử dụng tính năng fetch() để chỉ gọi dữ liệu một lần
+                axios.get(`http://localhost:3000/api/thongtinkhachhang`).then(res => {
+                    this.NguoiDungs = res.data;
+                    console.log(this.NguoiDungs);
+                });
             },
         },
 

@@ -7,12 +7,22 @@ export default {
   data() {
     return {
       nvv: {
-        TKKH_MaKH: "",
-        TKKH_MatKhau: ""
       },
       NV: {},
       VT: "",
     }
+  },
+  created(){
+    this.interval = setInterval(() => {
+      axios.get('http://localhost:3000/api/khachhang/' + this.nvv.TKKH_MaKH).then((response) => {
+          // Update the value of the variable
+          this.KH = response.data
+          var khachHang = JSON.parse(localStorage.getItem('khachhang'));
+          khachHang.TKKH_TrangThai = this.KH.TKKH_TrangThai
+          localStorage.setItem('khachhang', JSON.stringify(khachHang));
+          this.getNV()
+        })
+    }, 5000)
   },
   mounted() {
     this.getNV()
@@ -70,7 +80,7 @@ export default {
 }
 </script>
 <template>
-  <VBadge v-if="nvv.TKKH_MaKH !== ''" dot location="bottom right" offset-x="3" offset-y="3" color="success" bordered>
+  <VBadge v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1" dot location="bottom right" offset-x="3" offset-y="3" color="success" bordered>
     <VAvatar class="cursor-pointer" color="primary" variant="tonal">
       <VImg :src="GetLogo(NV.KH_MaKH)" />
       <!-- SECTION Menu -->
@@ -101,7 +111,7 @@ export default {
               <VIcon class="me-2" icon="bx-user" size="22" />
             </template>
 
-            <VListItemTitle>Profile</VListItemTitle>
+            <VListItemTitle>Hồ sơ</VListItemTitle>
           </VListItem>
 
           <!--           
@@ -139,13 +149,12 @@ export default {
             <template #prepend>
               <VIcon class="me-2" icon="bx-log-out" size="22" />
             </template>
-            <VListItemTitle>Logout</VListItemTitle>
+            <VListItemTitle>Đăng xuất</VListItemTitle>
           </VListItem>
         </VList>
       </VMenu>
       <!-- !SECTION -->
     </VAvatar>
   </VBadge>
-  <v-button v-if="nvv.TKKH_MaKH == ''" class="btn btn-success" @click="this.$router.push('/dangnhap')"><font-awesome-icon
-      :icon="['fas', 'user-secret']" /></v-button>
+  <v-button v-if="nvv.TKKH_MaKH == '' || nvv.TKKH_TrangThai !== 1" class="btn btn-success" @click="this.$router.push('/dangnhap')">Đăng nhập</v-button>
 </template>

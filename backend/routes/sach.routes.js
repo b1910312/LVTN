@@ -14,6 +14,13 @@ module.exports = (app) => {
 
     router.get("/New", sach.findLatestBooks)
 
+    router.get("/SapBanHet", sach.SapBanHet)
+
+    router.get("/GetByDanhMuc/:S_TheLoai", sach.FindSachByDanhMuc)
+
+    router.get("/GetByNXB/:S_NXB", sach.FindSachByNXB)
+
+
     router.get("/TimKiem/:NoiDung", sach.FindSachByNoiDung)
 
     router.get("/nhapkho", sach.findNhapKhoAll);

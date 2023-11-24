@@ -8,6 +8,10 @@ module.exports = (app) => {
 
     router.get("/", danhgiacuahang.findAll);
 
+    router.get('/getid/getlastdgma', danhgiacuahang.getLastDGMa);
+
+    router.get("/CheckKH/:DG_MaKH", danhgiacuahang.CheckKH);
+
     router.get("/:DG_Ma", danhgiacuahang.findOne);
 
     router.delete("/:DG_Ma", danhgiacuahang.delete);

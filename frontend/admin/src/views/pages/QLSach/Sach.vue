@@ -128,96 +128,7 @@ height: 800px;">
                             srcset="">
                         </div>
 
-                        <div class="col-12 col-md-6">
-                          <h6 class=""> HÌNH MINH HỌA &nbsp;&nbsp;<button @click="dialog7 = true"
-                              class="btn btn-outline-success">Cập
-                              nhật</button>
-                          </h6>
-                          <v-dialog v-model="dialog7">
-                            <div class="card w-75 mx-auto text-start bg bg-white p-5">
-                              <div class="row w-100">
-                                <div class="col-11">
-                                <h4>Cập nhật hình minh họa sách: {{ sach.S_Ten }}</h4>
-                              </div>
-                              <div class="col-1">
-                                <Vbtn class="btn btn-danger" @click="dialog7 = false">Đóng</Vbtn>
-                              </div>
-                              </div>
-                              <VCol cols="12">
-                                <div class="row w-100 mt-2">
-                                  <div class="col-10">
-                                    <VFileInput label="Hình minh họa 1" type="file" ref="imageInput1"
-                                      @change="setImageHMH" />
-                                  </div>
-                                  <div class="d-flex gap-4 col-2">
-                                    <VBtn class="ms-5"  @click="CapNhatHMM(1,imageFile)">
-                                      Cập nhật
-                                    </VBtn>
-                                  </div>
 
-                                </div>
-
-                                <div class="row w-100 mt-2">
-                                  <div class="col-10">
-                                    <VFileInput label="Hình minh họa 2" type="file" ref="imageInput2"
-                                      @change="setImageHMH1" />
-                                  </div>
-                                  <div class="d-flex gap-4 col-2">
-                                    <VBtn class="ms-5"  @click="CapNhatHMM(2,imageFile1)">
-                                      Cập nhật
-                                    </VBtn>
-                                  </div>
-
-                                </div>
-                                <div class="row w-100 mt-2">
-                                  <div class="col-10">
-                                    <VFileInput label="Hình minh họa 3" type="file" ref="imageInput3"
-                                      @change="setImageHMH2" />
-                                  </div>
-                                  <div class="d-flex gap-4 col-2">
-                                    <VBtn class="ms-5" @click="CapNhatHMM(3,imageFile2)">
-                                      Cập nhật
-                                    </VBtn>
-                                  </div>
-
-                                </div>
-                                <div class="row w-100 mt-2">
-                                  <div class="col-10">
-                                    <VFileInput label="Hình minh họa 4" type="file" ref="imageInput4"
-                                      @change="setImageHMH3" />
-                                  </div>
-                                  <div class="d-flex gap-4 col-2">
-                                    <VBtn class="ms-5" @click="CapNhatHMM(4,imageFile3)">
-                                      Cập nhật
-                                    </VBtn>
-                                  </div>
-
-                                </div>
-                                <div class="row w-100 mt-5">
-                                  <div class="d-flex gap-4 col-12">
-                                    <VBtn class=" bg bg-success w-100" @click="done()" >
-                                      Xong
-                                    </VBtn>
-                                  </div>
-                                  
-                                </div>
-
-                              </VCol>
-                            </div>
-
-                          </v-dialog>
-                          <v-carousel class="mb-4 " height="350">
-
-                            <v-carousel-item :src="GetHMM(sach.S_Ma, 1)" auto></v-carousel-item>
-
-                            <v-carousel-item :src="GetHMM(sach.S_Ma, 2)" auto></v-carousel-item>
-
-                            <v-carousel-item :src="GetHMM(sach.S_Ma, 3)" auto></v-carousel-item>
-
-                            <v-carousel-item :src="GetHMM(sach.S_Ma, 4)" auto></v-carousel-item>
-
-                          </v-carousel>
-                        </div>
                         <VRow>
                           <VCol cols="12">
                             <VTextField v-model="sach.S_Ma" label="Mã sách" readonly placeholder="John" />
@@ -255,47 +166,32 @@ height: 800px;">
                     </Vrow>
                   </div>
                 </v-dialog>
-                <button class="dropdown-item btn bg bg-primary text-white mb-1" @click="dialog5 = true">
-                  <font-awesome-icon :icon="['fas', 'plus']" /> Nhập kho</button>
-                <v-dialog v-model="dialog5" class="w-50 my-auto" style="height: fit-content;">
-                  <div class="card text-start bg bg-white p-4">
-                    <Vrow>
-                      <div class="row w-100 mb-3">
-                        <div class="col-6 ms-3">
-                          <h4>Nhập kho sách: <br> {{ sach.S_Ten }}</h4>
-                        </div>
-                        <div class=col-4></div>
-                        <div class=col-1>
-                          <VBtn class="bg bg-danger" @click="dialog5 = false">Đóng</VBtn>
-                        </div>
-                      </div>
-                      <div class="row w-100 ms-2">
-
-                        <VRow>
-                          <VCol cols="12">
-                            <VTextField v-model="NK.NK_SoLuong" label="Số lượng" type="number"
-                              placeholder="············" />
-                          </VCol>
-                          <VCol cols="12">
-                            <VTextField v-model="NK.NK_Gia" label="Giá" type="number" placeholder="············" />
-                          </VCol>
-                        </VRow>
-                      </div>
-                      <div class="row w-100 mt-3">
-                        <div class="col-10"></div>
-                        <div class="col-2">
-                          <VBtn class="bg bg-primary" @click="NhapKho()">Cập nhật</VBtn>
-                        </div>
-                      </div>
-                    </Vrow>
-                  </div>
-                </v-dialog>
+        
                 <RouterLink :to="{ name: 'SachSua', params: { id: item.S_Ma } }">
                   <button class="dropdown-item btn bg bg-success text-white mb-1"><font-awesome-icon
                       :icon="['fas', 'pen']" /> Chỉnh sửa</button>
                 </RouterLink>
-                <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.S_Ma)"> <font-awesome-icon
+                <button class="dropdown-item btn bg bg-danger text-white" @click="dialog8 = true"> <font-awesome-icon
                     :icon="['fas', 'trash']" /> Xóa</button>
+                <v-dialog v-model="dialog8" class="w-50 h-25">
+                  <div class="card text-start bg bg-white p-5">
+                    <h2>Bạn có chắc muốn xóa sách này không?</h2>
+                    <p class="mt-3">sách sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa sách này</p>
+                    <div class="row w-100">
+                      <div class="col-2"></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                          @click="XoaSach(item.S_Ma)">
+                          <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                          @click="dialog8 = false">
+                          <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                      <div class="col-2"></div>
+
+                    </div>
+                  </div>
+
+                </v-dialog>
               </div>
             </div>
           </td>
@@ -336,15 +232,13 @@ export default defineComponent({
       TenTheLoai: "",
       FitlerSachs: "",
       S_MaActive: "",
+      dialog3: false,
       dialog6: false,
       dialog7: false,
-      dialog3: false,
+      dialog8: false,
       dialog5: false,
       nhanvien: {},
-      imageFile: null,
-      imageFile1: null,
-      imageFile2: null,
-      imageFile3: null,
+
 
       imageThumbnail: null
 
@@ -363,7 +257,6 @@ export default defineComponent({
   },
   mounted() {
     this.GetNhanVien()
-    this.GetLastID()
     this.GetSach()
     this.getNXB()
     this.getTheLoai()
@@ -371,23 +264,11 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
-    done(){
+    done() {
       window.location.reload()
     },
     setImageThumbNail(event) {
       this.imageThumbnail = event.target.files[0];
-    },
-    setImageHMH(event) {
-      this.imageFile = event.target.files[0];
-    },
-    setImageHMH1(event) {
-      this.imageFile1 = event.target.files[0];
-    },
-    setImageHMH2(event) {
-      this.imageFile2 = event.target.files[0];
-    },
-    setImageHMH3(event) {
-      this.imageFile3 = event.target.files[0];
     },
     async CapNhatHMM(STT, File) {
       const formData = new FormData();
@@ -422,7 +303,7 @@ export default defineComponent({
         console.error("Lỗi khi tải lên tệp ảnh:", error);
       }
     },
-    
+
     GetThumNail(S_Ma) {
       const logo = "http://localhost:3000/api/thumbnail/image/TB/" + S_Ma
       return logo;
@@ -473,36 +354,7 @@ export default defineComponent({
       // Chuyển đổi số nguyên thành chuỗi
       this.chuỗi = String(so_nguyen);
     },
-    NhapKho() {
-      const now = moment();
-      this.NK.NK_MaNV = this.nhanvien.TKNV_MaNV
-      this.NK.NK_MaSach = this.sach.S_Ma
-      this.NK.NK_NgayNhap = now.format("DD-MM-YYYY");
-      let SSL = parseInt(this.sach.S_SoLuong);
-      let NKSL = parseInt(this.NK.NK_SoLuong);
-      this.sach.S_SoLuong = SSL + NKSL;
-      this.sach.S_NgayCapNhat = now.format("DD-MM-YYYY");
-      //Gọi API để cập nhật sản phẩm
-      axios.put("http://localhost:3000/api/sach/nhapkho/" + this.sach.S_Ma, this.NK).then(response => {
-        // Nếu cập nhật thành công, thì hiển thị thông báo
-        console.log(this.NK)
-        alert("Cập nhật thành công");
-        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-        this.$router.push("/quanlysach");
-      }).catch(error => {
-        alert(error);
-      });
-      // Gọi API để cập nhật sản phẩm
-      axios.put("http://localhost:3000/api/sach/CapNhatSoLuong/" + this.sach.S_Ma, this.sach).then(response => {
-        // Nếu cập nhật thành công, thì hiển thị thông báo
-        console.log(this.NK)
-        alert("Cập nhật thành công");
-        // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-        this.$router.push("/quanlysach");
-      }).catch(error => {
-        alert(error);
-      });
-    },
+  
     setActiveSach(data) {
       this.S_MaActive = data;
       console.log("S_Ma" + this.S_MaActive)
@@ -561,7 +413,7 @@ export default defineComponent({
         console.log(this.TheLoais)
       })
     },
-    XoaSach(S_Ma) {
+    XoaSach(Sach_ma) {
       const now = moment()
       this.sachNKD = this.sach
       this.S_NgayXoa = now.format("DD-MM-YYYY");
@@ -575,15 +427,32 @@ export default defineComponent({
       }).catch(error => {
         alert(error);
       });
-      axios.delete("http://localhost:3000/api/sach/" + S_Ma).then(response => {
-        // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
-        // Sau đó, chuyển hướng người dùng
-        this.GetSach();
+      axios.delete("http://localhost:3000/api/sach/" + Sach_ma)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          alert("Xóa thành công");
+          // Sau đó, chuyển hướng người dùng
+          this.GetSach();
 
-      }).catch(error => {
-        alert(error);
-      });
+        }).catch(error => {
+          alert(error);
+        });
+      const data = {
+        S_Ma: Sach_ma
+      }
+      axios.post(`http://localhost:5000/delete_product`, data)
+        .then((response) => {
+          // Nếu API trả về thành công
+          if (response.status === 200) {
+            // Thông báo thành công
+            console.log("xóa sách khỏi csv thành công")
+          }
+        })
+        .catch((error) => {
+          // Nếu API trả về lỗi
+          console.log("Lưu sách vào csv không thành công")
+          console.log(error)
+        })
     }
   }
 });

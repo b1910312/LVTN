@@ -1,6 +1,6 @@
 <template>
     <v-carousel  cycle hide-delimiter-background show-arrows="hover" style="border-radius: 50px;" height="380" cycleInterval="1000" v-model="activeIndex">
-        <v-carousel-item v-for="item in img" :key="item.BN_Ma" :src="GetThumNail(item.BN_Ma)" auto ></v-carousel-item>
+        <v-carousel-item v-for="item in img" :key="item.BN_Ma" cover :src="GetThumNail(item.BN_Ma)" auto ></v-carousel-item>
     </v-carousel>
 </template>
 <!-- (Optional) - Place this js code after initializing bootstrap.min.js or bootstrap.bundle.min.js -->

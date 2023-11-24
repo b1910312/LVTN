@@ -29,7 +29,8 @@ export default defineComponent({
         DC_QuanHuyen: "",
         DC_TinhTP: "",
         DC_NgayTao: "",
-      }
+      },
+      dialog4: false
     };
   },
   mounted() {
@@ -77,7 +78,7 @@ export default defineComponent({
           // Nếu API trả về thành công
           if (response.status === 200) {
             // Thông báo thành công
-            alert('Thêm dữ liệu thành công!')
+            // alert('Thêm dữ liệu thành công!')
 
           }
         })
@@ -108,12 +109,13 @@ export default defineComponent({
             "Content-Type": "multipart/form-data"
           }
         });
-        alert('Thêm dữ liệu thành công!')
-        this.$router.push("/quanlynxb");
+        // alert('Thêm dữ liệu thành công!')
         console.log("Tệp ảnh đã được tải lên thành công:", response.data);
       } catch (error) {
         console.error("Lỗi khi tải lên tệp ảnh:", error);
       }
+      this.dialog4 = true
+
 
     },
     setImageFile(event) {
@@ -164,5 +166,19 @@ export default defineComponent({
         </VCol>
       </VRow>
     </VForm>
+    <v-dialog v-model="dialog4" class="w-50 h-25">
+      <div class="card text-center bg bg-white p-5">
+        <h3 class="text-success">Bạn đã thêm nhà xuất bản thành công</h3>
+        <div class="row w-100">
+          <div class="col-4"></div>
+          <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+              @click="dialog4 = false, this.$router.push(`/quanlynxb`)">
+              <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
+          <div class="col-4"></div>
+
+        </div>
+      </div>
+
+    </v-dialog>
   </div>
 </template>

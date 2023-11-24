@@ -18,8 +18,15 @@ export default defineComponent({
         TL_Ten: "",
         TL_NgayTao: "",
         TL_NgayCapNhat: ""
-      }
+      },
+      dialog4: false
     };
+  },
+  created() {
+    const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
+    if (nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
+      this.dialog6 = true
+    }
   },
   mounted() {
     this.GetLastID()
@@ -62,9 +69,8 @@ export default defineComponent({
         .then((response) => {
           // Nếu API trả về thành công
           if (response.status === 200) {
-            // Thông báo thành công
-            alert('Thêm dữ liệu thành công!')
-            this.$router.push("/quanlyTheLoai");
+            // Thông báo thành công')
+            this.dialog4 = true
           }
         })
         .catch((error) => {
@@ -96,4 +102,32 @@ export default defineComponent({
       </VRow>
     </VForm>
   </div>
+  <v-dialog v-model="dialog4" class="w-50 h-25">
+    <div class="card text-center bg bg-white p-5">
+      <h3 class="text-success">Bạn đã thêm thể loại thành công</h3>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+            @click="dialog4 = false, this.$router.push(`/quanlyTheLoai`)">
+            <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
+  <v-dialog v-model="dialog6" class="w-75 h-75">
+    <div class="card text-center bg bg-white p-5">
+      <h2>Bạn không có quyền truy cập vào trang này!!</h2>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+            @click="this.$router.push(`/`)">
+            <font-awesome-icon :icon="['fas', '213-291']" />Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
 </template>

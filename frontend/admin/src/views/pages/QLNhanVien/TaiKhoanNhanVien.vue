@@ -102,7 +102,7 @@
                   v-if="item.TKNV_TrangThai == 1"><font-awesome-icon :icon="['fas', 'lock']" /> Khóa tài khoản</button>
                 <button class="dropdown-item btn bg bg-success text-white mb-1" @click="MoKhoaTaiKhoan(NV.TKNV_MaNV)"
                   v-if="item.TKNV_TrangThai == 2"><font-awesome-icon :icon="['fas', 'lock']" /> Mở khóa tài khoản</button>
-                  <button class="dropdown-item btn bg bg-info text-white mb-1" @click="dialog4 = true">
+                <button class="dropdown-item btn bg bg-info text-white mb-1" @click="dialog4 = true">
                   <font-awesome-icon :icon="['fas', 'medal']" />Cập nhật vai trò</button>
                 <v-dialog v-model="dialog4">
                   <div class="card p-2 w-75 mx-auto">
@@ -146,8 +146,27 @@
 
                   </div>
                 </v-dialog>
-                  <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.TKNV_MaNV)">
+                <button class="dropdown-item btn bg bg-danger text-white" @click="dialog5 = true">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
+                <v-dialog v-model="dialog5" class="w-50 h-25">
+                  <div class="card text-start bg bg-white p-5">
+                    <h2>Bạn có chắc muốn xóa tài khoản nhân viên này không?</h2>
+                    <p class="mt-3">tài khoản nhân viên sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa tài khoản nhân viên này</p>
+                    <div class="row w-100">
+                      <div class="col-2"></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                          @click="XoaSach(item.TKNV_MaNV)">
+                          <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                          @click="dialog5 = false">
+                          <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                      <div class="col-2"></div>
+
+                    </div>
+                  </div>
+
+                </v-dialog>
               </div>
             </div>
           </td>
@@ -155,12 +174,25 @@
       </tbody>
     </VTable>
   </div>
+  <v-dialog v-model="dialog6" class="w-75 h-75">
+    <div class="card text-center bg bg-white p-5">
+      <h2>Bạn không có quyền truy cập vào trang này!!</h2>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+            @click="this.$router.push(`/`)">
+            <font-awesome-icon :icon="['fas', '213-291']" />Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { defineAsyncComponent, ref } from 'vue';
 import moment from "moment";
+import { defineComponent } from 'vue';
 
 // Tạo component
 export default defineComponent({
@@ -177,6 +209,8 @@ export default defineComponent({
       dialog2: false,
       dialog3: false,
       dialog4: false,
+      dialog5: false,
+      dialog6: false,
       password1: "",
       password2: "",
       CapNhatMatKhau: ""
@@ -194,9 +228,8 @@ export default defineComponent({
   created() {
     const nhanvien = localStorage.getItem('nhanvien')
     const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
-    if ( nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
-      alert("Quyền đéo đâu mà vào")
-      this.$router.push("/");
+    if (nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
+      this.dialog6 = true
     }
   },
   mounted() {
@@ -214,12 +247,12 @@ export default defineComponent({
       axios.put("http://localhost:3000/api/nhanvien/CapNhatVaiTro/" + this.NV.TKNV_MaNV, this.NV).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-      this.dialog4 = false
-      this.GetNV()
+        this.dialog4 = false
+        this.GetNV()
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
-      
+
     },
     updatePassword(id) {
       const now = moment()
@@ -361,23 +394,23 @@ export default defineComponent({
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/diachi/" + NV_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/thongtinnhanvien/" + NV_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
+        console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
-      
+
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       window.location.reload();
     }

@@ -1,4 +1,4 @@
-const hangmuc = require("../controllers/HangMuc.controller");
+const hangmuc = require("../controllers/HangMucNew.controller");
 const express = require("express");
 
 module.exports = (app) => {

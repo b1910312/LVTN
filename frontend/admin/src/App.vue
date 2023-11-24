@@ -9,13 +9,26 @@ const { global } = useTheme()
 <script>
 import { mapGetters, mapMutations } from "vuex";
 export default {
-
-  created() {
-    const nhanvien = localStorage.getItem('nhanvien')
-    const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
-    if (nhanvien == null || nhanvienchitiet.TKNV_VaiTro == "KBVT002" || nhanvienchitiet.TKNV_TrangThai == 2) {
-      this.$router.push("/login");
+  data() {
+    return {
+      NV: [],
     }
+  },
+  created() {
+    this.interval = setInterval(() => {
+      const nhanvien = localStorage.getItem('nhanvien')
+      const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
+      axios.get('http://localhost:3000/api/nhanvien/' + nhanvienchitiet.TKNV_MaNV).then((response) => {
+        // Update the value of the variable
+        this.NV = response.data
+        nhanvienchitiet.TKNV_TrangThai = this.NV.TKNV_TrangThai
+        localStorage.setItem('nhanvien', JSON.stringify(nhanvienchitiet));
+        if (nhanvien == null || nhanvienchitiet.TKNV_VaiTro == "KBVT002" || nhanvienchitiet.TKNV_TrangThai == 2) {
+          this.$router.push("/login");
+        }
+      })
+
+    }, 1000)
   },
 }
 </script>

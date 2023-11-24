@@ -1,23 +1,57 @@
 <script setup>
-import VueApexCharts from 'vue3-apexcharts'
-import { useTheme } from 'vuetify'
-import { hexToRgb } from '@layouts/utils'
+import { hexToRgb } from '@layouts/utils';
+import VueApexCharts from 'vue3-apexcharts';
+import { useTheme } from 'vuetify';
 
 const vuetifyTheme = useTheme()
+const props = defineProps({
+  SLDanhGia: {
+    type: Number,
+    required: true,
+  },
+  SLDanhGia_TichCuc: {
+    type: Number,
+    required: true,
+  },
+  SLDanhGia_TieuCuc: {
+    type: Number,
+    required: true,
 
-const series = [
-  45,
-  80,
-  20,
-  40,
-]
+  },
+  SLDanhGia_1_sao: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  SLDanhGia_2_sao: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  SLDanhGia_3_sao: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  SLDanhGia_4_sao: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  SLDanhGia_5_sao: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+})
+
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  const disabledTextColor = `rgba(${ hexToRgb(String(currentTheme['on-surface'])) },${ variableTheme['disabled-opacity'] })`
-  const primaryTextColor = `rgba(${ hexToRgb(String(currentTheme['on-surface'])) },${ variableTheme['high-emphasis-opacity'] })`
-  
+  const disabledTextColor = `rgba(${hexToRgb(String(currentTheme['on-surface']))},${variableTheme['disabled-opacity']})`
+  const primaryTextColor = `rgba(${hexToRgb(String(currentTheme['on-surface']))},${variableTheme['high-emphasis-opacity']})`
+
   return {
     chart: {
       sparkline: { enabled: true },
@@ -31,21 +65,19 @@ const chartOptions = computed(() => {
     tooltip: { enabled: false },
     dataLabels: { enabled: false },
     labels: [
-      'Fashion',
-      'Electronic',
-      'Sports',
-      'Decor',
+      'Tích cực',
+      'Tiêu cực',
+
     ],
     colors: [
       currentTheme.success,
-      currentTheme.primary,
-      currentTheme.secondary,
-      currentTheme.info,
+      currentTheme.error,
+
     ],
     grid: {
       padding: {
-        top: -7,
-        bottom: 5,
+        top: -10,
+        bottom: 0,
       },
     },
     states: {
@@ -56,7 +88,7 @@ const chartOptions = computed(() => {
       pie: {
         expandOnClick: false,
         donut: {
-          size: '75%',
+          size: '70%',
           labels: {
             show: true,
             name: {
@@ -73,9 +105,9 @@ const chartOptions = computed(() => {
             },
             total: {
               show: true,
-              label: 'Weekly',
+              label: 'Hài lòng',
               fontSize: '14px',
-              formatter: () => '38%',
+              formatter: () => `${(props.SLDanhGia_TichCuc / props.SLDanhGia) * 100}%`,
               color: disabledTextColor,
               fontFamily: 'Public Sans',
             },
@@ -86,112 +118,113 @@ const chartOptions = computed(() => {
   }
 })
 
-const orders = [
-  {
-    amount: '82.5k',
-    title: 'Electronic',
-    avatarColor: 'primary',
-    subtitle: 'Mobile, Earbuds, TV',
-    avatarIcon: 'bx-mobile-alt',
-  },
-  {
-    amount: '23.8k',
-    title: 'Fashion',
-    avatarColor: 'success',
-    subtitle: 'Tshirt, Jeans, Shoes',
-    avatarIcon: 'bx-closet',
-  },
-  {
-    amount: 849,
-    title: 'Decor',
-    avatarColor: 'info',
-    subtitle: 'Fine Art, Dining',
-    avatarIcon: 'bx-home',
-  },
-  {
-    amount: 99,
-    title: 'Sports',
-    avatarColor: 'secondary',
-    subtitle: 'Football, Cricket Kit',
-    avatarIcon: 'bx-football',
-  },
-]
 
-const moreList = [
-  {
-    title: 'Share',
-    value: 'Share',
-  },
-  {
-    title: 'Refresh',
-    value: 'Refresh',
-  },
-  {
-    title: 'Update',
-    value: 'Update',
-  },
-]
+// const moreList = [
+//   {
+//     title: 'Refresh',
+//     value: 'Refresh',
+//   },
+// ]
 </script>
 
 <template>
   <VCard>
     <VCardItem class="pb-3">
       <VCardTitle class="mb-1">
-        Order Statistics
+        Đánh giá cửa hàng
       </VCardTitle>
-      <VCardSubtitle>42.82k Total Sales</VCardSubtitle>
 
-      <template #append>
+      <!-- <template #append>
         <div class="me-n3 mt-n8">
           <MoreBtn :menu-list="moreList" />
         </div>
-      </template>
+      </template> -->
     </VCardItem>
 
     <VCardText>
       <div class="d-flex align-center justify-space-between mb-3">
-        <div class="flex-grow-1">
-          <h4 class="text-h4 mb-1">
-            8,258
-          </h4>
-          <span>Total Orders</span>
+        <div class="flex-grow-1 text-center">
+          <h2 class="text-h4 mb-1">
+            {{ props.SLDanhGia }}
+          </h2>
+          <span>Lượt đáng giá</span>
         </div>
 
         <div>
-          <VueApexCharts
-            type="donut"
-            :height="125"
-            width="105"
-            :options="chartOptions"
-            :series="series"
-          />
+          <VueApexCharts type="donut" :height="125" width="105" :options="chartOptions"
+            :series="[props.SLDanhGia_TichCuc, props.SLDanhGia_TieuCuc,]" />
         </div>
       </div>
 
-      <VList class="card-list mt-7">
-        <VListItem
-          v-for="order in orders"
-          :key="order.title"
-        >
+      <VList class="card-list ">
+        <VListItem>
           <template #prepend>
-            <VAvatar
-              rounded
-              variant="tonal"
-              :color="order.avatarColor"
-            >
-              <VIcon :icon="order.avatarIcon" />
+            <VAvatar rounded variant="tonal" color="warning">
+              <VIcon icon="bx-star" />
             </VAvatar>
           </template>
 
           <VListItemTitle class="mb-1">
-            {{ order.title }}
+            Đánh giá 5 sao
           </VListItemTitle>
-          <VListItemSubtitle class="text-disabled">
-            {{ order.subtitle }}
-          </VListItemSubtitle>
-
           <template #append>
-            <span>{{ order.amount }}</span>
+            <span>{{ props.SLDanhGia_5_sao }}</span>
+          </template>
+        </VListItem>
+        <VListItem>
+          <template #prepend>
+            <VAvatar rounded variant="tonal" color="warning">
+              <VIcon icon="bx-star" />
+            </VAvatar>
+          </template>
+
+          <VListItemTitle class="mb-1">
+            Đánh giá 4 sao
+          </VListItemTitle>
+          <template #append>
+            <span>{{ props.SLDanhGia_4_sao }}</span>
+          </template>
+        </VListItem>
+        <VListItem>
+          <template #prepend>
+            <VAvatar rounded variant="tonal" color="warning">
+              <VIcon icon="bx-star" />
+            </VAvatar>
+          </template>
+
+          <VListItemTitle class="mb-1">
+            Đánh giá 3 sao
+          </VListItemTitle>
+          <template #append>
+            <span>{{ props.SLDanhGia_3_sao }}</span>
+          </template>
+        </VListItem>
+        <VListItem>
+          <template #prepend>
+            <VAvatar rounded variant="tonal" color="warning">
+              <VIcon icon="bx-star" />
+            </VAvatar>
+          </template>
+
+          <VListItemTitle class="mb-1">
+            Đánh giá 2 sao
+          </VListItemTitle>
+          <template #append>
+            <span>{{ props.SLDanhGia_2_sao }}</span>
+          </template>
+        </VListItem>
+        <VListItem>
+          <template #prepend>
+            <VAvatar rounded variant="tonal" color="warning">
+              <VIcon icon="bx-star" />
+            </VAvatar>
+          </template>
+
+          <VListItemTitle class="mb-1">
+            Đánh giá 1 sao
+          </VListItemTitle>
+          <template #append>
+            <span>{{ props.SLDanhGia_1_sao }}</span>
           </template>
         </VListItem>
       </VList>

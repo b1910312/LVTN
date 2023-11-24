@@ -21,7 +21,7 @@
                 </div>
                 <div class=col-4></div>
                 <div class=col-1>
-                  <VBtn class="bg bg-danger" @click="dialog5 = false">Đóng</VBtn>
+                  <VBtn class="bg bg-danger" @click="dialog5 = false, NK=''">Đóng</VBtn>
                 </div>
               </div>
               <div class="row w-100 ms-2">
@@ -95,6 +95,20 @@
       </tbody>
     </VTable>
   </div>
+  <v-dialog v-model="dialog9" class="w-50 h-25">
+    <div class="card text-center bg bg-white p-5">
+      <h2 class="text-center">Nhập kho sách thành công</h2>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+            @click="dialog9 = false, dialog5 = false, NK='' ">
+              <font-awesome-icon :icon="['fas', 'circládad']" /> Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
 </template>
 
 <script>
@@ -125,6 +139,7 @@ export default defineComponent({
       NK_MaActive: "",
       dialog3: false,
       dialog5: false,
+      dialog9: false,
       nhanvien: {},
 
     }
@@ -216,22 +231,21 @@ export default defineComponent({
       axios.post("http://localhost:3000/api/sach/nhapkho/", this.NK).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log(this.NK)
-        alert("Cập nhật thành công");
+        console.log("Cập nhật thành công");
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-        this.$router.push("/quanlysach");
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       // Gọi API để cập nhật sản phẩm
       axios.put("http://localhost:3000/api/sach/CapNhatSoLuong/" + this.sach.S_Ma, this.sach).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log(this.NK)
-        alert("Cập nhật thành công");
+        console.log("Cập nhật thành công");
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-        this.$router.push("/quanlysach");
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
+      this.dialog9 = true
     },
     setActiveSach(data) {
       this.NK_MaActive = data;
@@ -299,20 +313,20 @@ export default defineComponent({
       console.log(this.S_NgayXoa)
       axios.post("http://localhost:3000/api/sachngungkinhdoanh/", this.sachNKD).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
+        console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/sach/" + NK_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
+        console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
         this.GetSach();
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
     }
   }

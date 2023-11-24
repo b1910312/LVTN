@@ -22,22 +22,41 @@ export default {
     this.getNV()
     this.CountGH()
     // Create the interval
+
     this.interval = setInterval(() => {
       // Call the API
-      axios.get('http://localhost:3000/api/chitietgiohang/getbyMaKH/' + this.nvv.TKKH_MaKH).then((response) => {
-        // Update the value of the variable
-        this.count = response.data
-        console.log(this.count)
-      })
+      if (this.nvv.TKKH_TrangThai == 1) {
+        axios.get('http://localhost:3000/api/chitietgiohang/getbyMaKH/' + this.nvv.TKKH_MaKH).then((response) => {
+          // Update the value of the variable
+          this.count = response.data
+          console.log(this.count)
+        })
+
+      
+      }
+      else {
+        this.count = 0
+      }
+      axios.get('http://localhost:3000/api/khachhang/' + this.nvv.TKKH_MaKH).then((response) => {
+          // Update the value of the variable
+          this.KH = response.data
+          var khachHang = JSON.parse(localStorage.getItem('khachhang'));
+          khachHang.TKKH_TrangThai = this.KH.TKKH_TrangThai
+          localStorage.setItem('khachhang', JSON.stringify(khachHang));
+          this.getNV()
+        })
+
     }, 1000)
 
+
+
   },
 
-  beforeRouteLeave(to, from, next) {
-    // Clear the interval before leaving the page
-    clearInterval(this.interval)
-    next()
-  },
+  // beforeRouteLeave(to, from, next) {
+  //   // Clear the interval before leaving the page
+  //   clearInterval(this.interval)
+  //   next()
+  // },
 
   methods: {
     getNV() {
@@ -57,7 +76,8 @@ export default {
   data() {
     return {
       nvv: "",
-      count: "",
+      count: 0,
+      KH: [],
     }
   }
 }
@@ -106,13 +126,13 @@ export default {
         <!-- <NavbarThemeSwitcher class="me-2" /> -->
         <v-button class="p-2" @click="this.$router.push(`/giohang`)">
 
-            <v-badge ref="badgeRef" color="error" class="mb-5" :content="count.length" inline>
-              <h5 class="mt-5">
-                <font-awesome-icon :icon="['fas', 'cart-shopping']" />
-              </h5>
-            </v-badge>
+          <v-badge ref="badgeRef" color="error" class="mb-5" :content="count.length" inline>
+            <h5 class="mt-5">
+              <font-awesome-icon :icon="['fas', 'cart-shopping']" />
+            </h5>
+          </v-badge>
         </v-button>
-        <UserProfile />
+        <UserProfile/>
       </div>
     </template>
 

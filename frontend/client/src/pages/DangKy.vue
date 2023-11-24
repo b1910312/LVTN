@@ -6,6 +6,9 @@ export default {
     name: "dangky",
     data() {
         return {
+            isTKNV_MatKhauVisible: ref(false),
+            isTKNV_MatKhauVisible1: ref(false),
+            loading: false,
             message: "",
             TKKH: {
                 TKKH_MaKH: "",
@@ -318,11 +321,20 @@ export default {
                         </VCol>
                         <VCol cols="12">
                             <VTextField v-model="pass1" :error-messages="errors.pass1"
-                                placeholder="Nhập mật khẩu của bạn tại đây" label="Mật khẩu" />
+                                placeholder="Nhập mật khẩu của bạn tại đây" label="Mật khẩu" 
+                                :type="isTKNV_MatKhauVisible ? 'text' : 'password'"
+
+                                :append-inner-icon="isTKNV_MatKhauVisible ? 'bx-hide' : 'bx-show'"
+                                @click:append-inner="isTKNV_MatKhauVisible = !isTKNV_MatKhauVisible"
+                                 />
                         </VCol>
                         <VCol cols="12">
                             <VTextField v-model="pass2" :error-messages="errors.pass2"
-                                placeholder="Nhập lại mật khẩu của bạn tại đây" label="Nhập lại mật khẩu" />
+                                placeholder="Nhập lại mật khẩu của bạn tại đây" label="Nhập lại mật khẩu"
+                                :type="isTKNV_MatKhauVisible1 ? 'text' : 'password'"
+                                :append-inner-icon="isTKNV_MatKhauVisible1 ? 'bx-hide' : 'bx-show'"
+                                @click:append-inner="isTKNV_MatKhauVisible1 = !isTKNV_MatKhauVisible1"
+                                 />
                         </VCol>
                         <VCol cols="5">
                             <VTextField v-model="TTKH.KH_HoTen" :error-messages="errors.KH_HoTen"
@@ -332,8 +344,14 @@ export default {
                             <VTextField v-model="TTKH.KH_NgaySinh" :error-messages="errors.KH_NgaySinh"
                                 placeholder="Nhập Ngày sinh" type="date" label="Ngày sinh" />
                         </VCol>
-                        <VCol cols="3">
-                            <VTextField v-model="TTKH.KH_GioiTinh" placeholder="Nhập Giới tính" label="Giới tính" />
+                        <VCol cols="1">
+                            <label for="" class="h-100 my-3">Giới tính</label>
+                        </VCol>
+
+                        <VCol cols="2">
+                            <select class="form-control h-100" style="background-color: rgba(79, 78, 78, 0.4); color: white; border-color: rgba(255, 255, 255, 0.3);" v-model="TTKH.KH_GioiTinh">
+                                <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}</option>
+                            </select>
                         </VCol>
                         <VCol cols="12">
                             <VTextField v-model="TTKH.KH_SoDienThoai" :error-messages="errors.KH_SoDienThoai"
@@ -364,7 +382,7 @@ export default {
 
                             </div>
                             <!-- login button -->
-                            <VBtn class="w-100 bg bg-dark text-white" @click="addKhachHang()">
+                            <VBtn class="w-100 bg bg-dark text-white" @click="onSubmit()">
                                 Đăng ký
                             </VBtn>
                         </VCol>

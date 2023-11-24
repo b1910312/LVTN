@@ -13,7 +13,8 @@ export default {
         TL_Ten: "",
         TL_NgayTao: "",
         TL_NgayCapNhat: ""
-      }
+      },
+      dialog4: false
     };
   },
   mounted() {
@@ -39,9 +40,8 @@ export default {
       axios.put("http://localhost:3000/api/TheLoai/" + this.TheLoais.TL_Ma, this.TheLoais).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log(this.TheLoais)
-        alert("Cập nhật thành công");
+        this.dialog4 = true
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-        this.$router.push("/quanlyTheLoai");
       }).catch(error => {
         alert(error);
       });
@@ -68,6 +68,20 @@ export default {
             Cập nhật Thể loại
           </VBtn>
         </VCol>
+        <v-dialog v-model="dialog4" class="w-50 h-25">
+      <div class="card text-center bg bg-white p-5">
+        <h3 class="text-success">Bạn đã cập nhật tên thể loại thành công</h3>
+        <div class="row w-100">
+          <div class="col-4"></div>
+          <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+              @click="dialog4 = false,this.$router.push(`/quanlyTheLoai`)">
+              <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
+          <div class="col-4"></div>
+
+        </div>
+      </div>
+
+    </v-dialog>
       </VRow>
     </VForm>
   </div>

@@ -13,6 +13,8 @@ module.exports = (app) => {
     //Retrieve a single customer with id
     router.get("/:KH_MaKH", thongtinkhachhang.findOneByID);
 
+    router.get("/GetName/:KH_MaKH", thongtinkhachhang.findOneNameByID);
+
     router.get('/getid/getlastttkhma', thongtinkhachhang.getLastTTKHMa);
 
     //Update a customer with id

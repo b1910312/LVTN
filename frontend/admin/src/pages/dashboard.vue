@@ -1,16 +1,11 @@
 <script setup>
-import AnalyticsCongratulations from '@/views/dashboard/AnalyticsCongratulations.vue'
 import AnalyticsFinanceTabs from '@/views/dashboard/AnalyticsFinanceTab.vue'
 import AnalyticsOrderStatistics from '@/views/dashboard/AnalyticsOrderStatistics.vue'
-import AnalyticsProfitReport from '@/views/dashboard/AnalyticsProfitReport.vue'
-import AnalyticsTotalRevenue from '@/views/dashboard/AnalyticsTotalRevenue.vue'
-import AnalyticsTransactions from '@/views/dashboard/AnalyticsTransactions.vue'
 
 // 👉 Images
 import chart from '@images/cards/chart-success.png'
-import card from '@images/cards/credit-card-primary.png'
-import paypal from '@images/cards/paypal-error.png'
 import wallet from '@images/cards/wallet-info.png'
+import axios from 'axios'
 import moment from 'moment'
 </script>
 
@@ -49,6 +44,17 @@ export default {
       LastMonthLoiNhuan: 0,
       LastMonthTongGiaNhapKho: 0,
 
+      GIANK: 0,
+
+      DGCHs: [],
+      DGCH_TichCuc: 0,
+      DGCH_TieuCuc: 0,
+      DGCH_1_sao: 0,
+      DGCH_2_sao: 0,
+      DGCH_3_sao: 0,
+      DGCH_4_sao: 0,
+      DGCH_5_sao: 0,
+
 
       GiaNK: 0,
       SoSPBan: 0,
@@ -65,15 +71,92 @@ export default {
       SoLuongthis: [],
       NhapKhothis: [],
 
+      SachGanHet: [],
 
     }
   },
   mounted() {
     this.GetThangHienTai()
     this.sachdaban()
+    this.GetDGCH()
+    this.GetSapBanHet()
   },
 
   methods: {
+    GetSapBanHet() {
+      axios.get(`http://localhost:3000/api/sach/sapbanhet`)
+        .then(res => {
+          this.SachGanHet = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    GetDGCH() {
+      axios.get(`http://localhost:3000/api/danhgiacuahang`)
+        .then(res => {
+          this.DGCHs = res.data
+          for (let i = 0; i <= this.DGCHs.length; i++) {
+            if (this.DGCHs[i].DG_SoSao == 1) {
+              this.DGCH_1_sao += 1
+              console.log("Dang gia 1")
+              console.log(this.DGCH_1_sao)
+
+            }
+            if (this.DGCHs[i].DG_SoSao == 2) {
+              this.DGCH_2_sao += 1
+              console.log("Dang gia 2")
+              console.log(this.DGCH_2_sao)
+
+            }
+            if (this.DGCHs[i].DG_SoSao == 3) {
+              this.DGCH_3_sao += 1
+              console.log("Dang gia 3")
+              console.log(this.DGCH_3_sao)
+
+            }
+            if (this.DGCHs[i].DG_SoSao == 4) {
+              this.DGCH_4_sao += 1
+              console.log("Dang gia 4")
+              console.log(this.DGCH_4_sao)
+
+            }
+            if (this.DGCHs[i].DG_SoSao == 5) {
+              this.DGCH_5_sao += 1
+              console.log("Dang gia 5")
+              console.log(this.DGCH_5_sao)
+
+            }
+            axios.post(`http://localhost:5000/predict`, { comment: this.DGCHs[i].DG_NoiDung })
+              .then(res => {
+                if (res.data == 0) {
+                  console.log("PhanTichDanhGia")
+                  console.log(res.data)
+                  this.DGCH_TichCuc += 1;
+                  console.log("PhanTichDanhGiaTichCuc")
+                  console.log(this.DGCH_TichCuc)
+
+                }
+
+                else {
+                  console.log("PhanTichDanhGia")
+                  console.log(res.data)
+                  this.DGCH_TieuCuc += 1;
+                }
+              })
+              .catch(err => {
+                console.log("PhanTichDanhGia")
+                console.log(err)
+              })
+
+
+          }
+          console.log("Lấy thành công đánh giá cửa hàng")
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     LamTron(number, decimals) {
       let precision = 10 ** decimals;
       return Math.round(number * precision) / precision;
@@ -100,7 +183,6 @@ export default {
       this.SachSauKhiLoc = this.SachDaBan.filter((order) => Number(order.CTDH_NgayTao.split("-")[1]) === Number(month));
       this.CurrentTongDoanhSo = this.CongTien(this.SachSauKhiLoc);
       this.SLDaBan(this.SachSauKhiLoc);
-      this.GetSachNhapKHo(month);
 
       // Thêm các tính toán khác ở đây nếu cần
     },
@@ -114,9 +196,9 @@ export default {
         this.monthlyData[monthDataKey].SachSauKhiLoc = this.SachSauKhiLoc;
         this.DoanhSothis[monthDataKey] = this.CurrentTongDoanhSo;
         this.SoLuongthis[monthDataKey] = this.CurrentSoLuongBanRa;
-        this.LoiNhuanthis[monthDataKey] = this.TinhLoiNhuan(this.CurrentTongDoanhSo, this.TongGiaNhapKho);
-        console.log("LoiNhuan");
-        console.log(this.DoanhSothis);
+        // alert(this.GiaNK)
+        this.GetSachNhapKHo(month, this.CurrentTongDoanhSo);
+
 
         // Thêm các tính toán khác ở đây nếu cần
       }
@@ -152,7 +234,7 @@ export default {
     TinhLoiNhuan(DoanhSo, NhapKho) {
       return (DoanhSo * 0.9) - NhapKho
     },
-    GetSachNhapKHo(month) {
+    GetSachNhapKHo(month, DoanhSo) {
       const monthDataKey = `${month}`;
       let currentTongGiaNhapKho = 0;
       // Thực hiện yêu cầu API cho từng mã sản phẩm trong mảng
@@ -172,7 +254,11 @@ export default {
             if (!this.NhapKhothis[monthDataKey]) {
               this.NhapKhothis[monthDataKey] = 0;
             }
-            this.NhapKhothis[monthDataKey] += currentTongGiaNhapKho;
+            this.NhapKhothis[monthDataKey] = currentTongGiaNhapKho;
+            // this.GiaNK = currentTongGiaNhapKho
+            this.LoiNhuanthis[monthDataKey] = this.TinhLoiNhuan(DoanhSo, this.NhapKhothis[monthDataKey]);
+            console.log("LoiNhuan");
+            console.log(this.DoanhSothis);
           })
           .catch((error) => {
             // handle error
@@ -257,61 +343,103 @@ export default {
 
   <VRow>
 
-    <VCol cols="12" sm="12">
+    <VCol cols="8" sm="8">
       <VRow>
         <!-- 👉 Profit -->
-        <VCol cols="3">
+        <VCol cols="6">
           <CardStatisticsVertical v-bind="{
             title: 'Doanh số (VNĐ)',
             image: chart,
             // stats: CurrentTongDoanhSo,
             // change: ((CurrentTongDoanhSo - LastMonthTongDoanhSo) / (LastMonthTongDoanhSo)) * 100,
 
-            stats:LamTron( DoanhSothis[selectedMonth],0),
-            change: LamTron( ((DoanhSothis[selectedMonth] - DoanhSothis[LastMonth]) / (DoanhSothis[LastMonth])) * 100,0),
+            stats: LamTron(DoanhSothis[selectedMonth], 0),
+            change: LamTron(((DoanhSothis[selectedMonth] - DoanhSothis[LastMonth]) / (DoanhSothis[LastMonth])) * 100, 0),
           }" />
         </VCol>
 
         <!-- 👉 Sales -->
-        <VCol cols="3">
+        <VCol cols="6">
           <CardStatisticsVertical v-bind="{
             title: 'Sách đã bản',
             image: wallet,
-            stats: LamTron(SoLuongthis[selectedMonth],0),
-            change: LamTron((((SoLuongthis[selectedMonth] - SoLuongthis[LastMonth]) / (SoLuongthis[LastMonth])) * 100),0),
+            stats: LamTron(SoLuongthis[selectedMonth], 0),
+            change: LamTron((((SoLuongthis[selectedMonth] - SoLuongthis[LastMonth]) / (SoLuongthis[LastMonth])) * 100), 0),
             // stats: 0,
             // change: 0,
           }" />
         </VCol>
-        <VCol cols="3">
+        <VCol cols="6">
           <CardStatisticsVertical v-bind="{
             title: 'Lợi nhuận',
             image: wallet,
-            stats: LamTron(LoiNhuanthis[selectedMonth],0),
-            change: LamTron((((LoiNhuanthis[selectedMonth] - LoiNhuanthis[LastMonth]) / (LoiNhuanthis[LastMonth])) * 100),0),
+            stats: LamTron(LoiNhuanthis[selectedMonth], 0),
+            change: LamTron((((LoiNhuanthis[selectedMonth] - LoiNhuanthis[LastMonth]) / (LoiNhuanthis[LastMonth])) * 100), 0),
             // stats: 0,
             // change: 0,
           }" />
         </VCol>
-        <VCol cols="3">
+        <VCol cols="6">
           <CardStatisticsVertical v-bind="{
-            title: 'Giá nhập kho',
+            title: 'Giá nhập kho (Sách bán)',
             image: wallet,
-            stats: LamTron(NhapKhothis[selectedMonth],0),
-            change: LamTron((((NhapKhothis[selectedMonth] - NhapKhothis[LastMonth]) / (NhapKhothis[LastMonth])) * 100),0),
+            stats: LamTron(NhapKhothis[selectedMonth], 0),
+            change: LamTron((((NhapKhothis[selectedMonth] - NhapKhothis[LastMonth]) / (NhapKhothis[LastMonth])) * 100), 0),
             // stats: 0,
             // change: 0,
           }" />
         </VCol>
       </VRow>
     </VCol>
-    <VCol cols="12" md="12" sm="12">
-      <AnalyticsFinanceTabs :incomeData="DoanhSothis" :MaxVL=1000000 :MinVL=10000 />
+    <VCol cols="4">
+      <AnalyticsOrderStatistics :SLDanhGia="DGCHs.length" :SLDanhGia_TichCuc="DGCH_TichCuc"
+        :SLDanhGia_TieuCuc="DGCH_TieuCuc" :SLDanhGia_5_sao="DGCH_5_sao" :SLDanhGia_4_sao="DGCH_4_sao"
+        :SLDanhGia_3_sao="DGCH_3_sao" :SLDanhGia_2_sao="DGCH_2_sao" :SLDanhGia_1_sao="DGCH_1_sao" />
+    </VCol>
+    <VCol cols="6" md="6" sm="6">
+      <AnalyticsFinanceTabs :incomeData="DoanhSothis" :MaxVL=5000000 :MinVL=10000 />
+    </VCol>
+    <VCol cols="6">
+      <VCard>
+        <v-table fixed-header height="380px">
+          <thead>
+            <tr>
+              <p></p>
+            </tr>
+            <tr class="text-center text-dark">
+              <h4>Sách sắp bán hết</h4>
+            </tr>
+            <tr>
+              <th class="text-center">
+                STT
+              </th>
+              <th class="text-center">
+                Tên sách
+              </th>
+              <th class="text-center">
+                Số lượng
+              </th>
+              <th class="text-center">
+                Nhập kho
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="text-center" v-for="( item, index ) in SachGanHet" :key="item.S_Ma">
+              <td>{{ index + 1 }}</td>
+              <td>{{ item.S_Ten }}</td>
+              <td>{{ item.S_SoLuong }}</td>
+              <td><v-button class="btn btn-warning" @click="this.$router.push(`quanlysach`)"><font-awesome-icon
+                    :icon="['fas', 'triangle-exclamation']" /></v-button></td>
+            </tr>
+          </tbody>
+        </v-table>
+      </VCard>
     </VCol>
     <!-- <AnalyticsTotalRevenue/>> -->
-    <VCol cols="12" sm="8" md="4" order="1" order-md="2">
+    <!-- <VCol cols="12" sm="8" md="4" order="1" order-md="2">
       <VRow>
-        <!-- 👉 Payments -->
+        👉 Payments
         <VCol cols="12" sm="6">
           <CardStatisticsVertical v-bind="{
             title: 'Payments',
@@ -321,7 +449,7 @@ export default {
           }" />
         </VCol>
 
-        <!-- 👉 Revenue -->
+        👉 Revenue
         <VCol cols="12" sm="6">
           <CardStatisticsVertical v-bind="{
             title: 'Transactions',
@@ -333,24 +461,23 @@ export default {
       </VRow>
 
       <VRow>
-        <!-- 👉 Profit Report -->
+        👉 Profit Report
         <VCol cols="12" sm="12">
           <AnalyticsProfitReport />
         </VCol>
       </VRow>
-    </VCol>
+    </VCol> -->
 
     <!-- 👉 Order Statistics -->
-    <VCol cols="12" md="4" sm="6" order="3">
-      <AnalyticsOrderStatistics />
-    </VCol>
+    <!-- <VCol cols="4" md="4" sm="6" order="3">
+      
+    </VCol> -->
 
     <!-- 👉 Tabs chart -->
 
 
     <!-- 👉 Transactions -->
-    <VCol cols="12" md="4" sm="6" order="3">
+    <!-- <VCol cols="12" md="4" sm="6" order="3">
       <AnalyticsTransactions />
-    </VCol>
-  </VRow>
-</template>
+    </VCol> -->
+</VRow></template>

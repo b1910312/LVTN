@@ -55,7 +55,26 @@ exports.findAll = async (req, res) => {
 
     return res.send(documents);
 };
+exports.findAllByMaSach = async (req, res) => {
 
+    console.log('');
+
+    const condition = {
+        BL_MaSach: req.params.MaSach
+    };
+
+    const [error, documents] = await handle(
+        BinhLuan.find(condition, '-ownerId').sort({ 'BL_Ma': 1 })
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Lỗi trong quá trình truy xuất bình luận với mã ${req.params.BL_Ma}`)
+        );
+    }
+
+    return res.send(documents);
+};
 exports.getLastBLMa = async (req, res) => {
     const [error, documents] = await handle(
         BinhLuan.findOne().sort({ BL_Ma: -1 })
@@ -107,11 +126,11 @@ exports.update = async (req, res, next) => {
     };
 
     const [error, document] = await handle(
-        BinhLuan.findOneAndUpdate(condition, req.body,  {
+        BinhLuan.findOneAndUpdate(condition, req.body, {
             $set: {
                 'BL_NgayCapNhat': req.body.BL_NgayCapNhat,
             }
-        },{
+        }, {
             new: true,
             projection: "-ownerId",
         })
@@ -136,12 +155,12 @@ exports.updateTrangThai = async (req, res, next) => {
     };
 
     const [error, document] = await handle(
-        BinhLuan.findOneAndUpdate(condition, req.body,  {
+        BinhLuan.findOneAndUpdate(condition, req.body, {
             $set: {
                 'BL_TrangThai': req.body.BL_TrangThai,
                 'BL_NgayCapNhat': req.body.BL_NgayCapNhat,
             }
-        },{
+        }, {
             new: true,
             projection: "-ownerId",
         })
@@ -161,7 +180,7 @@ exports.updateTrangThai = async (req, res, next) => {
 };
 
 //Xóa một sách bằng mã sách
-exports.delete = async (req,res) => {    
+exports.delete = async (req, res) => {
     const condition = {
         BL_Ma: req.params.BL_Ma
     };
@@ -172,7 +191,7 @@ exports.delete = async (req,res) => {
 
     if (error) {
         return next(
-            new BadRequestError(500,`Không xóa được bình luận có mã ${req.params.id}`)
+            new BadRequestError(500, `Không xóa được bình luận có mã ${req.params.id}`)
         );
     }
 

@@ -1,8 +1,9 @@
 <script>
 import SPCarcousleBanner from '@/components/SPCarcousleBanner.vue';
-import ListSanPham_NgangVue from '@/components/ListSanPham_Ngang.vue';
+import ListSanPham_GoiY from '@/components/ListSanPham_GoiY.vue';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import axios from 'axios';
 export default {
     name: "ChiTietSach",
     data() {
@@ -45,10 +46,12 @@ export default {
                 },
 
             ],
+            imageSach: "",
             currentRating: 0,  // Số sao hiện tại
             reviews: [],
             TB: [],
             SoLuong: 1,
+            menu: false,
             CTGH: {
                 CTGH_Ma: "",
                 CTGH_MaGH: "",
@@ -57,6 +60,7 @@ export default {
                 CTGH_NgayTao: "",
                 CTGH_NgayCapNhat: ""
             },
+            name: "",
             nvv: "",
             //Xử lý mã chi tiết giỏ hàng
             LastID1: "",
@@ -70,26 +74,336 @@ export default {
             Chu: "",
             message: "",
 
+            LastID2: "",
+            NewID2: "",
+            So2: "",
+            Chu2: "",
+
+
+            LastID3: "",
+            NewID3: "",
+            So3: "",
+            Chu3: "",
+
+            DaDanhGia: "",
+            BL: "",
+            BLMoi: {
+                BL_Ma: "",
+                BL_MaKH: "",
+                BL_MaSach: "",
+                BL_NoiDung: "",
+                BL_ReplyId: "",
+                BL_TrangThai: 1,
+                BL_NgayTao: "",
+                BL_NgayCapNhat: ""
+            },
+            BLReply: {
+                BL_Ma: "",
+                BL_MaKH: "",
+                BL_MaSach: "",
+                BL_NoiDung: "",
+                BL_ReplyId: "",
+                BL_TrangThai: 1,
+                BL_NgayTao: "",
+                BL_NgayCapNhat: ""
+            },
+            TenKH: [
+                { maKH: "", Ten: "" }
+            ],
+            NguoiDungs: "",
+            DGs: [],
+            SachGoiY: [],
+            NXBName: "",
+            TheLoaiName: ""
         }
     },
     components: {
-    SPCarcousleBanner,
-    ListSanPham_NgangVue,
-    FontAwesomeIcon
-},
+        SPCarcousleBanner,
+        ListSanPham_GoiY,
+        FontAwesomeIcon
+    },
+
     mounted() {
+        this.getNV()
         this.GetLastID1()
         this.GetLastID()
-        this.getSach(this.$route.params.id)
-        this.GetHinhAnh()
+        this.GetLastID2()
+        this.GetLastID3()
+        this.getNguoiDung()
     },
     created() {
 
+        this.interval = setInterval(() => {
+            // Call the API
+
+            if (this.$route.params.id) {
+                this.imageSach = "http://localhost:3000/api/thumbnail/image/TB/" + this.$route.params.id
+                this.GetDG()
+                this.CheckKH(this.$route.params.id, this.nvv.TKKH_MaKH)
+                this.getSach(this.$route.params.id)
+                this.GetHinhAnh()
+                this.GetBL()
+                this.GetSachGoiY()
+            }
+
+            if (this.SoLuong > this.Sach.S_SoLuong) {
+                this.SoLuong = this.Sach.S_SoLuong
+            }
+        }, 2000)
     },
     props: {
 
     },
     methods: {
+        GetNXBName() {
+            axios.get(`http://localhost:3000/api/nxb/` + this.Sach.S_NXB)
+                .then(res => {
+                    this.NXBName = res.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+            axios.get(`http://localhost:3000/api/theloai/` + this.Sach.S_TheLoai)
+                .then(res => {
+                    this.TheLoaiName = res.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+        GetSachGoiY() {
+            axios.get(`http://localhost:5000/recommend?product_id=` + this.$route.params.id)
+                .then(res => {
+                    this.SachGoiY = res.data
+                    console.log("Sách gợi ý")
+                    console.log(this.SachGoiY)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        },
+        average(array, field) {
+            return array.reduce((total, item) => total + item[field], 0) / array.length;
+        },
+        GetDG() {
+            axios.get(`http://localhost:3000/api/danhgia/GetBySach/` + this.$route.params.id)
+                .then(res => {
+                    this.DGs = res.data
+                    console.log("Đánh giá")
+                    console.log(this.DGs)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        },
+        CapNhatLastID3() {
+            this.TachKBS3()
+            this.Increase3()
+            this.LastID3 = this.NewID3
+            console.log('NewID3')
+            console.log(this.NewID3)
+        },
+        GetLastID3() {
+            axios.get(`http://localhost:3000/api/danhgia/getid/getlastdgma`).then(res => {
+                this.LastID3 = res.data
+                this.TachKBS3()
+                this.Increase3()
+                console.log(this.LastID3)
+                console.log("ID NEW" + this.NewID3)
+                console.log(this.So3)
+                console.log(this.Chu3)
+            })
+        },
+        Increase3() {
+            // Chuyển đổi chuoi thành số nguyên
+            let SoNguyen = parseInt(this.So3);
+
+            // Tăng giá trị của số nguyên
+            SoNguyen += 1;
+
+            // Chuyển đổi số nguyên thành chuoi
+            this.So3 = String(SoNguyen).padStart(3, "0");
+            this.NewID3 = this.Chu3 + this.So3;
+            console.log(this.NewID3)
+        },
+        TachKBS3() {
+            let [Text1, result1] = this.LastID3.split("0");
+            let [Text, result] = this.LastID3.split("DG");
+            this.So3 = result;
+            this.Chu3 = Text1;
+        },
+
+        DanhGiaSP(SoSao) {
+            const data = {
+                DG_Ma: this.NewID3,
+                DG_MaKH: this.nvv.TKKH_MaKH,
+                DG_MaSach: this.$route.params.id,
+                DG_SoSao: SoSao,
+                DG_NgayTao: moment().format("DD-MM-YYYY")
+            }
+            if (this.DaDanhGia == false) {
+                axios.post(`http://localhost:3000/api/danhgia`, data)
+                    .then(res => {
+                        this.CheckKH(data.DG_MaSach, data.DG_MaKH)
+
+                        console.log("Đánh giá thành công")
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            }
+
+        },
+        CheckKH(S_Ma, KH_Ma) {
+            axios.get(`http://localhost:3000/api/danhgia/checkKH/` + S_Ma + `/` + KH_Ma)
+                .then(res => {
+                    this.DaDanhGia = res.data
+                    this.GetDG()
+
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+        ThemBinhLuan() {
+            const now = moment();
+            this.BLMoi.BL_Ma = this.NewID2
+            this.BLMoi.BL_MaKH = this.nvv.TKKH_MaKH
+            this.BLMoi.BL_MaSach = this.$route.params.id
+            this.BLMoi.BL_NgayTao = now.format("DD-MM-YYYY"),
+                console.log(this.BLMoi)
+            this.addBL()
+        },
+        BLTraloi(MaBL) {
+            const now = moment();
+            this.BLReply.BL_Ma = this.NewID2
+            this.BLReply.BL_MaKH = this.nvv.TKKH_MaKH
+            this.BLReply.BL_MaSach = this.$route.params.id
+            this.BLReply.BL_ReplyId = MaBL
+            this.BLReply.BL_NgayTao = now.format("DD-MM-YYYY"),
+                console.log(this.BLReply)
+            this.ReplyBL()
+        },
+        addBL() {
+            axios.post('http://localhost:3000/api/binhluan', this.BLMoi)
+                .then((response) => {
+                    // Nếu API trả về thành công
+                    if (response.status === 200) {
+                        // Thông báo thành công
+                        this.GetBL()
+
+                    }
+                })
+                .catch((error) => {
+                    // Nếu API trả về lỗi
+                    console.log(error)
+                })
+            this.BLMoi.BL_NoiDung = "";
+            this.CapNhatLastID2()
+        },
+        ReplyBL() {
+            axios.post('http://localhost:3000/api/binhluan', this.BLReply)
+                .then((response) => {
+                    // Nếu API trả về thành công
+                    if (response.status === 200) {
+                        // Thông báo thành công
+                        this.GetBL()
+                    }
+                })
+                .catch((error) => {
+                    // Nếu API trả về lỗi
+                    console.log(error)
+                })
+            this.BLReply.BL_NoiDung = "";
+            this.CapNhatLastID2()
+
+        },
+        AnBL(id) {
+            const now = moment();
+            let data = {
+                BL_NgayCapNhat: now.format("DD-MM-YYYY"),
+                BL_TrangThai: 2
+            }
+            // Gọi API để cập nhật sản phẩm
+            axios.put("http://localhost:3000/api/binhluan/capnhattrangthai/" + id, data).then(response => {
+                // Nếu cập nhật thành công, thì hiển thị thông báo
+                console.log(data)
+                // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
+                this.GetBL();
+            }).catch(error => {
+                alert(error);
+            });
+        },
+        getNV() {
+            if (JSON.parse(localStorage.getItem("khachhang")) != null) {
+                this.nvv = JSON.parse(localStorage.getItem("khachhang"))
+            }
+            console.log(this.nvv);
+        },
+
+        getNguoiDung() {
+            // Sử dụng tính năng fetch() để chỉ gọi dữ liệu một lần
+            axios.get(`http://localhost:3000/api/thongtinkhachhang`).then(res => {
+                this.NguoiDungs = res.data;
+                console.log(this.NguoiDungs);
+            });
+        },
+
+        CapNhatLastID2() {
+            this.TachKBS2()
+            this.Increase2()
+            this.LastID2 = this.NewID2
+            console.log('NewID2')
+            console.log(this.NewID2)
+        },
+        GetLastID2() {
+            axios.get(`http://localhost:3000/api/binhluan/getid/getlastblma`).then(res => {
+                this.LastID2 = res.data
+                this.TachKBS2()
+                this.Increase2()
+                console.log(this.LastID2)
+                console.log("ID NEW" + this.NewID2)
+                console.log(this.So2)
+                console.log(this.Chu2)
+            })
+        },
+        Increase2() {
+            // Chuyển đổi chuoi thành số nguyên
+            let SoNguyen = parseInt(this.So2);
+
+            // Tăng giá trị của số nguyên
+            SoNguyen += 1;
+
+            // Chuyển đổi số nguyên thành chuoi
+            this.So2 = String(SoNguyen).padStart(3, "0");
+            this.NewID2 = this.Chu2 + this.So2;
+            console.log(this.NewID2)
+        },
+        TachKBS2() {
+            let [Text1, result1] = this.LastID2.split("0");
+            let [Text, result] = this.LastID2.split("L");
+            this.So2 = result;
+            this.Chu2 = Text1;
+        },
+        GetBL() {
+            axios.get(`http://localhost:3000/api/binhluan/getbymasach/` + this.$route.params.id)
+                .then(res => {
+                    this.BL = res.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        getKHName(BL_MaKH) {
+            // return this.NguoiDungs.find(item => item.KH_MaKH === BL_MaKH).KH_HoTen;
+
+            return this.NguoiDungs.find(item => item.KH_MaKH === BL_MaKH).KH_HoTen;
+
+
+        },
+
         ThemChiTietGioHang(MaSach) {
             if (JSON.parse(localStorage.getItem("khachhang")) != null) {
                 this.nvv = JSON.parse(localStorage.getItem("khachhang"))
@@ -219,6 +533,10 @@ export default {
             }
 
         },
+        GetAVT(KH_Ma) {
+            const logo = "http://localhost:3000/api/thumbnail/image/KH/" + KH_Ma
+            return logo;
+        },
         GetThumNail(S_Ma) {
             const logo = "http://localhost:3000/api/thumbnail/image/TB/" + S_Ma
             return logo;
@@ -249,6 +567,7 @@ export default {
             // Sử dụng tính năng fetch() để chỉ gọi dữ liệu một lần
             axios.get(`http://localhost:3000/api/sach/${S_MaSach}`).then(res => {
                 this.Sach = res.data
+                this.GetNXBName()
                 console.log(this.Sach)
             })
         },
@@ -257,8 +576,8 @@ export default {
 </script>
 <template>
     <VRow>
-        <VCol cols="6" class="my-auto">
-            <SPCarcousleBanner :img="TB" />
+        <VCol cols="6" class="my-auto mx-auto text-center">
+            <img :src="imageSach" class="img-fluid w-50" alt="" srcset="">
         </VCol>
         <VCol cols="6">
             <VCard :title="Sach.name" style="border-radius: 15px;">
@@ -281,12 +600,12 @@ export default {
                         <tr class="row w-100">
                             <td class="col-1"></td>
                             <td class="col-4">Nhà xuất bản:</td>
-                            <td class="col-7">{{ Sach.S_NXB }}</td>
+                            <td class="col-7">{{ NXBName.NXB_Ten }}</td>
                         </tr>
                         <tr class="row w-100">
                             <td class="col-1"></td>
                             <td class="col-4">Thể loại:</td>
-                            <td class="col-7">{{ Sach.S_TheLoai }}</td>
+                            <td class="col-7">{{ TheLoaiName.TL_Ten }}</td>
                         </tr>
                         <tr class="row w-100">
                             <td class="col-1"></td>
@@ -330,100 +649,142 @@ export default {
 
 
                 <!-- Tab panes -->
-                <h3 class="mt-3 text-start ms-5">ĐÁNH GIÁ</h3>
+                <h3 class="mt-3 mb-3 text-start ms-5">ĐÁNH GIÁ: {{ average(DGs, "DG_SoSao") }}<font-awesome-icon
+                        style="color:gold" :icon="['fas', 'star']" />({{ DGs.length }} lượt đánh giá)</h3>
 
-                <p>Rating: 
-                    <span class="star-rating">
-                        <label for="rate-1" style="--i:1"><font-awesome-icon :icon="['fas', 'star']" /></label>
-                        <input type="radio" name="rating" id="rate-1" value="1">
-                        <label for="rate-2" style="--i:2"><font-awesome-icon :icon="['fas', 'star']" /></label>
-                        <input type="radio" name="rating" id="rate-2" value="2" checked>
-                        <label for="rate-3" style="--i:3"><font-awesome-icon :icon="['fas', 'star']" /></label>
-                        <input type="radio" name="rating" id="rate-3" value="3">
-                        <label for="rate-4" style="--i:4"><font-awesome-icon :icon="['fas', 'star']" /></label>
-                        <input type="radio" name="rating" id="rate-4" value="4">
-                        <label for="rate-5" style="--i:5"><font-awesome-icon :icon="['fas', 'star']" /></label>
-                        <input type="radio" name="rating" id="rate-5" value="5">
-                    </span></p>
+                <div>
+                    <div class="star-wrapper">
+                        <a @click="DanhGiaSP(5)" class="s1"><font-awesome-icon :icon="['fas', 'star']" /></a>
+                        <a @click="DanhGiaSP(4)" class="s2"><font-awesome-icon :icon="['fas', 'star']" /></a>
+                        <a @click="DanhGiaSP(3)" class="s3"><font-awesome-icon :icon="['fas', 'star']" /></a>
+                        <a @click="DanhGiaSP(2)" class="s4"><font-awesome-icon :icon="['fas', 'star']" /></a>
+                        <a @click="DanhGiaSP(1)" class="s5"><font-awesome-icon :icon="['fas', 'star']" /></a>
+                    </div>
+
+                </div>
+
                 <h3 class=" text-start ms-5 mt-3">BÌNH LUẬN</h3>
                 <Vcard class=" text-white ">
-                    <!-- <VRow style="border: 1px solid rgba(164, 164, 164, 0.3);" class="m-1">
-                                <VCol cols="1">
-                                    <img :src="Sach.img" style="border-radius: 50px;"
-                                        class="img-fluid" alt="">
+                    <div class=" overflow-container">
+                        <div v-for=" binhluan in BL" :key="binhluan.BL_Ma">
+                            <VRow v-if="binhluan.BL_ReplyId === '' && binhluan.BL_TrangThai === 1"
+                                style="border: 1px solid rgba(164, 164, 164, 0.3);" class="m-2">
+                                <VCol v-if="binhluan.BL_ReplyId === '' && binhluan.BL_TrangThai === 1" cols="1">
+                                    <img :src="GetAVT(binhluan.BL_MaKH)" style="border-radius: 10px;" class="img-fluid"
+                                        alt="">
                                 </VCol>
-                                <VCol cols="9 " class="ms-3 text-start">
-                                    <p>xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin
-                                        chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin
-                                        chafo xin chafo xin chafo xin chafo xin chafo </p>
-                                </VCol>
-                                <VCol cols="1">
-                                    <VBtn class="bg bg-primary"> Trả lời</VBtn>
-                                </VCol>
-                                <VCol cols="1"> </VCol>
-                                <VCol cols="10">
-                                    <VRow style="border: 1px solid rgba(164, 164, 164, 0.3);" class="m-1">
-                                        <VCol cols="1">
-                                            <img :src="Sach.img"
-                                                style="border-radius: 50px;"
-                                                class="img-fluid" alt="">
-                                        </VCol>
-                                        <VCol cols="9" class="ms-3 text-start">
-                                            <p>xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin
-                                                chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo
-                                                xin chafo xin chafo xin chafo xin chafo xin chafo xin chafo </p>
-                                        </VCol>
+                                <VCol v-if="binhluan.BL_ReplyId === '' && binhluan.BL_TrangThai === 1" cols="10"
+                                    class=" text-start">
+                                    <h5>{{ getKHName(binhluan.BL_MaKH) }}
+                                        <v-menu location="right">
+                                            <template v-slot:activator="{ props }">
+                                                <v-button class="btn text-white" color="primary" dark v-bind="props">
+                                                    <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" />
+                                                </v-button>
+                                            </template>
 
+                                            <v-list class="bg bg-white p-1">
+                                                <div>
+                                                    <v-button class="btn btn-primary w-100  mb-1"
+                                                        @click="hientraloi(binhluan.BL_Ma)"> Trả lời
+                                                    </v-button>
+                                                </div>
+                                                <div>
+                                                    <v-button v-if="binhluan.BL_MaKH === nvv.TKKH_MaKH"
+                                                        class="btn btn-danger w-100 mb-1" @click="AnBL(binhluan.BL_Ma)">
+                                                        Xóa bình luận
+                                                    </v-button>
+                                                </div>
+                                            </v-list>
+                                        </v-menu>
+                                    </h5>
+                                    <p>{{ binhluan.BL_NoiDung }} </p>
+                                </VCol>
+
+                                <VCol cols="12" v-if="binhluan.BL_ReplyId === '' && binhluan.BL_TrangThai === 1">
+                                    <VRow v-for="reply in BL" :key="reply.BL_Ma">
+                                        <VCol v-if="reply.BL_ReplyId === binhluan.BL_Ma && reply.BL_TrangThai === 1"
+                                            cols="1"> </VCol>
+                                        <VCol v-if="reply.BL_ReplyId === binhluan.BL_Ma && reply.BL_TrangThai === 1"
+                                            cols="10">
+                                            <VRow style="border: 1px solid rgba(164, 164, 164, 0.3);" class="mb-1">
+                                                <VCol cols="1">
+                                                    <img :src="GetAVT(reply.BL_MaKH)" style="border-radius: 10px;"
+                                                        class="img-fluid" alt="">
+                                                </VCol>
+                                                <VCol cols="9" class="ms-3 text-start">
+                                                    <h5>{{ getKHName(reply.BL_MaKH) }}
+                                                        <v-menu location="right">
+                                                            <template v-slot:activator="{ props }">
+                                                                <v-button class="btn text-white" color="primary" dark
+                                                                    v-bind="props">
+                                                                    <font-awesome-icon
+                                                                        :icon="['fas', 'ellipsis-vertical']" />
+                                                                </v-button>
+                                                            </template>
+
+                                                            <v-list class="bg bg-white p-1">
+                                                                <div>
+                                                                    <div>
+                                                                        <v-button class="btn btn-primary w-100  mb-1"
+                                                                            @click="hientraloi(reply.BL_ReplyId)"> Trả lời
+                                                                        </v-button>
+                                                                    </div>
+                                                                    <v-button v-if="reply.BL_MaKH === nvv.TKKH_MaKH"
+                                                                        class="btn btn-danger w-100 mb-1"
+                                                                        @click="AnBL(reply.BL_Ma)">
+                                                                        Xóa bình luận
+                                                                    </v-button>
+                                                                </div>
+                                                            </v-list>
+                                                        </v-menu>
+                                                    </h5>
+
+                                                    <p>{{ reply.BL_NoiDung }} </p>
+                                                </VCol>
+                                            </VRow>
+                                        </VCol>
                                     </VRow>
                                 </VCol>
-                            </VRow> -->
-                    <VRow v-for="binhluan in BinhLuan" :key="binhluan.name"
-                        style="border: 1px solid rgba(164, 164, 164, 0.3);" class="m-1">
-                        <VCol v-if="binhluan.ReplyId === ''" cols="1">
-                            <img :src="binhluan.img" style="border-radius: 50px;" class="img-fluid" alt="">
-                        </VCol>
-                        <VCol v-if="binhluan.ReplyId === ''" cols="9 " class="ms-3 text-start">
-                            <p>{{ binhluan.NoiDung }} </p>
-                        </VCol>
-                        <VCol v-if="binhluan.ReplyId === ''" cols="1">
-                            <VBtn class="bg bg-primary" @click="hientraloi(binhluan.id)"> Trả lời</VBtn>
-                        </VCol>
-                        <VCol cols="12" v-if="binhluan.ReplyId === ''">
-                            <VRow v-for="reply in BinhLuan" :key="reply.name">
-                                <VCol v-if="reply.ReplyId === binhluan.id" cols="1"> </VCol>
-                                <VCol v-if="reply.ReplyId === binhluan.id" cols="10">
-                                    <VRow style="border: 1px solid rgba(164, 164, 164, 0.3);" class="mb-1">
-                                        <VCol cols="1">
-                                            <img :src="reply.img" style="border-radius: 50px;" class="img-fluid" alt="">
-                                        </VCol>
-                                        <VCol cols="9" class="ms-3 text-start">
-                                            <p>{{ reply.NoiDung }} </p>
-                                        </VCol>
-                                    </VRow>
-                                </VCol>
+                                <VRow v-if="binhluan.BL_ReplyId === '' && binhluan.BL_TrangThai === 1" :id="binhluan.BL_Ma"
+                                    style="display: none;">
+                                    <VCol cols="1" class="mx-auto">
+                                        <img :src="GetAVT(nvv.TKKH_MaKH)" style="border-radius: 10px; height:100px"
+                                            class="img-fluid mx-auto" alt="">
+                                    </VCol>
+                                    <VCol cols="9" class="my-auto">
+                                        <VCard class="mb-4 ms-5">
+                                            <VTextField rows="1" class=" w-100" v-model="BLReply.BL_NoiDung"
+                                                placeholder="Nhập bình luận tại đây">
+                                            </VTextField>
+                                        </VCard>
+                                    </VCol>
+                                    <VCol cols="2" class="my-auto">
+                                        <VBtn class="btn btn-primary w-50" @click="BLTraloi(binhluan.BL_Ma)">Gửi</VBtn>
+                                        <v-button class="btn btn-secondary w-50"
+                                            @click="antraloi(binhluan.BL_Ma)">Hủy</v-button>
+
+                                    </VCol>
+                                </VRow>
                             </VRow>
-                        </VCol>
-                        <VRow v-if="binhluan.ReplyId === ''" :id="binhluan.id" style="display: none;">
-                            <VCol cols="11">
-                                <VCard class="mb-4 ms-5">
-                                    <VTextarea rows="1" class=" w-100" placeholder="Nhập bình luận tại đây">
-                                    </VTextarea>
-                                </VCard>
-                            </VCol>
-                            <VCol cols="1">
-                                <VBtn class="btn btn-primary" @click="antraloi(binhluan.id)">Gửi</VBtn>
-                            </VCol>
-                        </VRow>
-                    </VRow>
+                        </div>
+                    </div>
+
                 </Vcard>
                 <VRow>
-                    <VCol cols="11">
+                    <VCol cols="1" class="ms-5">
+                        <img :src="GetAVT(nvv.TKKH_MaKH)" style="border-radius: 10px; height:100px" class="img-fluid"
+                            alt="">
+                    </VCol>
+                    <VCol cols="9" class=my-auto>
                         <VCard class="mb-4 ms-5">
-                            <VTextarea rows="1" class=" w-100" placeholder="Nhập bình luận tại đây"></VTextarea>
+                            <VTextField rows="1" class=" w-100" v-model="BLMoi.BL_NoiDung"
+                                placeholder="Nhập bình luận tại đây">
+                            </VTextField>
                         </VCard>
                     </VCol>
-                    <VCol cols="1">
-                        <VBtn class="btn btn-primary">Gửi</VBtn>
+                    <VCol cols="1" class="my-auto">
+                        <VBtn class="btn btn-primary" @click="ThemBinhLuan()">Gửi</VBtn>
                     </VCol>
                 </VRow>
 
@@ -431,42 +792,14 @@ export default {
         </VCol>
     </VRow>
     <VRow>
-        <ListSanPham_NgangVue />
+        <VCardText class="text-success">
+            <h1>Sách tương tự</h1>
+        </VCardText>
+        <ListSanPham_GoiY :sach="SachGoiY" />
     </VRow>
 </template>
 
 <style>
-.star-rating {
-	white-space: nowrap;
-}
-.star-rating [type="radio"] {
-	appearance: none;
-}
-.star-rating i {
-	font-size: 1.2em;
-	transition: 0.3s;
-}
-
-.star-rating label:is(:hover, :has(~ :hover)) i {
-	transform: scale(1.35);
-	color: #fffdba;
-	animation: jump 0.5s calc(0.3s + (var(--i) - 1) * 0.15s) alternate infinite;
-}
-.star-rating label:has(~ :checked) i {
-	color: #faec1b;
-	text-shadow: 0 0 2px #ffffff, 0 0 10px #ffee58;
-}
-
-@keyframes jump {
-	0%,
-	50% {
-		transform: translatey(0) scale(1.35);
-	}
-	100% {
-		transform: translatey(-15%) scale(1.35);
-	}
-}
-
 .product-review {
     margin-bottom: 20px;
 }
@@ -534,5 +867,58 @@ export default {
 
 .product-review-pagination {
     text-align: center;
+}
+
+.overflow-container {
+    max-height: 500px;
+    /* Set your desired max height */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+}
+
+.star-wrapper {
+
+    transform: translate(-78%, -20%);
+    position: relative;
+    direction: rtl;
+}
+
+.star-wrapper a {
+    font-size: 3em;
+    color: #fffcbc;
+    text-decoration: none;
+    transition: all 0.5s;
+    margin: 4px;
+}
+
+.star-wrapper a:hover {
+    color: gold;
+    transform: scale(1.3);
+}
+
+.s1:hover~a {
+    color: gold;
+}
+
+.s2:hover~a {
+    color: gold;
+}
+
+.s3:hover~a {
+    color: gold;
+}
+
+.s4:hover~a {
+    color: gold;
+}
+
+.s5:hover~a {
+    color: gold;
+}
+
+.wraper {
+    position: absolute;
+    bottom: 30px;
+    right: 50px;
 }
 </style>

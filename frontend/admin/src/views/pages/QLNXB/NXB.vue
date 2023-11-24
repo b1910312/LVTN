@@ -80,8 +80,8 @@ height: 800px;">
 
 
                         </h6>
-                        <img style="max-width: 300px;" :src="GetLogo(NXB.NXB_Ma)" class="img-fluid mx-auto mt-2 mb-4" alt=""
-                          srcset="">
+                        <img style="max-width: 300px;" :src="GetLogo(NXB.NXB_Ma)" class="img-fluid mx-auto mt-2 mb-4"
+                          alt="" srcset="">
 
                         <VRow>
                           <VCol cols="12">
@@ -131,8 +131,27 @@ height: 800px;">
                   <button class="dropdown-item btn bg bg-success text-white mb-1"><font-awesome-icon
                       :icon="['fas', 'pen']" /> Chỉnh sửa</button>
                 </RouterLink>
-                <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.NXB_Ma)">
+                <button class="dropdown-item btn bg bg-danger text-white" @click="dialog5 = true">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
+                  <v-dialog v-model="dialog5" class="w-50 h-25">
+                  <div class="card text-start bg bg-white p-5">
+                    <h2>Bạn có chắc muốn xóa thể loại này không?</h2>
+                    <p class="mt-3">Thể loại sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa thể loại này</p>
+                    <div class="row w-100">
+                      <div class="col-2"></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                          @click="XoaSach(item.NXB_Ma)  ">
+                          <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                          @click="dialog5 = false">
+                          <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                      <div class="col-2"></div>
+
+                    </div>
+                  </div>
+
+                </v-dialog>
               </div>
             </div>
           </td>
@@ -140,9 +159,26 @@ height: 800px;">
       </tbody>
     </VTable>
   </div>
+  <v-dialog v-model="dialog6" class="w-50 h-25">
+    <div class="card text-start bg bg-white p-5">
+      <h2 class="text-center">Không thể xóa thể loại</h2>
+      <p class="mt-3">Thể loại bạn muốn xóa còn tồn tại sách, không thể tiếp tục xóa, hãy đảm bảo rằng không còn sách trực
+        thuộc trước khi xóa</p>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+            @click="dialog6 = false">
+            <font-awesome-icon :icon="['fas', 'circle-check']" /> Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
 </template>
 
 <script>
+import { faSleigh } from '@fortawesome/free-solid-svg-icons';
 import { defineComponent } from 'vue';
 import { defineAsyncComponent, ref } from 'vue';
 
@@ -158,6 +194,8 @@ export default defineComponent({
       DC: "",
       Logo: "",
       dialog4: false,
+      dialog5: false,
+      dialog6: false,
     }
 
   },
@@ -247,24 +285,39 @@ export default defineComponent({
         })
     },
     XoaSach(NXB_Ma) {
-      axios.delete("http://localhost:3000/api/nxb/" + NXB_Ma).then(response => {
+
+
+      axios.get("http://localhost:3000/api/sach/GetByNXB/" + NXB_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
-        // Sau đó, chuyển hướng người dùng
+        if (response.data != "") {
+          this.dialog6 = true
+          this.dialog5 = false
+        }
+        else {
+          axios.delete("http://localhost:3000/api/nxb/" + NXB_Ma).then(response => {
+            // Nếu cập nhật thành công, thì hiển thị thông báo
+            console.log("Xóa thành công");
+            // Sau đó, chuyển hướng người dùng
+
+          }).catch(error => {
+            console.log(error);
+          });
+          axios.delete("http://localhost:3000/api/diachi/" + NXB_Ma).then(response => {
+            // Nếu cập nhật thành công, thì hiển thị thông báo
+            // Sau đó, chuyển hướng người dùng  
+            console.log("Xóa thành công")
+
+          }).catch(error => {
+            console.log(error);
+          });
+        }
+        this.dialog5 = false
         this.GetNXB();
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
-      axios.delete("http://localhost:3000/api/diachi/" + NXB_Ma).then(response => {
-        // Nếu cập nhật thành công, thì hiển thị thông báo
-        // Sau đó, chuyển hướng người dùng  
-        alert("Xóa thành công")
-        this.GetNXB()
 
-      }).catch(error => {
-        alert(error);
-      });
     }
   }
 });

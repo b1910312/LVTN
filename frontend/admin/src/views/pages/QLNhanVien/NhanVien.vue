@@ -251,8 +251,28 @@ height: 800px;">
                     </Vrow>
                   </div>
                 </v-dialog>
-                <button class="dropdown-item btn bg bg-danger text-white" @click="XoaSach(item.NV_MaNV)">
+
+                <button class="dropdown-item btn bg bg-danger text-white" @click="dialog6 = true">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
+                <v-dialog v-model="dialog6" class="w-50 h-25">
+                  <div class="card text-start bg bg-white p-5">
+                    <h2>Bạn có chắc muốn xóa thông tin nhân viên này không?</h2>
+                    <p class="mt-3">thông tin nhân viên sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa thông tin nhân viên này</p>
+                    <div class="row w-100">
+                      <div class="col-2"></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                          @click="XoaSach(item.NV_MaNV)">
+                          <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                      <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                          @click="dialog6 = false">
+                          <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                      <div class="col-2"></div>
+
+                    </div>
+                  </div>
+
+                </v-dialog>
               </div>
             </div>
           </td>
@@ -260,6 +280,20 @@ height: 800px;">
       </tbody>
     </VTable>
   </div>
+  <v-dialog v-model="dialog7" class="w-50 h-25">
+    <div class="card text-center bg bg-white p-5">
+      <h3 class="text-success">Bạn đã cập nhật thông tin nhân viên thành công</h3>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+            @click="dialog7 = false">
+            <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
 </template>
 
 <script>
@@ -282,6 +316,9 @@ export default defineComponent({
       dialog3: false,
       dialog4: false,
       dialog5: false,
+      dialog6: false,
+      dialog7: false,
+    
       GioiTinh: [
         {
           name: "Nữ",
@@ -363,6 +400,7 @@ export default defineComponent({
         alert(error);
       });
       this.dialog4 = false
+      this.dialog7 = true
       this.GetNV()
     },
     GetDiaChi(id) {

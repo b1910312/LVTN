@@ -58,6 +58,7 @@ export default defineComponent({
     this.GetLastID()
     this.GetVT()
   },
+
   methods: {
     GetVT() {
       axios.get('http://localhost:3000/api/vaitro')

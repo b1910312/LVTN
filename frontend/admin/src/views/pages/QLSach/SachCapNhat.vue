@@ -18,17 +18,46 @@ export default {
         S_NXB: "",
         S_NgayNhap: "",
         S_NgayCapNhat: ""
-      }
+      },
+      dialog9: false,
+      TL: [],
+      NXB: []
     };
   },
   mounted() {
     let S_Ma = this.$route.params.id
     this.getSach(S_Ma)
+    this.GetNXB()
+    this.GetTL()
     // Lấy ngày hiện tại
 
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    GetTL() {
+      axios.get('http://localhost:3000/api/theloai')
+        .then((response) => {
+          this.TL = response.data;
+          console.log(response);
+          console.log(this.TL);
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+    },
+    GetNXB() {
+      axios.get('http://localhost:3000/api/nxb')
+        .then((response) => {
+          this.NXB = response.data;
+          console.log(response);
+          console.log(this.NXB);
+        })
+        .catch((error) => {
+          // handle error
+          console.log(error);
+        })
+    },
     getSach(S_MaSach) {
       // Sử dụng tính năng fetch() để chỉ gọi dữ liệu một lần
       axios.get(`http://localhost:3000/api/sach/${S_MaSach}`).then(res => {
@@ -44,12 +73,12 @@ export default {
       axios.put("http://localhost:3000/api/sach/" + this.Sachs.S_Ma, this.Sachs).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log(this.Sachs)
-        alert("Cập nhật thành công");
+        console.log("Cập nhật thành công");
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-        this.$router.push("/quanlysach");
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
+      this.dialog9 = true
     }
   },
 };
@@ -79,11 +108,24 @@ export default {
           <VTextField v-model="Sachs.S_Gia" label="Gia" type="number" placeholder="············" />
         </VCol>
 
-        <VCol cols="6">
-          <VTextField v-model="Sachs.S_TheLoai" label="Thể loại" placeholder="+1 63 456 7890" />
+        <VCol cols="1">
+          <label for="" class="h-100 my-3">Thể loại</label>
         </VCol>
-        <VCol cols="6">
-          <VTextField v-model="Sachs.S_NXB" label="Nhà xuất bản" placeholder="+1 123 456 7890" />
+        <VCol cols="5">
+          <select class="form-control h-100" v-model="Sachs.S_TheLoai">
+            <option v-for="gt in TL" :value="gt.TL_Ma">{{ gt.TL_Ten }}</option>
+          </select>
+        </VCol>
+        <!-- <VCol cols="12">
+          <VTextField v-model="Sach.S_NXB" label="Nhà xuất bản" placeholder="+1 123 456 7890" />
+        </VCol> -->
+        <VCol cols="1">
+          <label for="" class="h-100 my-3">NXB</label>
+        </VCol>
+        <VCol cols="5">
+          <select class="form-control h-100" v-model="Sachs.S_NXB">
+            <option v-for="gt in NXB" :value="gt.NXB_Ma">{{ gt.NXB_Ten }}</option>
+          </select>
         </VCol>
         <VCol cols="10"></VCol>
         <VCol cols="2" class="d-flex gap-4">
@@ -94,4 +136,18 @@ export default {
       </VRow>
     </VForm>
   </div>
+  <v-dialog v-model="dialog9" class="w-50 h-25">
+    <div class="card text-center bg bg-white p-5">
+      <h2 class="text-center">Cập nhật thông tin sách thành công</h2>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+            @click="        this.$router.push(`/quanlysach`)">
+            <font-awesome-icon :icon="['fas', 'circládad']" /> Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
 </template>

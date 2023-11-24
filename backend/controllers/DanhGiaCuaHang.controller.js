@@ -53,8 +53,45 @@ exports.findAll = async (req, res) => {
     return res.send(documents);
 };
 
+exports.getLastDGMa = async (req, res) => {
+    const [error, documents] = await handle(
+        DanhGiaCuaHang.findOne().sort({ DG_Ma: -1 })
+    );
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất nhap kho!")
+        );
+    }
+    if (!documents) {
+        return res.send("KBDGCH000")
+    }
+    return res.send(documents.DG_Ma);
+    // if (!lastRecord) {
+    //     console.log('bảng dữ liệu trống'); // Nếu không có bản ghi nào, trả về giá trị mặc định
+    // }
+    // // Giải mã và tạo mã mới
+    // const lastSMa = lastRecord.S_Ma;
+    // const numericPart = parseInt(lastSMa.slice(3), 10) + 1;
+    // const newSMa = `KBS${numericPart.toString().padStart(3, '0')}`;
+    // console.log(newSMa);
+};
+exports.CheckKH = async (req, res) => {
+    const condition = {
+        DG_MaKH: req.params.DG_MaKH
+    };
 
+    const [error, documents] = await handle(
+        DanhGiaCuaHang.findOne(condition)
+    );
 
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất đánh giá!")
+        );
+    }
+
+    return res.send(documents ? true : false);
+};
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res) => {
     const condition = {

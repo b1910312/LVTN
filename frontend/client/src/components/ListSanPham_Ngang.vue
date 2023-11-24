@@ -2,28 +2,37 @@
     <div class="scroll">
         <div v-for="pr in sach" :key="pr.S_Ma">
            <div class="item" v-if="pr.S_SoLuong >0">
-            <div class="card text-white" style="    border-radius: 30px;border: 1px solid rgb(70, 194, 70); background-color: rgba(0, 0, 0, 0.4  );
-">
-                <div class="card-head p-3">
-                    <img :src="GetThumNail(pr.S_Ma)" style="border-radius: 30px; " class="img-fluid imgcard" alt="">
-                </div>
-                <div class="card-body text-start">
-                    <h5>{{ pr.S_Ten }}</h5>
-                    <p>Giá: {{ pr.S_Gia }} VNĐ</p>
-                    <VRow>
-                        <VCol cols="8">
-                            <button style="background-color: rgb(0, 255, 4);" class="  mx-auto btn btn-success w-100"
-                                @click="this.$router.push(`/chitietsach/` + pr.S_Ma)">Chi tiết</button>
-                        </VCol>
-                        <VCol cols="4">
-                            <v-button class=" text-white btn btn-info w-100" @click="ThemChiTietGioHang(pr.S_Ma)">
-                                <font-awesome-icon :icon="['fas', 'cart-shopping']" />
-                            </v-button>
+            <v-card class="mx-1 my-2" style="border: 2px solid green;"  max-width="340">
+                    <template v-slot:loader="{ isActive }">
+                        <v-progress-linear :active="isActive" color="deep-purple" height="4"
+                            indeterminate></v-progress-linear>
+                    </template>
+                    <v-img cover height="250" :src="GetThumNail(pr.S_Ma)"></v-img>
+                    <v-card-item>
+                        <v-card-title>{{ pr.S_Ten }}</v-card-title>
+                        <v-card-subtitle>
+                            <span class="me-1">{{ pr.S_TacGia }}</span>
+                        </v-card-subtitle>
+                    </v-card-item>
+                    <v-card-item>
+                        <h5>Giá: {{ pr.S_Gia }} VNĐ</h5>
+                    </v-card-item>
 
-                        </VCol>
-                    </VRow>
-                </div>
-            </div>
+                    <v-divider class="mx-4 mb-1"></v-divider>
+
+
+
+
+                    <v-card-actions>
+                         <v-btn class="w-50 btn btn-success" color="deep-green-lighten-1" variant="text" @click="this.$router.push(`/chitietsach/` + pr.S_Ma)">
+                            Chi tiết
+                        </v-btn>
+                         <v-btn class="w-50 btn btn-success" color="deep-green-lighten-2" variant="text" @click="ThemChiTietGioHang(pr.S_Ma)">
+                            <font-awesome-icon :icon="['fas', 'cart-shopping']" />
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+                
            </div>
         </div>
     </div>
@@ -116,7 +125,6 @@ export default defineComponent({
 
 
             }
-
 
         },
         CapNhatLastID() {

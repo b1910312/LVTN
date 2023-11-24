@@ -32,7 +32,20 @@
         </VCard>
       </v-dialog>
     </VRow>
+    <v-dialog v-model="dialog4" class="w-50 h-25">
+      <div class="card text-center bg bg-white p-5">
+        <h3 class="text-success">Bạn đã thêm vai trò thành công</h3>
+        <div class="row w-100">
+          <div class="col-4"></div>
+          <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+              @click="dialog4 = false">
+              <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
+          <div class="col-4"></div>
 
+        </div>
+      </div>
+
+    </v-dialog>
     <VTable height="500" fixed-header>
       <thead>
         <tr>
@@ -63,19 +76,68 @@
           <td>{{ item.VT_NgayTao }}</td>
           <td>
             <div class="dropdown open">
-              <button class="dropdown-item btn bg bg-danger text-white"  @click="XoaVaiTro(item.VT_Ma)">
-                  <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
+              <button class="dropdown-item btn bg bg-danger text-white" @click="dialog5 = true">
+                <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
+              <v-dialog v-model="dialog5" class="w-50 h-25">
+                <div class="card text-start bg bg-white p-5">
+                  <h2>Bạn có chắc muốn xóa vai trò này không?</h2>
+                  <p class="mt-3">vai trò sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                    chắn rằng bạn muốn xóa vai trò này</p>
+                  <div class="row w-100">
+                    <div class="col-2"></div>
+                    <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
+                        @click="XoaVaiTro(item.VT_Ma)">
+                        <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
+                    <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+                        @click="dialog5 = false">
+                        <font-awesome-icon :icon="['fas', 'xmark']" /> Hủy</button></div>
+                    <div class="col-2"></div>
+
+                  </div>
+                </div>
+
+              </v-dialog>
             </div>
           </td>
         </tr>
       </tbody>
     </VTable>
   </div>
+  <v-dialog v-model="dialog6" class="w-50 h-25">
+    <div class="card text-start bg bg-white p-5">
+      <h2 class="text-center">Không thể xóa vai trò</h2>
+      <p class="mt-3">vai trò bạn muốn xóa còn tồn tại tài khoản nhân viên, không thể tiếp tục xóa, hãy đảm bảo rằng không còn tài khoản nhân viên trực
+        thuộc trước khi xóa</p>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+            @click="dialog6 = false">
+            <font-awesome-icon :icon="['fas', 'circle-check']" /> Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+  </v-dialog>
+  <v-dialog v-model="dialog7" class="w-100 h-100">
+    <div class="card text-center bg bg-white p-5">
+      <h2>Bạn không có quyền truy cập vào trang này!!</h2>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
+            @click="this.$router.push(`/`)">
+            <font-awesome-icon :icon="['fas', '213-291']" />Xác nhận</button></div>
+        <div class="col-4"></div>
+
+      </div>
+    </div>
+
+  </v-dialog>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 import moment from "moment";
+import { faSleigh } from '@fortawesome/free-solid-svg-icons';
 
 // Tạo component
 export default defineComponent({
@@ -88,6 +150,10 @@ export default defineComponent({
       Chu: "",
       TenVaiTro: "",
       dialog: false,
+      dialog4: false,
+      dialog3: false,
+      dialog5: false,
+      dialog6: false,
       VTs: [],
       FitlerVTs: ""
     }
@@ -103,15 +169,14 @@ export default defineComponent({
   },
   created() {
     const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
-    if ( nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
-      alert("Quyền đéo đâu mà vào")
-      this.$router.push("/");
+    if (nhanvienchitiet.TKNV_VaiTro != "KBVT003") {
+      this.dialog7 = true
     }
   },
   mounted() {
     setInterval(() => {
-            this.GetLastID();
-        }, 1000);
+      this.GetLastID();
+    }, 1000);
     this.GetVT()
     // Lấy ngày hiện tại
     // Lưu ngày hiện tại vào biến ngày cập nhật
@@ -152,14 +217,28 @@ export default defineComponent({
         });
     },
     XoaVaiTro(VT_Ma) {
-      axios.delete("http://localhost:3000/api/VaiTro/" + VT_Ma).then(response => {
+
+      axios.get("http://localhost:3000/api/nhanvien/GetByVaiTro/" + VT_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
-        // Sau đó, chuyển hướng người dùng
-        this.GetVT();
+        if (response.data != "") {
+          this.dialog6 = true
+          this.dialog5 = false
+        }
+        else {
+          axios.delete("http://localhost:3000/api/VaiTro/" + VT_Ma).then(response => {
+            // Nếu cập nhật thành công, thì hiển thị thông báo
+            this.dialog5 = false
+            // Sau đó, chuyển hướng người dùng
+            this.GetVT();
+
+          }).catch(error => {
+            console.log(error);
+          });
+        }
+        this.GetTheLoai();
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
     }, GetLastID() {
       axios.get(`http://localhost:3000/api/vaitro/getid/getlastvtma`).then(res => {
@@ -202,10 +281,11 @@ export default defineComponent({
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng
         this.dialog = false;
-        this.TenVaiTro ="";
+        this.dialog4 = true
+        this.TenVaiTro = "";
         this.GetVT()
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
     }
   }

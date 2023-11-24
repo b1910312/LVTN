@@ -42,17 +42,21 @@
                 <div class="footer-link my-3 ">
                     <button class="footer-btn" @click="this.$router.push('/lienhe')">Liên hệ</button>
                 </div>
-                <div class="footer-link my-3 ">
+                <!-- <div class="footer-link my-3 ">
                     <button class="footer-btn" @click="this.$router.push('/trochuyen')">Trò chuyện</button>
-                </div>
+                </div> -->
 
             </v-col>
 
             <v-col cols="4">
-                <h4 class="text-uppercase" style="color:gold">Liên hệ</h4>
-                <VCard class="p-2" style="background-color: rgba(65, 65, 65, 0.4);">
+                <h4 class="text-uppercase" style="color:gold">Đối tác</h4>
+                <VRow>
+                    <VCol cols="3" v-for="index in NXB" :key="index.NXB_Ma">
+                        <img :src="GetLogo(index.NXB_Ma)" class="img-fluid" alt="" srcset="">
+                    </VCol>
+                </VRow>
+                <!--  <VCard class="p-2" style="background-color: rgba(65, 65, 65, 0.4);">
                     <VRow>
-
                         <VCol cols="6">
                             <VTextField class="" label="Email" placeholder="" type="password" />
 
@@ -64,7 +68,7 @@
                             <VTextarea rows="2" class="" label="Nội dung" placeholder="" type="password" />
                         </VCol>
                     </VRow>
-                    <!-- 👉 Action Buttons -->
+                    Action Buttons
                     <div class="row w-100 mt-3">
                         <div class="col-9">
                         </div>
@@ -75,7 +79,7 @@
                             </VBtn>
                         </div>
                     </div>
-                </VCard>
+                </VCard> -->
             </v-col>
         </v-row>
 
@@ -84,8 +88,10 @@
 <!-- (Optional) - Place this js code after initializing bootstrap.min.js or bootstrap.bundle.min.js -->
 
 <script>
+import axios from 'axios';
 
-export default {
+import { defineComponent } from 'vue';
+export default defineComponent({
     name: 'FooterPage',
     data() {
         return {}
@@ -93,7 +99,16 @@ export default {
     created() {
         this.hide()
     },
+    props: {
+        NXB: {
+            type: Array
+        }
+    },
     methods: {
+        GetLogo(KH_MaKH) {
+            const logo = "http://localhost:3000/api/thumbnail/image/NXB/" + KH_MaKH
+            return logo;
+        },
         hide() {
             const vInputDetails = document.querySelector(".v-input__details");
             if (vInputDetails) {
@@ -101,7 +116,8 @@ export default {
             }
         }
     }
-}
+})
+
 </script>
 <style>
 .footer-btn {
