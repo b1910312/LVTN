@@ -66,10 +66,10 @@ export default {
       selectedMonth: "", // Tháng bạn muốn lọc
 
       monthlyData: {},
-      DoanhSothis: [],
-      LoiNhuanthis: [],
-      SoLuongthis: [],
-      NhapKhothis: [],
+      DoanhSothis: [0,0,0,0,0,0,0,0,0,0,0,0,0],
+      LoiNhuanthis: [0,0,0,0,0,0,0,0,0,0,0,0,0],
+      SoLuongthis: [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      NhapKhothis: [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 
       SachGanHet: [],
 
@@ -256,6 +256,7 @@ export default {
             }
             this.NhapKhothis[monthDataKey] = currentTongGiaNhapKho;
             // this.GiaNK = currentTongGiaNhapKho
+            
             this.LoiNhuanthis[monthDataKey] = this.TinhLoiNhuan(DoanhSo, this.NhapKhothis[monthDataKey]);
             console.log("LoiNhuan");
             console.log(this.DoanhSothis);
@@ -397,8 +398,15 @@ export default {
         :SLDanhGia_3_sao="DGCH_3_sao" :SLDanhGia_2_sao="DGCH_2_sao" :SLDanhGia_1_sao="DGCH_1_sao" />
     </VCol>
     <VCol cols="6" md="6" sm="6">
-      <AnalyticsFinanceTabs :incomeData="DoanhSothis" :MaxVL=5000000 :MinVL=10000 />
+      <AnalyticsFinanceTabs Title="Doanh số năm nay" :incomeData="DoanhSothis" :MaxVL=5000000 :MinVL=10000 />
     </VCol>
+    <VCol cols="6" md="6" sm="6">
+      <AnalyticsFinanceTabs Title="Lợi nhuận năm nay" :incomeData="LoiNhuanthis" :MaxVL=5000000 :MinVL=10000 />
+    </VCol>
+    <VCol cols="6" md="6" sm="6">
+      <AnalyticsFinanceTabs Title="Nhập kho năm nay" :incomeData="NhapKhothis" :MaxVL=5000000 :MinVL=10000 />
+    </VCol>
+    
     <VCol cols="6">
       <VCard>
         <v-table fixed-header height="380px">

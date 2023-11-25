@@ -14,6 +14,10 @@ function congTatCaGiaTri(arr) {
 }
 
 const props = defineProps({
+  Title: {
+    type: String,
+    required: true,
+  },
   incomeData: {
     type: Array,
     required: true,
@@ -32,7 +36,7 @@ const tongDoanhSo = ref(0);
 
 console.log("props.incomeData")
 console.log(props.incomeData)
-const OB = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+const OB = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 console.log("OB")
 console.log(OB)
 const series = {
@@ -191,7 +195,7 @@ const chartConfig = computed(() => {
 
       <div>
         <p class="mb-0">
-          Tổng doanh thu năm
+          {{Title}}
         </p>
         <div class="d-flex align-center gap-2">
           <h6 class="text-h6">
