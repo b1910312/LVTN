@@ -95,7 +95,7 @@ export default defineComponent({
 
         <VCol cols="10"></VCol>
         <VCol cols="2" class="d-flex gap-4">
-          <VBtn class="ms-5" type="Thêm">
+          <VBtn class="ms-5" type="Thêm" :disabled="!TheLoai.TL_Ten">
             Thêm Thể Loại
           </VBtn>
         </VCol>

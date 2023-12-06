@@ -72,8 +72,7 @@ export default {
     },
     logout() {
       this.$store.commit("logoutEmployee");
-      window.location.reload()
-      this.$router.push("/dangnhap");
+      this.$router.push(`/dangnhap`)
     },
 
   },

@@ -64,7 +64,7 @@ export default {
 
         <VCol cols="10"></VCol>
         <VCol cols="2" class="d-flex gap-4">
-          <VBtn class="ms-3" type="Thêm">
+          <VBtn class="ms-3" type="Thêm" :disabled="!TheLoais.TL_Ten">
             Cập nhật Thể loại
           </VBtn>
         </VCol>

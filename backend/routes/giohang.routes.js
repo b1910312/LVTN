@@ -10,6 +10,8 @@ module.exports = (app) => {
 
     router.get("/:GH_MaGH", giohang.findOne);
 
+    router.get("/GetByKH/:GH_MaKH", giohang.findOneByKH);
+
     router.get("/getid/getlastghma", giohang.getLastGHMa);
 
     router.get("/getGH/:GH_MaKH", giohang.getGioHangByMaKH);

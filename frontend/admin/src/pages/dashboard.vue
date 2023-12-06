@@ -33,6 +33,8 @@ export default {
       CurrentSachNhapKho: [],
       CurrentLoiNhuan: 0,
       CurrentTongGiaNhapKho: 0,
+      CurrentNhapKho: 0,
+
 
       LastMonthSachDaBan: [],
       LastMonthSachSauKhiLoc: [],
@@ -70,8 +72,11 @@ export default {
       LoiNhuanthis: [0,0,0,0,0,0,0,0,0,0,0,0,0],
       SoLuongthis: [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
       NhapKhothis: [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      TongGiaNhapKhothis: [0,0,0,0,0,0,0,0,0,0,0,0,0],
 
       SachGanHet: [],
+      NhapKho: [],
+      NhapKhoSauKhiLoc: []
 
     }
   },
@@ -79,10 +84,24 @@ export default {
     this.GetThangHienTai()
     this.sachdaban()
     this.GetDGCH()
+    this.GetNhapKHo()
     this.GetSapBanHet()
   },
 
   methods: {
+    GetNhapKHo() {
+      axios.get(`http://localhost:3000/api/sach/nhapkho`)
+        .then(res => {
+          this.NhapKho = res.data
+          console.log("SACHNHAPKHO")
+        console.log(this.NhapKho)
+        this.calculateDataFor12Months()
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     GetSapBanHet() {
       axios.get(`http://localhost:3000/api/sach/sapbanhet`)
         .then(res => {
@@ -181,7 +200,9 @@ export default {
     // },
     filterOrdersByMonth(month) {
       this.SachSauKhiLoc = this.SachDaBan.filter((order) => Number(order.CTDH_NgayTao.split("-")[1]) === Number(month));
+      this.NhapKhoSauKhiLoc = this.NhapKho.filter((order) => Number(order.NK_NgayNhap.split("-")[1]) === Number(month));
       this.CurrentTongDoanhSo = this.CongTien(this.SachSauKhiLoc);
+      this.CurrentNhapKho = this.CongTienNhapKho(this.NhapKhoSauKhiLoc);
       this.SLDaBan(this.SachSauKhiLoc);
 
       // Thêm các tính toán khác ở đây nếu cần
@@ -191,11 +212,13 @@ export default {
         const monthDataKey = `${month}`;
         this.monthlyData[monthDataKey] = {};
         this.DoanhSothis[0] = 0
+        this.TongGiaNhapKhothis[0] = 0
         this.filterOrdersByMonth(month);
 
         this.monthlyData[monthDataKey].SachSauKhiLoc = this.SachSauKhiLoc;
         this.DoanhSothis[monthDataKey] = this.CurrentTongDoanhSo;
         this.SoLuongthis[monthDataKey] = this.CurrentSoLuongBanRa;
+        this.TongGiaNhapKhothis[monthDataKey] = this.CurrentNhapKho
         // alert(this.GiaNK)
         this.GetSachNhapKHo(month, this.CurrentTongDoanhSo);
 
@@ -320,6 +343,9 @@ export default {
     CongTien(arr) {
       return arr.reduce((sum, item) => sum + item.CTDH_ThanhTien, 0);
     },
+    CongTienNhapKho(arr){
+      return arr.reduce((sum, item) => sum + item.NK_Gia , 0);
+    },
     TBGiaNhapKho(arr) {
       return arr.reduce((sum, item) => sum + item.NK_Gia, 0) / arr.length
 
@@ -382,10 +408,10 @@ export default {
         </VCol>
         <VCol cols="6">
           <CardStatisticsVertical v-bind="{
-            title: 'Giá nhập kho (Sách bán)',
+            title: 'Giá nhập kho',
             image: wallet,
-            stats: LamTron(NhapKhothis[selectedMonth], 0),
-            change: LamTron((((NhapKhothis[selectedMonth] - NhapKhothis[LastMonth]) / (NhapKhothis[LastMonth])) * 100), 0),
+            stats: LamTron(TongGiaNhapKhothis[selectedMonth], 0),
+            change: LamTron((((TongGiaNhapKhothis[selectedMonth] - TongGiaNhapKhothis[LastMonth]) / (TongGiaNhapKhothis[LastMonth])) * 100), 0),
             // stats: 0,
             // change: 0,
           }" />
@@ -398,25 +424,23 @@ export default {
         :SLDanhGia_3_sao="DGCH_3_sao" :SLDanhGia_2_sao="DGCH_2_sao" :SLDanhGia_1_sao="DGCH_1_sao" />
     </VCol>
     <VCol cols="6" md="6" sm="6">
-      <AnalyticsFinanceTabs Title="Doanh số năm nay" :incomeData="DoanhSothis" :MaxVL=5000000 :MinVL=10000 />
+      <AnalyticsFinanceTabs Title="Doanh số năm nay" :incomeData="DoanhSothis" :MaxVL=1000000 :MinVL=10000 />
     </VCol>
     <VCol cols="6" md="6" sm="6">
-      <AnalyticsFinanceTabs Title="Lợi nhuận năm nay" :incomeData="LoiNhuanthis" :MaxVL=5000000 :MinVL=10000 />
+      <AnalyticsFinanceTabs Title="Lợi nhuận năm nay" :incomeData="LoiNhuanthis" :MaxVL=1000000 :MinVL=10000 />
     </VCol>
-    <VCol cols="6" md="6" sm="6">
-      <AnalyticsFinanceTabs Title="Nhập kho năm nay" :incomeData="NhapKhothis" :MaxVL=5000000 :MinVL=10000 />
+    <VCol cols="6 " md="6  " sm="6 ">
+      <AnalyticsFinanceTabs Title="Nhập kho năm nay" :incomeData="TongGiaNhapKhothis" :MaxVL=2000000 :MinVL=10000 />
     </VCol>
     
     <VCol cols="6">
-      <VCard>
+      <VCard title="Sách sắp bán hết">
         <v-table fixed-header height="380px">
           <thead>
             <tr>
               <p></p>
             </tr>
-            <tr class="text-center text-dark">
-              <h4>Sách sắp bán hết</h4>
-            </tr>
+           
             <tr>
               <th class="text-center">
                 STT
@@ -435,7 +459,7 @@ export default {
           <tbody>
             <tr class="text-center" v-for="( item, index ) in SachGanHet" :key="item.S_Ma">
               <td>{{ index + 1 }}</td>
-              <td>{{ item.S_Ten }}</td>
+              <td class="text-start">{{ item.S_Ten }}</td>
               <td>{{ item.S_SoLuong }}</td>
               <td><v-button class="btn btn-warning" @click="this.$router.push(`quanlysach`)"><font-awesome-icon
                     :icon="['fas', 'triangle-exclamation']" /></v-button></td>

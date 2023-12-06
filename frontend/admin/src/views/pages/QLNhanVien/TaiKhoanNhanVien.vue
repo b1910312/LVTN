@@ -131,15 +131,15 @@
                           <label for="" class="h-100 my-3 h6">Vai trò mới</label>
                         </VCol>
                         <VCol cols="8" class="my-3">
-                          <select class="form-control h-100" v-model="this.NewVT">
+                          <select class="form-control h-100" v-model="NewVT">
                             <option v-for="gt in VTs" :value="gt.VT_Ma">{{ gt.VT_TenVaiTro }}</option>
                           </select>
+                          <small><p class="text-center text-danger">{{ errors.VaiTro }}</p></small>
                         </VCol>
-                        <VCol cols="9">
-
+                        <VCol cols="10">
                         </VCol>
-                        <VCol cols="3" class=" my-3">
-                          <Vbtn class="btn btn-primary" @click="capnhatvaitro()">Cập nhật</Vbtn>
+                        <VCol cols="2" class=" my-3">
+                          <Vbtn class="btn btn-primary"  @click="onSubmit()">Cập nhật</Vbtn>
                         </VCol>
                       </VRow>
                     </div>
@@ -192,6 +192,7 @@
 
 <script>
 import moment from "moment";
+import { ref } from "vue";
 import { defineComponent } from 'vue';
 
 // Tạo component
@@ -204,7 +205,7 @@ export default defineComponent({
       FitlerNVs: "",
       DC: "",
       GT: "",
-      NewVT: "",
+      NewVT: null,
       VTs: [],
       dialog2: false,
       dialog3: false,
@@ -213,7 +214,11 @@ export default defineComponent({
       dialog6: false,
       password1: "",
       password2: "",
-      CapNhatMatKhau: ""
+      CapNhatMatKhau: "",
+      errors: ref({
+        VaiTro: ""
+      }),
+      DaDayDu: ref()
     }
 
   },
@@ -239,6 +244,21 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    async validateInput(){
+      this.errors.VaiTro = ""
+      if(!this.NewVT){
+        this.errors.VaiTro = "Vui lòng chọn vai trò mới"
+      }
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.capnhatvaitro();
+      }
+
+    },
     capnhatvaitro() {
       const now = moment()
       this.NV.TKNV_VaiTro = this.NewVT;
@@ -408,10 +428,25 @@ export default defineComponent({
         console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
 
+      }).catch(error => {
+        console.log(error);
+      });
+      axios.delete("http://localhost:3000/api/binhluan/deleteKH/" + NV_Ma).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("Xóa thành công bình luận");
+        // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
         console.log(error);
       });
+      axios.delete(`http://localhost:3000/api/thumbnail/xoaanh/NV_` + NV_Ma +`.png`)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công bình luận của sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
       window.location.reload();
     }
   }

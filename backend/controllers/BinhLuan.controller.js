@@ -200,4 +200,46 @@ exports.delete = async (req, res) => {
     }
 
 };
+exports.deleteKH = async (req, res) => {
+    const condition = {
+        BL_MaKH: req.params.BL_MaKH
+    };
+
+    const [error, document] = await handle(
+        BinhLuan.deleteMany(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Không xóa được bình luận có mã ${req.params.id}`)
+        );
+    }
+
+    if (document) {
+        return res.send({ message: "Xóa bình luận thành công" });
+    }
+
+};
+
+exports.deleteSach = async (req, res) => {
+    const condition = {
+        BL_MaSach: req.params.BL_MaSach
+    };
+
+    const [error, document] = await handle(
+        BinhLuan.deleteMany(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Không xóa được bình luận có mã ${req.params.id}`)
+        );
+    }
+
+    if (document) {
+        return res.send({ message: "Xóa bình luận thành công" });
+    }
+
+};
+
 

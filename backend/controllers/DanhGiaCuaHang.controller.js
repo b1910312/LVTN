@@ -134,3 +134,23 @@ exports.delete = async (req,res) => {
 
 };
 
+exports.deleteKH = async (req,res) => {    
+    const condition = {
+        DG_MaKH: req.params.DG_MaKH
+    };
+
+    const [error, document] = await handle(
+        DanhGiaCuaHang.deleteMany(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500,`Không xóa được đánh giá có mã ${req.params.id}`)
+        );
+    }
+
+    if (document) {
+        return res.send({ message: "Xóa đánh giá thành công" });
+    }
+
+};

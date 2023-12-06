@@ -26,25 +26,29 @@ export default {
     this.interval = setInterval(() => {
       // Call the API
       if (this.nvv.TKKH_TrangThai == 1) {
-        axios.get('http://localhost:3000/api/chitietgiohang/getbyMaKH/' + this.nvv.TKKH_MaKH).then((response) => {
+        axios.get(`http://localhost:3000/api/giohang/GetByKH/` + this.nvv.TKKH_MaKH).then(res => {
+          this.MaGH = res.data.GH_MaGH
+        
+        })
+        axios.get('http://localhost:3000/api/chitietgiohang/getbyMaGH/' + this.MaGH).then((response) => {
           // Update the value of the variable
           this.count = response.data
-          console.log(this.count)
+          // console.log(this.count)
         })
 
-      
+
       }
       else {
         this.count = 0
       }
       axios.get('http://localhost:3000/api/khachhang/' + this.nvv.TKKH_MaKH).then((response) => {
-          // Update the value of the variable
-          this.KH = response.data
-          var khachHang = JSON.parse(localStorage.getItem('khachhang'));
-          khachHang.TKKH_TrangThai = this.KH.TKKH_TrangThai
-          localStorage.setItem('khachhang', JSON.stringify(khachHang));
-          this.getNV()
-        })
+        // Update the value of the variable
+        this.KH = response.data
+        var khachHang = JSON.parse(localStorage.getItem('khachhang'));
+        khachHang.TKKH_TrangThai = this.KH.TKKH_TrangThai
+        localStorage.setItem('khachhang', JSON.stringify(khachHang));
+        this.getNV()
+      })
 
     }, 1000)
 
@@ -66,7 +70,12 @@ export default {
       console.log(this.nvv);
     },
     CountGH() {
-      axios.get(`http://localhost:3000/api/chitietgiohang/getbyMaKH/` + this.nvv.TKKH_MaKH).then(res => {
+      axios.get(`http://localhost:3000/api/giohang/GetByKH/` + this.nvv.TKKH_MaKH).then(res => {
+        this.MaGH = res.data.GH_MaGH
+        console.log("Mã giỏ hàng")
+        console.log(this.MaGH)
+      })
+      axios.get(`http://localhost:3000/api/chitietgiohang/getbyMaKH/` + this.MaGH).then(res => {
         this.count = res.data
         console.log("newid")
         console.log(this.count.length)
@@ -78,6 +87,7 @@ export default {
       nvv: "",
       count: 0,
       KH: [],
+      MaGH: ""
     }
   }
 }
@@ -124,7 +134,8 @@ export default {
         </IconBtn> -->
         <NavBar class=""></NavBar>
         <!-- <NavbarThemeSwitcher class="me-2" /> -->
-        <v-button v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1" class="p-2" @click="this.$router.push(`/giohang`)">
+        <v-button v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1" class="p-2"
+          @click="this.$router.push(`/giohang`)">
 
           <v-badge ref="badgeRef" color="error" class="mb-5" :content="count.length" inline>
             <h5 class="mt-5">
@@ -132,7 +143,7 @@ export default {
             </h5>
           </v-badge>
         </v-button>
-        <UserProfile/>
+        <UserProfile />
       </div>
     </template>
 

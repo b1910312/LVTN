@@ -111,6 +111,7 @@ export default {
                 { maKH: "", Ten: "" }
             ],
             NguoiDungs: "",
+            NhanViens: "",
             DGs: [],
             SachGoiY: [],
             NXBName: "",
@@ -130,6 +131,7 @@ export default {
         this.GetLastID2()
         this.GetLastID3()
         this.getNguoiDung()
+        this.getNhanVien()
     },
     created() {
 
@@ -247,13 +249,14 @@ export default {
                 axios.post(`http://localhost:3000/api/danhgia`, data)
                     .then(res => {
                         this.CheckKH(data.DG_MaSach, data.DG_MaKH)
-
+                   
                         console.log("Đánh giá thành công")
                     })
                     .catch(err => {
                         console.log(err)
                     })
             }
+            this.CapNhatLastID3()
 
         },
         CheckKH(S_Ma, KH_Ma) {
@@ -350,7 +353,13 @@ export default {
                 console.log(this.NguoiDungs);
             });
         },
-
+        getNhanVien() {
+            // Sử dụng tính năng fetch() để chỉ gọi dữ liệu một lần
+            axios.get(`http://localhost:3000/api/thongtinnhanvien`).then(res => {
+                this.NhanViens = res.data;
+                console.log(this.NhanViens);
+            });
+        },
         CapNhatLastID2() {
             this.TachKBS2()
             this.Increase2()
@@ -397,10 +406,15 @@ export default {
                 })
         },
         getKHName(BL_MaKH) {
-            // return this.NguoiDungs.find(item => item.KH_MaKH === BL_MaKH).KH_HoTen;
-
-            return this.NguoiDungs.find(item => item.KH_MaKH === BL_MaKH).KH_HoTen;
-
+            let [Text2, result1] = BL_MaKH.split("0");
+            switch (Text2) {
+                case "KBKH":
+                    return this.NguoiDungs.find(item => item.KH_MaKH === BL_MaKH).KH_HoTen;
+                case "KBNV":
+                    return this.NhanViens.find(item => item.NV_MaNV === BL_MaKH).NV_HoTen + " (Admin)";
+                default:
+                    return null;
+            }
 
         },
 
@@ -534,8 +548,16 @@ export default {
 
         },
         GetAVT(KH_Ma) {
-            const logo = "http://localhost:3000/api/thumbnail/image/KH/" + KH_Ma
-            return logo;
+            let [Text2, result1] = KH_Ma.split("0");
+            switch (Text2) {
+                case "KBKH":
+                    return "http://localhost:3000/api/thumbnail/image/KH/" + KH_Ma;
+                case "KBNV":
+                    return "http://localhost:3000/api/thumbnail/image/NV/" + KH_Ma;
+                default:
+                    return null;
+            }
+
         },
         GetThumNail(S_Ma) {
             const logo = "http://localhost:3000/api/thumbnail/image/TB/" + S_Ma
@@ -612,7 +634,7 @@ export default {
                             <td class="col-4">Giá:</td>
                             <td class="col-7">{{ Sach.S_Gia }} VNĐ</td>
                         </tr>
-                        <tr class="row w-100 my-2 py-2">
+                        <tr v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1" class="row w-100 my-2 py-2">
                             <td class="col-1"></td>
                             <td class="col-4">Số lượng:</td>
                             <td class="col-4">
@@ -634,8 +656,9 @@ export default {
                         <tr class="row w-100 mt-5   ">
                             <td class="col-12 text-center text-success  " v-if="message != ''">{{ message }}</td>
                             <!-- <td class="col-6"> <v-button class="btn btn-primary w-100">Mua ngay</v-button></td> -->
-                            <td v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1" class="col-12"> <v-button class="btn btn-success w-100"
-                                    @click="ThemChiTietGioHang(Sach.S_Ma)">Thêm vào giỏ hàng</v-button></td>
+                            <td v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1" class="col-12"> <v-button
+                                    class="btn btn-success w-100" @click="ThemChiTietGioHang(Sach.S_Ma)">Thêm vào giỏ
+                                    hàng</v-button></td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -678,7 +701,8 @@ export default {
                                     <h5>{{ getKHName(binhluan.BL_MaKH) }}
                                         <v-menu location="right">
                                             <template v-slot:activator="{ props }">
-                                                <v-button v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1" class="btn text-white" color="primary" dark v-bind="props">
+                                                <v-button v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1"
+                                                    class="btn text-white" color="primary" dark v-bind="props">
                                                     <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" />
                                                 </v-button>
                                             </template>
@@ -716,7 +740,9 @@ export default {
                                                     <h5>{{ getKHName(reply.BL_MaKH) }}
                                                         <v-menu location="right">
                                                             <template v-slot:activator="{ props }">
-                                                                <v-button v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1" class="btn text-white" color="primary" dark
+                                                                <v-button
+                                                                    v-if="nvv.TKKH_TrangThai !== '' && nvv.TKKH_TrangThai == 1"
+                                                                    class="btn text-white" color="primary" dark
                                                                     v-bind="props">
                                                                     <font-awesome-icon
                                                                         :icon="['fas', 'ellipsis-vertical']" />

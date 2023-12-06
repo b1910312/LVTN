@@ -41,7 +41,18 @@ export default defineComponent({
       nhanvien: {},
       imageThumbnail: null,
       TL: [],
-      NXB: []
+      NXB: [],
+      errors: ref({
+        TenSach: "",
+        TacGia: "",
+        SoLuong: "",
+        Gia: "",
+        GiaNK: "",
+        TheLoai: "",
+        NXB: "",
+        Image: ""
+      }),
+      DaDayDu: ref()
     };
   },
   mounted() {
@@ -51,6 +62,55 @@ export default defineComponent({
     this.GetTL()
   },
   methods: {
+    async validateInput() {
+      
+      this.errors.TenSach = "";
+      this.errors.TacGia = "";
+      this.errors.SoLuong = "";
+      this.errors.Gia = "";
+      this.errors.GiaNK = "";
+      this.errors.TheLoai = "";
+      this.errors.NXB = "";
+      this.errors.Image = "";
+
+      if (!this.Sach.S_Ten) {
+        this.errors.TenSach = "Vui lòng nhập tên sách";
+      }
+
+      if (!this.Sach.S_TacGia) {
+        this.errors.TacGia = "Vui lòng nhập tên tác giả";
+      } 
+
+      if (!this.Sach.S_SoLuong) {
+        this.errors.SoLuong = "Vui lòng nhập số lượng sách";
+      } 
+      if (!this.Sach.S_Gia) {
+        this.errors.Gia = "Vui lòng nhập giá bán của sách";
+      } 
+      if (!this.Sach.S_SoLuong) {
+        this.errors.S_SoLuong = "Vui lòng nhập số lượng sách";
+      } 
+      if (!this.NK.NK_Gia) {
+        this.errors.GiaNK = "Vui lòng nhập giá nhập kho";
+      } 
+      if (!this.Sach.S_TheLoai) {
+        this.errors.TheLoai = "Vui lòng nhập chọn thể loại";
+      } 
+      if (!this.Sach.S_NXB) {
+        this.errors.NXB = "Vui lòng nhập chọn nhà xuất bản";
+      } 
+      if (!this.imageThumbnail) {
+        this.errors.Image = "Vui lòng chọn ảnh";
+      } 
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      console.log(this.DaDayDu)
+      if(this.DaDayDu == true) {
+        this.addSach()
+      }
+    },
     GetTL() {
       axios.get('http://localhost:3000/api/theloai')
         .then((response) => {
@@ -214,28 +274,28 @@ export default defineComponent({
 
 <template>
   <div class="m-1 mx-3 ">
-    <VForm @submit.prevent="addSach">
+    <VForm @submit.prevent="onSubmit">
       <VRow>
         <VCol cols="12">
           <VTextField v-model="Sach.S_Ma" readonly label="Mã sách" placeholder="johndoe@example.com" />
         </VCol>
         <VCol cols="12">
-          <VTextField v-model="Sach.S_Ten" label="Tên sách" placeholder="johndoe@example.com" />
+          <VTextField v-model="Sach.S_Ten" :error-messages="errors.TenSach" label="Tên sách" placeholder="johndoe@example.com" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="Sach.S_TacGia" label="Tác giả" placeholder="+1 123 456 7890" />
+          <VTextField v-model="Sach.S_TacGia" :error-messages="errors.TacGia"  label="Tác giả" placeholder="+1 123 456 7890" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="Sach.S_SoLuong" label="Số lượng" type="number" placeholder="············" />
+          <VTextField v-model="Sach.S_SoLuong" :error-messages="errors.SoLuong"  label="Số lượng" type="number" placeholder="············" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="Sach.S_Gia" label="Giá" type="number" placeholder="············" />
+          <VTextField v-model="Sach.S_Gia" :error-messages="errors.Gia"  label="Giá" type="number" placeholder="············" />
         </VCol>
         <VCol cols="12">
-          <VTextField v-model="NK.NK_Gia" label="Giá nhập kho" type="number" placeholder="············" />
+          <VTextField v-model="NK.NK_Gia" :error-messages="errors.GiaNK"  label="Giá nhập kho" type="number" placeholder="············" />
         </VCol>
 
         <!-- <VCol cols="12">
@@ -243,12 +303,13 @@ export default defineComponent({
           
         </VCol> -->
         <VCol cols="1">
-          <label for="" class="h-100 my-3">Thể loại</label>
+          <label for="" class="h-100 my-3" >Thể loại</label>
         </VCol>
         <VCol cols="5">
-          <select class="form-control h-100" v-model="Sach.S_TheLoai">
+          <select class="form-control h-100" v-model="Sach.S_TheLoai" >
             <option v-for="gt in TL" :value="gt.TL_Ma">{{ gt.TL_Ten }}</option>
           </select>
+          <small><p class="text-danger text-center">{{ errors.TheLoai }}</p></small>
         </VCol>
         <!-- <VCol cols="12">
           <VTextField v-model="Sach.S_NXB" label="Nhà xuất bản" placeholder="+1 123 456 7890" />
@@ -260,9 +321,11 @@ export default defineComponent({
           <select class="form-control h-100" v-model="Sach.S_NXB">
             <option v-for="gt in NXB" :value="gt.NXB_Ma">{{ gt.NXB_Ten }}</option>
           </select>
+          <small><p class="text-danger text-center">{{ errors.NXB }}</p></small>
+
         </VCol>
         <VCol cols="12">
-          <VFileInput label="ThumbNail Sách" type="file" ref="imageInput" @change="setImageThumbNail" />
+          <VFileInput label="ThumbNail Sách" type="file" accept="image/jpeg, image/png" ref="imageInput"  :error-messages="errors.Image"  @change="setImageThumbNail" />
         </VCol>
         <VCol cols="10"></VCol>
         <VCol cols="2" class="d-flex gap-4">

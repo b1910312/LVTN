@@ -51,15 +51,96 @@ export default defineComponent({
           name: "Nam",
           value: "2"
         },
-      ]
+      ],
+      errors: ref({
+        Ten: "",
+        Email: "",
+        SoDienThoai: "",
+        Email: "",
+        NgaySinh: "",
+        VaiTro: "",
+        GioiTinh: "",
+        CCCD: "",
+        DiaChi:"",
+        PhuongXa:"",
+        QuanHuyen: "",
+        TinhTP: "",
+        Image: ""
+      }),
+      DaDayDu: ref()
     };
   },
-  mounted() {
+  mounted() { 
     this.GetLastID()
     this.GetVT()
   },
 
   methods: {
+    async validateInput() {
+      this.errors.Ten = "";
+      this.errors.Email = "";
+      this.errors.SoDienThoai = "";
+      this.errors.NgaySinh = "";
+      this.errors.VaiTro = "";
+      this.errors.GioiTinh = "";
+      this.errors.CCCD = "";
+      this.errors.DiaChi = "";
+      this.errors.PhuongXa = "";
+      this.errors.QuanHuyen = "";
+      this.errors.TinhTP = "";
+      this.errors.Image = "";
+
+      if (!this.NV.NV_HoTen) {
+        this.errors.Ten = "Vui lòng nhập tên nhân viên";
+      }
+      if (!this.NV.NV_Email) {
+        this.errors.Email = "Vui lòng nhập email";
+      } else if (!/^\S+@\S+\.\S+$/.test(this.NV.NV_Email)) {
+        this.errors.Email = "Email không hợp lệ";
+      }
+      if (!this.NV.NV_SoDienThoai) {
+        this.errors.SoDienThoai = "Vui lòng nhập số điện thoại";
+      }
+      if (!this.NV.NV_NgaySinh) {
+        this.errors.NgaySinh = "Vui lòng nhập ngày sinh";
+      }
+      if (!this.TKNV.TKNV_VaiTro) {
+        this.errors.VaiTro = "Vui lòng chọn vai trò";
+      }
+      if (!this.NV.NV_GioiTinh) {
+        this.errors.GioiTinh = "Vui lòng chọn giới tính";
+      }
+      if (!this.NV.NV_CCCD) {
+        this.errors.CCCD = "Vui lòng nhập Căn cước công dân";
+      }
+
+      if (!this.DC.DC_DiaChi.trim()) {
+        this.errors.DiaChi = "Vui lòng nhập địa chỉ";
+      }
+
+      if (!this.DC.DC_PhuongXa.trim()) {
+        this.errors.PhuongXa = "Vui lòng nhập phường xã";
+      }
+      if (!this.DC.DC_QuanHuyen.trim()) {
+        this.errors.QuanHuyen = "Vui lòng nhập quận huyện";
+      }
+
+      if (!this.DC.DC_TinhTP.trim()) {
+        this.errors.TinhTP = "Vui lòng nhập tỉnh thành phố";
+      }
+      if (!this.imageFile) {
+        this.errors.Image = "Vui lòng chọn ảnh đại diện nhân viên"
+      }
+
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.addNhanVien();
+      }
+
+    },
     GetVT() {
       axios.get('http://localhost:3000/api/vaitro')
         .then((response) => {
@@ -179,13 +260,13 @@ export default defineComponent({
           <VTextField v-model="NV.NV_MaNV" label="Mã Nhân viên" readonly placeholder="John" />
         </VCol>
         <VCol cols="6">
-          <VFileInput label="Ảnh đại diện" type="file" ref="imageInput" @change="setImageFile" />
+          <VFileInput label="Ảnh đại diện" type="file" ref="imageInput" @change="setImageFile" :error-messages="errors.Image"/>
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="NV.NV_HoTen" label="Tên Nhân viên" placeholder="johndoe@example.com" />
+          <VTextField v-model="NV.NV_HoTen" label="Tên Nhân viên" :error-messages="errors.Ten" placeholder="johndoe@example.com" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="NV.NV_NgaySinh" type="date" label="Ngày Sinh" placeholder="+1 123 456 7890" />
+          <VTextField v-model="NV.NV_NgaySinh" type="date" :error-messages="errors.NgaySinh" label="Ngày Sinh" placeholder="+1 123 456 7890" />
         </VCol>
 
         <VCol cols="1">
@@ -196,6 +277,7 @@ export default defineComponent({
           <select class="form-control h-100" v-model="NV.NV_GioiTinh">
             <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}</option>
           </select>
+          <small><p class="text-danger text-center">{{ errors.GioiTinh }}</p></small>
         </VCol>
         <VCol cols="1">
           <label for="" class="h-100 my-3">Vai trò</label>
@@ -204,37 +286,39 @@ export default defineComponent({
           <select class="form-control h-100" v-model="TKNV.TKNV_VaiTro">
             <option v-for="vt in VT" :value="vt.VT_Ma">{{ vt.VT_TenVaiTro }}</option>
           </select>
+          <small><p class="text-danger text-center">{{ errors.VaiTro }}</p></small>
+
         </VCol>
 
        
         <VCol cols="12">
-          <VTextField v-model="NV.NV_CCCD" label="Căn cước công dân" placeholder="············" />
+          <VTextField v-model="NV.NV_CCCD"  :error-messages="errors.CCCD" label="Căn cước công dân" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="NV.NV_Email" type="email" label="Email" placeholder="············" />
+          <VTextField v-model="NV.NV_Email" :error-messages="errors.Email" type="email" label="Email" placeholder="············" />
         </VCol>
         <VCol cols="6 ">
-          <VTextField v-model="NV.NV_SoDienThoai" label="Số diện thoại" placeholder="············" />
+          <VTextField v-model="NV.NV_SoDienThoai" :error-messages="errors.SoDienThoai" label="Số diện thoại" placeholder="············" />
         </VCol>
        
         <VCol cols="6">
-          <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
+          <VTextField v-model="DC.DC_DiaChi" :error-messages="errors.DiaChi" label="Địa chỉ" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" placeholder="············" />
+          <VTextField v-model="DC.DC_PhuongXa" :error-messages="errors.PhuongXa" label="Phường/Xã" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_QuanHuyen" label="Quận/Huyện" placeholder="············" />
+          <VTextField v-model="DC.DC_QuanHuyen" :error-messages="errors.QuanHuyen" label="Quận/Huyện" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
+          <VTextField v-model="DC.DC_TinhTP" :error-messages="errors.TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
         </VCol>
         <div class="row w-100 mb-3">
           <div class="col-10">
 
           </div>
           <div class=col-2>
-            <VBtn class="bg bg-primary w-100" @click="addNhanVien()">
+            <VBtn class="bg bg-primary w-100" @click="onSubmit()">
               Thêm nhân viên
             </VBtn>
           </div>

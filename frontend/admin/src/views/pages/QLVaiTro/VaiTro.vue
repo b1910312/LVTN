@@ -23,7 +23,7 @@
               <VCol cols="10">
               </VCol>
               <VCol cols="2" class="d-flex gap-4">
-                <VBtn type="submit" @click="AddVaiTro()">
+                <VBtn type="submit" :disabled="!TenVaiTro" @click="AddVaiTro()">
                   Thêm
                 </VBtn>
               </VCol>
@@ -176,7 +176,7 @@ export default defineComponent({
   mounted() {
     setInterval(() => {
       this.GetLastID();
-    }, 1000);
+    }, 5000);
     this.GetVT()
     // Lấy ngày hiện tại
     // Lưu ngày hiện tại vào biến ngày cập nhật

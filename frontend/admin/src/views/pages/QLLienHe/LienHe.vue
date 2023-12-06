@@ -165,13 +165,13 @@
                             <VTextarea v-model="LH.LH_NoiDung" readonly label="Nội dung" placeholder="············" />
                           </VCol>
                           <VCol cols="12">
-                            <VTextarea v-model="TraLoi" label="Nội dung" placeholder="············" />
+                            <VTextarea v-model="TraLoi" :error-messages="errors.TraLoi" label="Nội dung" placeholder="············" />
                           </VCol>
 
                           <VCol cols="10"></VCol>
 
                           <VCol cols="2" class="">
-                            <Vbtn class="btn btn-primary w-100" @click="setMail()">Trả lời</Vbtn>
+                            <Vbtn class="btn btn-primary w-100"   @click="onSubmit()">Trả lời</Vbtn>
                           </VCol>
                         </VRow>
                         <!-- <select class="form-control h-100" v-model="this.NewVT">
@@ -254,8 +254,11 @@ export default defineComponent({
       dialog7: false,
       dialog8: false,
       linkmail: "",
-      TraLoi: ""
-
+      TraLoi: "",
+      errors: ref({
+        TraLoi: ""
+      }),
+      DaDayDu: ref()
     }
 
   },
@@ -275,6 +278,23 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    async validateInput() {
+      this.errors.TraLoi = "";
+     
+
+      if (!this.TraLoi) {
+        this.errors.TraLoi = "Vui lòng nhập nội dung trả lời";
+      }
+    
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.setMail();
+      }
+
+    },
     done() {
       const now = moment()
       this.LH.LH_TrangThai = true;

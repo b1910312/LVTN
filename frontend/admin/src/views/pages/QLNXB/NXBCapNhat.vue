@@ -24,6 +24,17 @@ export default {
         DC_TinhTP: "",
         DC_NgayTao: "",
       },
+      errors: ref({
+        Ten: "",
+        Email: "",
+        SoDienThoai: "",
+        DiaChi: "",
+        PhuongXa: "",
+        QuanHuyen: "",
+        TinhTP: "",
+        Image: ""
+      }),
+      DaDayDu: ref(),
       dialog4: false,
       dialog5: false
     };
@@ -37,6 +48,52 @@ export default {
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    async validateInput() {
+      this.errors.Ten = "";
+      this.errors.Email = "";
+      this.errors.SoDienThoai = "";
+      this.errors.DiaChi = "";
+      this.errors.PhuongXa = "";
+      this.errors.QuanHuyen = "";
+      this.errors.TinhTP = "";
+
+      if (!this.NXBs.NXB_Ten) {
+        this.errors.Ten = "Vui lòng nhập tên nhà xuất bản";
+      }
+      if (!this.NXBs.NXB_Email) {
+        this.errors.Email = "Vui lòng nhập email";
+      } else if (!/^\S+@\S+\.\S+$/.test(this.NXBs.NXB_Email)) {
+        this.errors.Email = "Email không hợp lệ";
+      }
+      if (!this.NXBs.NXB_SDT) {
+        this.errors.SoDienThoai = "Vui lòng nhập số điện thoại";
+      }
+
+      if (!this.DC.DC_DiaChi.trim()) {
+        this.errors.DiaChi = "Vui lòng nhập địa chỉ";
+      }
+
+      if (!this.DC.DC_PhuongXa.trim()) {
+        this.errors.PhuongXa = "Vui lòng nhập phường xã";
+      }
+      if (!this.DC.DC_QuanHuyen.trim()) {
+        this.errors.QuanHuyen = "Vui lòng nhập quận huyện";
+      }
+
+      if (!this.DC.DC_TinhTP.trim()) {
+        this.errors.TinhTP = "Vui lòng nhập tỉnh thành phố";
+      }
+
+
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.updateNXB();
+      }
+
+    },
     cancel() {
       this.dialog4 = false
     },
@@ -96,7 +153,7 @@ export default {
         // alert("Cập nhật thành công");
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
       }).catch(error => {
-         console.log(error)
+        console.log(error)
         // alert(error);
       });
       axios.put("http://localhost:3000/api/diachi/" + this.DC.DC_MaDT, this.DC).then(response => {
@@ -105,7 +162,7 @@ export default {
         // alert("Cập nhật thành công");
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
       }).catch(error => {
-         console.log(error)
+        console.log(error)
         // alert(error);
       });
       this.dialog5 = true
@@ -133,12 +190,12 @@ export default {
               <div class="row w-100 mt-2">
                 <div class="col-8"></div>
                 <div class="d-flex gap-4 col-2">
-                  <VBtn class="ms-5" type="Thêm">
+                  <VBtn class="ms-5" type="Thêm" :disabled="!imageFile">
                     Cập nhật
                   </VBtn>
                 </div>
                 <div class="d-flex gap-4 col-1">
-                  <VBtn class="ms-5 bg bg-secondary" @click="cancel()">
+                  <VBtn class="ms-5 bg bg-secondary"  @click="cancel()">
                     Hủy
                   </VBtn>
                 </div>
@@ -155,31 +212,31 @@ export default {
       </VCol>
 
       <VCol cols="12">
-        <VTextField v-model="NXBs.NXB_Ten" label="Tên sách" placeholder="johndoe@example.com" />
+        <VTextField v-model="NXBs.NXB_Ten"  :error-messages="errors.Ten" label="Tên sách" placeholder="johndoe@example.com" />
       </VCol>
 
       <VCol cols="12">
-        <VTextField v-model="NXBs.NXB_Email" label="Tác giả" placeholder="+1 123 456 7890" />
+        <VTextField v-model="NXBs.NXB_Email"  :error-messages="errors.Email" label="Tác giả" placeholder="+1 123 456 7890" />
       </VCol>
 
       <VCol cols="12">
-        <VTextField v-model="NXBs.NXB_SDT" label="Số lượng" type="number" placeholder="············" />
+        <VTextField v-model="NXBs.NXB_SDT"  :error-messages="errors.SoDienThoai" label="Số điện thoại" placeholder="············" />
       </VCol>
       <VCol cols="6">
-        <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
+        <VTextField v-model="DC.DC_DiaChi"  :error-messages="errors.DiaChi" label="Địa chỉ" placeholder="············" />
       </VCol>
       <VCol cols="6">
-        <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" placeholder="············" />
+        <VTextField v-model="DC.DC_PhuongXa"  :error-messages="errors.PhuongXa" label="Phường/Xã" placeholder="············" />
       </VCol>
       <VCol cols="6">
-        <VTextField v-model="DC.DC_QuanHuyen" label="Quận quyện" placeholder="············" />
+        <VTextField v-model="DC.DC_QuanHuyen"  :error-messages="errors.QuanHuyen" label="Quận quyện" placeholder="············" />
       </VCol>
       <VCol cols="6">
-        <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
+        <VTextField v-model="DC.DC_TinhTP"  :error-messages="errors.TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
       </VCol>
       <VCol cols="10"></VCol>
       <VCol cols="2" class="d-flex gap-4">
-        <VBtn class="ms-3" @click="updateNXB()">
+        <VBtn class="ms-3" @click="onSubmit()">
           Cập nhật NXB
         </VBtn>
       </VCol>

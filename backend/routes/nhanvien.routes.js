@@ -14,6 +14,10 @@ module.exports = (app) => {
 
     router.get("/GetByVaiTro/:TKNV_VaiTro", nhanvien.FindSachVaiTro)
 
+    router.get("/GetByMaNV/:TKNV_MaNV", nhanvien.findOneByMaNV);
+
+    router.get("/GetPass/:TKNV_MaNV/:TKNV_MatKhau", nhanvien.findPassByMaNV);
+
     //Update a customer with id
     router.put("/:TKNV_MaNV", nhanvien.update);
     //Update a customer with id

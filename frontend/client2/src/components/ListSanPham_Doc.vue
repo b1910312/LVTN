@@ -1,7 +1,7 @@
 <template>
     <div class="w-100 card p-1 m-2" style="background-color: rgba(0, 0, 0, 0.1);">
 
-        <div style=" height: 600px; overflow-y: auto;" class="ps-5 ">
+        <div style=" height: 700px; overflow-y: auto;" class="ps-5 ">
             <div class="row w-100 ">
                 <v-card v-for="pr in sach" :key="pr.S_Ma" class="mx-1 my-2" style="border: 2px solid green;"
                     max-width="340">

@@ -3,18 +3,26 @@ import axios from 'axios';
 import { defineComponent, vModelRadio } from 'vue';
 import { mapGetters } from "vuex";
 import { handle } from "../common/promise"
+import { ref } from 'vue';
 export default defineComponent({
   name: "LoginPage",
   data() {
 
     return {
-      NhanVien: ref({
-        TKNV_MaNV: '',
-        TKNV_MatKhau: '',
-      }),
+      NhanVien: {
+        TKNV_MaNV: "",
+        TKNV_MatKhau: "",
+      },
       isTKNV_MatKhauVisible: ref(false),
       loading: false,
       message: "",
+      errors: ref({
+        MaNV: "",
+        MatKhau: "",
+      }),
+      MaNV: "",
+      CorrectPass: "",
+      OkeALl: ref()
     }
   },
   computed: {
@@ -44,7 +52,48 @@ export default defineComponent({
         console.log(data)
       }
     },
+    GetNVAccount(TKNV_MaNV) {
+      axios.get(`http://localhost:3000/api/nhanvien/GetByMaNV/` + TKNV_MaNV).then(res => {
+        this.MaNV = res.data.TKNV_MaNV
+        console.log("data")
+        console.log(res.data)
+        console.log("MaNV")
+        console.log(this.MaNV)
 
+      })
+    },
+    GetPass(TKNV_MaNV, TKNV_MatKhau) {
+      axios.get(`http://localhost:3000/api/nhanvien/GetPass/` + TKNV_MaNV + `/` + TKNV_MatKhau).then(res => {
+        this.CorrectPass = res.data
+        console.log(this.CorrectPass)
+
+      })
+    },
+    async validateInput() {
+      await this.GetNVAccount(this.NhanVien.TKNV_MaNV)
+      await this.GetPass(this.NhanVien.TKNV_MaNV, this.NhanVien.TKNV_MatKhau)
+      this.errors.MaNV = "";
+      this.errors.MatKhau = "";
+      if (!this.NhanVien.TKNV_MaNV) {
+        this.errors.MaNV = "Vui lòng nhập mã nhân viên";
+      } else if (this.MaNV !== this.NhanVien.TKNV_MaNNV) {
+        this.errors.MaNV = "Mã nhân viên không tồn tại";
+      }
+
+      if (!this.NhanVien.TKNV_MatKhau) {
+        this.errors.MatKhau = "Vui lòng nhập mật khẩu";
+      } else if (this.CorrectPass === false) {
+        this.errors.MatKhau = "Mật khẩu không chính xác";
+      }
+      this.OkeALl = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+
+      this.validateInput()
+      if(this.OkeALl == true){
+        this.handleLogin(this.NhanVien);
+      }
+    },
   }
 })
 
@@ -71,7 +120,7 @@ export default defineComponent({
           <!-- TKNV_MaNV -->
           <VCol cols="12">
             <VTextField v-model="NhanVien.TKNV_MaNV" autofocus placeholder="Nhập mã nhân viên của bạn tại đây"
-              label="Mã nhân viên" />
+              label="Mã nhân viên" :error-messages="errors.MaNV" />
           </VCol>
 
           <!-- TKNV_MatKhau -->
@@ -79,7 +128,7 @@ export default defineComponent({
             <VTextField v-model="NhanVien.TKNV_MatKhau" label="Mật khẩu" placeholder="**********"
               :type="isTKNV_MatKhauVisible ? 'text' : 'password'"
               :append-inner-icon="isTKNV_MatKhauVisible ? 'bx-hide' : 'bx-show'"
-              @click:append-inner="isTKNV_MatKhauVisible = !isTKNV_MatKhauVisible" />
+              @click:append-inner="isTKNV_MatKhauVisible = !isTKNV_MatKhauVisible" :error-messages="errors.MatKhau" />
 
             <!-- remember me checkbox -->
             <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
@@ -87,7 +136,7 @@ export default defineComponent({
             </div>
 
             <!-- login button -->
-            <VBtn class="w-100" @click="handleLogin(NhanVien)">
+            <VBtn class="w-100" @click="onSubmit()">
               Đăng nhập
             </VBtn>
           </VCol>

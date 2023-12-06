@@ -27,7 +27,7 @@
             Mật khẩu
           </th> -->
           <th>
-            Vai Trò
+            Hạng mức
           </th>
           <th>
             Trạng thái
@@ -165,15 +165,16 @@
                           <label for="" class="h-100 my-3 h6">Hạng Mức tiếp theo</label>
                         </VCol>
                         <VCol cols="8" class="my-3">
-                          <select class="form-control h-100" v-model="this.newHM">
+                          <select class="form-control h-100" v-model="newHM">
                             <option v-for="gt in HMs" :value="gt.HM_Ma">{{ gt.HM_TenHangMuc }}</option>
                           </select>
+                          <small><p class="text-danger">{{ errors.HangMuc }}</p></small>
                         </VCol>
                         <VCol cols="9">
 
                         </VCol>
                         <VCol cols="3" class=" my-3">
-                          <Vbtn class="btn btn-primary" @click="nanghang()">Nâng hạng</Vbtn>
+                          <Vbtn class="btn btn-primary" @click="onSubmit()">Nâng hạng</Vbtn>
                         </VCol>
                       </VRow>
                     </div>
@@ -182,7 +183,7 @@
                 </v-dialog>
                 <button class="dropdown-item btn bg bg-danger text-white" @click="dialog7 = true">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
-                  <v-dialog v-model="dialog7" class="w-50 h-25">
+                <v-dialog v-model="dialog7" class="w-50 h-25">
                   <div class="card text-start bg bg-white p-5">
                     <h2>Bạn có chắc muốn xóa khách hàng này không?</h2>
                     <p class="mt-3">khách hàng sẽ bị xóa và không thể khôi phục lại, hãy chắc
@@ -235,7 +236,12 @@ export default defineComponent({
 
       password1: "",
       password2: "",
-      CapNhatMatKhau: ""
+      CapNhatMatKhau: "",
+      MaGH: "",
+      errors: ref({
+        HangMuc: ""
+      }),
+      DaDayDu: ref()
     }
 
   },
@@ -254,6 +260,21 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    async validateInput(){
+      this.errors.HangMuc = ""
+      if(!this.newHM){
+        this.errors.HangMuc = "Vui lòng chọn hạng mức mới"
+      }
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.nanghang();
+      }
+
+    },
     nanghang() {
       const now = moment()
       this.KH.TKKH_HangMuc = this.newHM;
@@ -262,8 +283,8 @@ export default defineComponent({
       axios.put("http://localhost:3000/api/khachhang/CapNhatHangMuc/" + this.KH.TKKH_MaKH, this.KH).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
-      this.dialog4 = false
-      this.GetKH()
+        this.dialog4 = false
+        this.GetKH()
       }).catch(error => {
         console.log(error);
       });
@@ -448,6 +469,66 @@ export default defineComponent({
       }).catch(error => {
         console.log(error);
       });
+      axios.delete("http://localhost:3000/api/giohang/deleteKH/" + KH_Ma).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("Xóa thành công");
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+     
+      axios.delete("http://localhost:3000/api/binhluan/deleteKH/" + KH_Ma).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("Xóa thành công bình luận");
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+      axios.delete("http://localhost:3000/api/danhgiacuahang/deleteKH/" + KH_Ma).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("Xóa thành đánh giá cửa hàng thành công");
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+      axios.get("http://localhost:3000/api/giohang/GetByKH/" + KH_Ma).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        this.MaGH = response.data.GH_Ma
+        console.log("MaGh")
+        console.log(this.MaGH)
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+      axios.delete("http://localhost:3000/api/chitietgiohang/deleteGH/" + this.MaGH)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công chi tiet gio hang");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
+
+      axios.delete("http://localhost:3000/api/danhgia/deleteKH/" + KH_Ma)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
+        axios.delete(`http://localhost:3000/api/thumbnail/xoaanh/KH_` + KH_Ma +`.png`)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công bình luận của sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
       window.location.reload();
     }
   }

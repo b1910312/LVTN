@@ -18,12 +18,16 @@
             <H4>Thêm banner mới</H4>
             <VRow>
               <VCol cols="12">
-                <VFileInput label="Ảnh banner" type="file" ref="imageInput" @change="setImageBanner" />
+                <VFileInput label="Ảnh banner" type="file" ref="imageInput" accept="image/jpeg, image/png"
+                  @change="setImageBanner" />
+                <smail>
+                  <p class="text-danger text-center">{{ errors.Image }}</p>
+                </smail>
               </VCol>
               <VCol cols="10">
               </VCol>
               <VCol cols="2" class="d-flex gap-4">
-                <VBtn type="submit" @click="AddBanner()">
+                <VBtn type="submit" :disabled="!imageBanner" @click="onSubmit()">
                   Thêm
                 </VBtn>
               </VCol>
@@ -40,7 +44,7 @@
         <div class="row w-100">
           <div class="col-4"></div>
           <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
-              @click="dialog4 = false">
+              @click="dialog4 = false, imageBanner = ''">
               <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
           <div class="col-4"></div>
 
@@ -60,9 +64,7 @@
           <th>
             Hình ảnh
           </th>
-          <th>
-            Trạng thái
-          </th>
+
           <th>
             Ngày tạo
           </th>
@@ -78,13 +80,11 @@
           <td>{{ i + 1 }}</td>
           <td>{{ item.BN_Ma }}</td>
           <td><img :src="GetBanner(item.BN_Ma)" class="img-fluid" alt="..." style="max-width: 300px"></td>
-          <td>{{ item.BN_TrangThai }}</td>
+
           <td>{{ item.BN_NgayTao }}</td>
           <td>
-            <div class="dropdown open">
-              <button class="dropdown-item btn bg bg-danger text-white" @click="dialog3 = true">
+              <button class="dropdown-item btn bg bg-danger text-white" @click="dialog3 = true, setActiveBN(item.BN_Ma)">
                 <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
-            </div>
             <v-dialog v-model="dialog3" class="w-50 h-25">
               <div class="card text-start bg bg-white p-5">
                 <h2>Bạn có chắc muốn xóa banner này không?</h2>
@@ -93,7 +93,7 @@
                 <div class="row w-100">
                   <div class="col-2"></div>
                   <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
-                      @click="XoaHangMuc(item.BN_Ma)">
+                      @click="XoaHangMuc()">
                       <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
                   <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
                       @click="dialog3 = false">
@@ -114,6 +114,7 @@
 <script>
 import { defineComponent } from 'vue';
 import moment from "moment";
+import { Alert } from 'bootstrap/dist/js/bootstrap.bundle';
 
 // Tạo component
 export default defineComponent({
@@ -131,6 +132,10 @@ export default defineComponent({
       HMs: [],
       FitlerHMs: "",
       imageBanner: "",
+      errors: {
+        Image: ""
+      },
+      BN_MaActive: "",
     }
 
   },
@@ -144,7 +149,7 @@ export default defineComponent({
   mounted() {
     setInterval(() => {
       this.GetLastID();
-    }, 1000);
+    }, 5000);
     this.GetHM()
     // Lấy ngày hiện tại
     // Lưu ngày hiện tại vào biến ngày cập nhật
@@ -156,8 +161,33 @@ export default defineComponent({
       this.$router.push("/");
     }
   },
-  methods:
-  {
+  methods: {
+    Reload() {
+      window.location.reload()
+    },
+    setActiveBN(data) {
+      this.BN_MaActive = data;
+      console.log("BL_Ma" + this.BN_MaActive)
+    },
+    async validateInput() {
+      this.errors.Image = "";
+      const fileInputValue = this.$refs.imageInput.value;
+
+      // Kiểm tra xem giá trị có tồn tại hay không
+      if (!fileInputValue) {
+        this.errors.Image = "Bạn chưa chọn file. Vui lòng chọn một file ảnh.";
+      }
+      return !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+
+      if (this.validateInput() == true) {
+        return;
+      }
+      else {
+        this.AddBanner();
+      }
+    },
     async setBanner() {
       const formData = new FormData();
       formData.append("image", this.imageBanner);
@@ -191,8 +221,8 @@ export default defineComponent({
         })
     },
 
-    XoaHangMuc(BN_Ma) {
-      axios.delete("http://localhost:3000/api/banner/" + BN_Ma).then(response => {
+    XoaHangMuc() {
+      axios.delete("http://localhost:3000/api/banner/" + this.BN_MaActive).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng
         this.GetHM();
@@ -200,6 +230,7 @@ export default defineComponent({
       }).catch(error => {
         alert(error);
       });
+
     }, GetLastID() {
       axios.get(`http://localhost:3000/api/banner/getid/getlastbnma`).then(res => {
         this.LastID = res.data

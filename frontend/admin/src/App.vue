@@ -15,7 +15,8 @@ export default {
     }
   },
   created() {
-    this.interval = setInterval(() => {
+    if(JSON.parse(localStorage.getItem("nhanvien")) != null){
+      this.interval = setInterval(() => {
       const nhanvien = localStorage.getItem('nhanvien')
       const nhanvienchitiet = JSON.parse(localStorage.getItem("nhanvien"))
       axios.get('http://localhost:3000/api/nhanvien/' + nhanvienchitiet.TKNV_MaNV).then((response) => {
@@ -23,12 +24,14 @@ export default {
         this.NV = response.data
         nhanvienchitiet.TKNV_TrangThai = this.NV.TKNV_TrangThai
         localStorage.setItem('nhanvien', JSON.stringify(nhanvienchitiet));
-        if (nhanvien == null || nhanvienchitiet.TKNV_VaiTro == "KBVT002" || nhanvienchitiet.TKNV_TrangThai == 2) {
+        if (nhanvien == '' || nhanvienchitiet.TKNV_VaiTro == "KBVT002" || nhanvienchitiet.TKNV_TrangThai == 2) {
           this.$router.push("/login");
         }
       })
-
     }, 1000)
+    }else{
+      this.$router.push("/login");
+    }
   },
 }
 </script>

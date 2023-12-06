@@ -60,7 +60,22 @@ export default defineComponent({
           value: "2"
         },
       ],
-      imageFile: null
+      imageFile: null,
+      DaDayDu: ref(),
+      errors: ref({
+        Ten: "",
+        Email: "",
+        SoDienThoai: "",
+        Email: "",
+        NgaySinh: "",
+        GioiTinh: "",
+        DiaChi:"",
+        PhuongXa:"",
+        QuanHuyen: "",
+        TinhTP: "",
+        Image: ""
+      }),
+
     };
   },
   mounted() {
@@ -68,6 +83,63 @@ export default defineComponent({
     this.GetLastID1()
   },
   methods: {
+    async validateInput() {
+      this.errors.Ten = "";
+      this.errors.Email = "";
+      this.errors.SoDienThoai = "";
+      this.errors.NgaySinh = "";
+      this.errors.GioiTinh = "";
+      this.errors.DiaChi = "";
+      this.errors.PhuongXa = "";
+      this.errors.QuanHuyen = "";
+      this.errors.TinhTP = "";
+      this.errors.Image = "";
+
+      if (!this.KH.KH_HoTen) {
+        this.errors.Ten = "Vui lòng nhập tên khách hàng";
+      }
+      if (!this.TKKH.TKKH_Email) {
+        this.errors.Email = "Vui lòng nhập email";
+      } else if (!/^\S+@\S+\.\S+$/.test(this.TKKH.TKKH_Email)) {
+        this.errors.Email = "Email không hợp lệ";
+      }
+      if (!this.KH.KH_SoDienThoai) {
+        this.errors.SoDienThoai = "Vui lòng nhập số điện thoại";
+      }
+      if (!this.KH.KH_NgaySinh) {
+        this.errors.NgaySinh = "Vui lòng nhập ngày sinh";
+      }
+      if (!this.KH.KH_GioiTinh) {
+        this.errors.GioiTinh = "Vui lòng chọn giới tính";
+      }
+  
+      if (!this.DC.DC_DiaChi.trim()) {
+        this.errors.DiaChi = "Vui lòng nhập địa chỉ";
+      }
+
+      if (!this.DC.DC_PhuongXa.trim()) {
+        this.errors.PhuongXa = "Vui lòng nhập phường xã";
+      }
+      if (!this.DC.DC_QuanHuyen.trim()) {
+        this.errors.QuanHuyen = "Vui lòng nhập quận huyện";
+      }
+
+      if (!this.DC.DC_TinhTP.trim()) {
+        this.errors.TinhTP = "Vui lòng nhập tỉnh thành phố";
+      }
+      if (!this.imageFile) {
+        this.errors.Image = "Vui lòng chọn ảnh đại diện nhân viên"
+      }
+
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.addKhachHang();
+      }
+
+    },
     GetLastID() {
       axios.get(`http://localhost:3000/api/thongtinkhachhang/getid/getlastttkhma`).then(res => {
         this.LastID = res.data
@@ -209,29 +281,28 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="m-1 mx-3 ">
+  <div class="m-1 mx-3 p-3 overflow-y-auto" style="height: 500px;" >
     <VForm>
       <VRow>
-
         <VCol cols="6">
           <VTextField v-model="KH.KH_MaKH" label="Mã khách hàng" readonly placeholder="John" />
         </VCol>
         <VCol cols="6">
-          <VFileInput label="Ảnh đại diện" type="file" ref="imageInput" @change="setImageFile" />
+          <VFileInput label="Ảnh đại diện" :error-messages="errors.Image" type="file" ref="imageInput" @change="setImageFile" />
         </VCol>
         <VCol cols="12">
-          <VTextField v-model="KH.KH_HoTen" label="Tên khách hàng" placeholder="johndoe@example.com" />
+          <VTextField v-model="KH.KH_HoTen" :error-messages="errors.Ten" label="Tên khách hàng" placeholder="johndoe@example.com" />
         </VCol>
 
         <VCol cols="6">
-          <VTextField v-model="KH.KH_NgaySinh" type="date" label="Ngày Sinh" placeholder="+1 123 456 7890" />
+          <VTextField v-model="KH.KH_NgaySinh"  :error-messages="errors.NgaySinh" type="date" label="Ngày Sinh" placeholder="+1 123 456 7890" />
         </VCol>
 
         <VCol cols="6">
-          <VTextField v-model="TKKH.TKKH_Email" type="email" label="Email" placeholder="············" />
+          <VTextField v-model="TKKH.TKKH_Email"   :error-messages="errors.Email" type="email" label="Email" placeholder="············" />
         </VCol>
         <VCol cols="6 ">
-          <VTextField v-model="KH.KH_SoDienThoai" label="Số diện thoại" placeholder="············" />
+          <VTextField v-model="KH.KH_SoDienThoai" :error-messages="errors.SoDienThoai" label="Số diện thoại" placeholder="············" />
         </VCol>
         <!-- <VCol cols="6">
           <VTextField v-model="KH.KH_GioiTinh" label="Giới tính" placeholder="············" />
@@ -243,25 +314,26 @@ export default defineComponent({
           <select class="form-control h-100" v-model="KH.KH_GioiTinh">
             <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}</option>
           </select>
+          <small><p class="text-danger text-center">{{ errors.GioiTinh }}</p></small>
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
+          <VTextField v-model="DC.DC_DiaChi" :error-messages="errors.DiaChi" label="Địa chỉ" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" placeholder="············" />
+          <VTextField v-model="DC.DC_PhuongXa" :error-messages="errors.PhuongXa" label="Phường/Xã" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_QuanHuyen" label="Quận/Huyện" placeholder="············" />
+          <VTextField v-model="DC.DC_QuanHuyen" :error-messages="errors.QuanHuyen" label="Quận/Huyện" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
+          <VTextField v-model="DC.DC_TinhTP" :error-messages="errors.TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
         </VCol>
         <div class="row w-100 mb-3">
           <div class="col-10">
 
           </div>
           <div class=col-2>
-            <VBtn class="bg bg-primary w-100" @click="addKhachHang()">
+            <VBtn class="bg bg-primary w-100" @click="onSubmit()">
               Thêm khách hàng
             </VBtn>
           </div>

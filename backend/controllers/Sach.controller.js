@@ -154,7 +154,7 @@ exports.findLatestBooks = async (req, res) => {
 };
 exports.SapBanHet = async (req, res) => {
     const condition = {
-        S_SoLuong: { $lt: 10 } 
+        S_SoLuong: { $lt: 20 } 
     };
    
 

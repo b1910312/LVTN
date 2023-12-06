@@ -88,7 +88,6 @@ const handleNavScroll = evt => {
   block-size: 100%;
   inline-size: variables.$layout-vertical-nav-width;
   inset-block-start: 0;
-  background-color: white;
   inset-inline-start: 0;
   transition: transform 0.25s ease-in-out, inline-size 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
   will-change: transform, inline-size;

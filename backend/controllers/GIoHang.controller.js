@@ -74,6 +74,27 @@ exports.findOne = async (req, res) => {
     }
     return res.send(documents);
 };
+
+//*----- Truy xuất một sản phẩm bằng mã sách
+exports.findOneByKH = async (req, res) => {
+    const condition = {
+        GH_MaKH: req.params.GH_MaKH,
+    };
+    const [error, documents] = await handle(
+        GioHang.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất giỏ hảng!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy giỏ hảng")
+    }
+    return res.send(documents);
+};
+
 exports.getLastGHMa = async (req, res) => {
     const [error, documents] = await handle(
         GioHang.findOne().sort({ GH_MaGH: -1 })

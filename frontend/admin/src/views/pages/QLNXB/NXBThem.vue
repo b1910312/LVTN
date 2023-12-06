@@ -30,13 +30,73 @@ export default defineComponent({
         DC_TinhTP: "",
         DC_NgayTao: "",
       },
-      dialog4: false
+      dialog4: false,
+      errors: ref({
+        Ten: "",
+        Email: "",
+        SoDienThoai: "",
+        DiaChi: "",
+        PhuongXa: "",
+        QuanHuyen: "",
+        TinhTP: "",
+        Image: ""
+      }),
+      DaDayDu: ref()
     };
   },
   mounted() {
     this.GetLastID()
   },
   methods: {
+    async validateInput() {
+      this.errors.Ten = "";
+      this.errors.Email = "";
+      this.errors.SoDienThoai = "";
+      this.errors.DiaChi = "";
+      this.errors.PhuongXa = "";
+      this.errors.QuanHuyen = "";
+      this.errors.TinhTP = "";
+      this.errors.Image = "";
+
+      if (!this.NXB.NXB_Ten) {
+        this.errors.Ten = "Vui lòng nhập tên nhà xuất bản";
+      }
+      if (!this.NXB.NXB_Email) {
+        this.errors.Email = "Vui lòng nhập email";
+      } else if (!/^\S+@\S+\.\S+$/.test(this.NXB.NXB_Email)) {
+        this.errors.Email = "Email không hợp lệ";
+      }
+      if (!this.NXB.NXB_SDT) {
+        this.errors.SoDienThoai = "Vui lòng nhập số điện thoại";
+      }
+
+      if (!this.DC.DC_DiaChi.trim()) {
+        this.errors.DiaChi = "Vui lòng nhập địa chỉ";
+      }
+
+      if (!this.DC.DC_PhuongXa.trim()) {
+        this.errors.PhuongXa = "Vui lòng nhập phường xã";
+      }
+      if (!this.DC.DC_QuanHuyen.trim()) {
+        this.errors.QuanHuyen = "Vui lòng nhập quận huyện";
+      }
+
+      if (!this.DC.DC_TinhTP.trim()) {
+        this.errors.TinhTP = "Vui lòng nhập tỉnh thành phố";
+      }
+      if (!this.imageFile) {
+        this.errors.Image = "Vui lòng chọn Logo Nhà xuất bản"
+      }
+
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.addNXB();
+      }
+
+    },
     GetLastID() {
       axios.get(`http://localhost:3000/api/NXB/getid/getlastnxbma`).then(res => {
         this.LastID = res.data
@@ -128,34 +188,40 @@ export default defineComponent({
 
 <template>
   <div class="m-1 mx-3 ">
-    <VForm @submit.prevent="addNXB">
+    <VForm @submit.prevent="onSubmit">
       <VRow>
         <VCol cols="12">
-          <VFileInput label="Logo" type="file" ref="imageInput" @change="setImageFile" />
+          <VFileInput label="Logo" type="file" ref="imageInput" @change="setImageFile" :error-messages="errors.Image" />
         </VCol>
         <VCol cols="12">
-          <VTextField v-model="NXB.NXB_Ten" label="Tên Nhà xuất bản" placeholder="johndoe@example.com" />
+          <VTextField v-model="NXB.NXB_Ten" :error-messages="errors.Ten" label="Tên Nhà xuất bản"
+            placeholder="johndoe@example.com" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="NXB.NXB_Email" label="Email" placeholder="+1 123 456 7890" />
+          <VTextField v-model="NXB.NXB_Email" :error-messages="errors.Email" label="Email"
+            placeholder="+1 123 456 7890" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="NXB.NXB_SDT" label="Số điện thoại" placeholder="············" />
+          <VTextField v-model="NXB.NXB_SDT" :error-messages="errors.SoDienThoai" label="Số điện thoại"
+            placeholder="············" />
         </VCol>
 
         <VCol cols="6">
-          <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
+          <VTextField v-model="DC.DC_DiaChi" :error-messages="errors.DiaChi" label="Địa chỉ" placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" placeholder="············" />
+          <VTextField v-model="DC.DC_PhuongXa" :error-messages="errors.PhuongXa" label="Phường/Xã"
+            placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_QuanHuyen" label="Quận quyện" placeholder="············" />
+          <VTextField v-model="DC.DC_QuanHuyen" :error-messages="errors.QuanHuyen" label="Quận quyện"
+            placeholder="············" />
         </VCol>
         <VCol cols="6">
-          <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
+          <VTextField v-model="DC.DC_TinhTP" :error-messages="errors.TinhTP" label="Tỉnh/Thành phố"
+            placeholder="············" />
         </VCol>
 
         <VCol cols="10"></VCol>
@@ -179,6 +245,5 @@ export default defineComponent({
         </div>
       </div>
 
-    </v-dialog>
-  </div>
-</template>
+  </v-dialog>
+</div></template>

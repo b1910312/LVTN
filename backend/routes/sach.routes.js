@@ -20,7 +20,6 @@ module.exports = (app) => {
 
     router.get("/GetByNXB/:S_NXB", sach.FindSachByNXB)
 
-
     router.get("/TimKiem/:NoiDung", sach.FindSachByNoiDung)
 
     router.get("/nhapkho", sach.findNhapKhoAll);

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="nvvv == ''" class="card p-2 " style="border-radius: 20px; background-color: rgba(0, 255, 4, 0.1);">
+    <div v-if="nvvv.TKKH_TrangThai !== 1" class="card p-2 " style="border-radius: 20px; background-color: rgba(0, 255, 4, 0.1);">
         <!-- Nav tabs -->
         <h4 class="text-white text-center">ĐĂNG NHẬP NHANH</h4>
         <!-- Tab panes -->
@@ -33,7 +33,7 @@
 
         </div>
     </div>
-    <div v-if="nvvv !== ''" class="card p-2 " style="border-radius: 20px; background-color: rgba(0, 255, 4, 0.1);">
+    <div v-if="nvvv.TKKH_TrangThai == 1" class="card p-2 " style="border-radius: 20px; background-color: rgba(0, 255, 4, 0.1);">
         <!-- Nav tabs -->
         <h4 class="text-white text-center">KHÁCH HÀNG</h4>
         <!-- Tab panes -->

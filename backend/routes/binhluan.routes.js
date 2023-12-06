@@ -19,6 +19,10 @@ module.exports = (app) => {
     router.put("/capnhattrangthai/:BL_Ma", binhluan.updateTrangThai);
 
     router.delete("/:BL_Ma", binhluan.delete);
+    
+    router.delete("/deleteSach/:BL_MaSach", binhluan.deleteSach);
+
+    router.delete("/deleteKH/:BL_MaKH", binhluan.deleteKH);
 
     app.use("/api/binhluan", router);
 };

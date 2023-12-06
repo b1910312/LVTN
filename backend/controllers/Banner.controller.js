@@ -160,7 +160,7 @@ exports.update = async (req, res, next) => {
 //Xóa một sách bằng mã sách
 exports.delete = async (req,res) => {    
     const condition = {
-        BN_MaSach: req.params.BN_MaSach
+        BN_Ma: req.params.BN_Ma
     };
 
     const [error, document] = await handle(

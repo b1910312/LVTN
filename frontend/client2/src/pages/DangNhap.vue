@@ -17,7 +17,8 @@ export default {
                 TKKH_MatKhau: "",
             },
             isTKNV_MatKhauVisible: ref(false),
-            loading: false
+            loading: false,
+            OkeAll: ref()
             
         }
     },
@@ -82,15 +83,14 @@ export default {
                 this.errors.TKKH_MatKhau = "Mật khẩu không chính xác";
             }
 
-            return !Object.values(this.errors).some((error) => error);
+            this.OkeAll = !Object.values(this.errors).some((error) => error);
         },
         async onSubmit() {
 
-            if (this.validateInput() == false) {
-                return;
+            this.validateInput() 
+            if(this.OkeAll == true){
+                this.handleLogin(this.TKKH);
             }
-            this.handleLogin(this.TKKH);
-
         },
     }
 }

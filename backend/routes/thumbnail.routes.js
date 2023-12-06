@@ -19,5 +19,7 @@ module.exports = (app) => {
     router.put("/:TB_MaSach", thumbnail.update);
     router.delete("/:TB_MaSach", thumbnail.delete);
 
+    router.delete("/xoaanh/:imageName", image.XoaHinhAnh);
+
     app.use("/api/thumbnail", router);
 };

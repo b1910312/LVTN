@@ -102,9 +102,20 @@ exports.createHMH = async (req, res, next) => {
 };
 
 
+exports.XoaHinhAnh = async (req, res, next) => {
+    const imageName = req.params.imageName
+    const imagePath = path.join("uploads",imageName);
 
+    if (!fs.existsSync(imagePath)) {
+        res.send("Tệp ảnh không tồn tại.")
+      
+    }
 
+    fs.unlinkSync(imagePath);
 
+    res.send("Tệp ảnh đã được xóa thành công.")
+  
+}
 
 //*----- Truy xuất một sản phẩm bằng mã sách
 exports.findOne = async (req, res, next) => {

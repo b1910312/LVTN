@@ -89,7 +89,7 @@
                     <VRow>
                       <VCol cols="9"></VCol>
                       <VCol cols="3">
-                        <button class="btn btn-success text-white mx-1 my-2" @click="BLTraloi()">Trả lời</button>
+                        <button class="btn btn-success text-white mx-1 my-2" :disabled="!NoiDungTraLoi" @click="BLTraloi()">Trả lời</button>
                         <button class="btn btn-danger text-white mx-1 my-2" @click="dialog = false">Đóng</button>
                       </VCol>
                     </VRow>

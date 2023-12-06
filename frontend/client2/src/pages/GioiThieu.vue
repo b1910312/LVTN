@@ -260,7 +260,7 @@ Tầm nhìn của Kingbook thể hiện khát vọng trở thành một doanh ng
         </VCol>
     </VRow>
     <VRow class="bggt">
-        <VCol cols="12" v-if="nvv!=''" >
+        <VCol cols="12" v-if="nvv.TKKH_TrangThai=='1'" >
             <VCard style="background-color: rgba(0, 255, 4, 0);">
                 <VCardTitle class="text-center">
                     <h4>ĐÁNH GIÁ CỬA HÀNG</h4>

@@ -47,6 +47,7 @@ export default {
             NewID1: "",
             So1: "",
             Chu1: "",
+            MaGH: ""
 
         }
     },
@@ -57,10 +58,10 @@ export default {
     },
     created() {
         const khachhangchitiet = JSON.parse(localStorage.getItem("khachhang"))
-        if (!khachhangchitiet ) {
+        if (!khachhangchitiet) {
             this.$router.push("/");
         }
-        if (khachhangchitiet.TKKH_TrangThai != 1 ) {
+        if (khachhangchitiet.TKKH_TrangThai != 1) {
             this.$router.push("/");
         }
     },
@@ -198,30 +199,43 @@ export default {
             console.log(this.nvv);
         },
         CountGH() {
-            axios.get(`http://localhost:3000/api/chitietgiohang/getbyMaKH/` + this.nvv.TKKH_MaKH).then(res => {
-                this.count = res.data
-                for (let i = 0; i < this.count.length; i++) {
-                    this.GetSachName(this.count[i].CTGH_MaSach)
-                    this.GetSachGia(this.count[i].CTGH_MaSach)
-                }
-                console.log("newid")
-                console.log(this.count)
+            axios.get(`http://localhost:3000/api/giohang/GetByKH/` + this.nvv.TKKH_MaKH).then(res => {
+                this.MaGH = res.data.GH_MaGH
+                console.log("Mã giỏ hàng")
+                console.log(this.MaGH)
+                axios.get(`http://localhost:3000/api/chitietgiohang/getbyMaGH/` + this.MaGH).then(res => {
+                    this.count = res.data
+                    for (let i = 0; i < this.count.length; i++) {
+                        this.GetSachName(this.count[i].CTGH_MaSach)
+                        this.GetSachGia(this.count[i].CTGH_MaSach)
+                    }
+                    console.log("newid")
+                    console.log(this.count)
+                })
             })
+
         },
         addThanhToan(id, sl, gia) {
-            
-            if (this.productsThanhToan.includes(this.count[id].CTGH_Ma)) {
+            // Kiểm tra xem sản phẩm đã được chọn hay chưa
+            const isProductSelected = this.productsThanhToan.includes(this.count[id].CTGH_Ma);
+
+            if (isProductSelected) {
+                // Nếu đã chọn, hủy chọn sản phẩm
                 this.productsThanhToan.splice(this.productsThanhToan.indexOf(this.count[id].CTGH_Ma), 1);
                 this.SoLuong = this.SoLuong - sl;
-                this.ThanhTien -= (gia * sl);
-            }
-            else {
-                this.productsThanhToan.push(this.count[id].CTGH_Ma)
+                this.ThanhTien -= gia * sl;
+            } else {
+                // Nếu chưa chọn, thêm sản phẩm vào danh sách
+                this.productsThanhToan.push(this.count[id].CTGH_Ma);
                 this.SoLuong = this.SoLuong + sl;
-                this.ThanhTien += (gia * sl);
-
+                this.ThanhTien += gia * sl;
             }
+        },
 
+        // Hàm xử lý khi checkbox thay đổi trạng thái
+        handleCheckboxChange(id, sl, gia) {
+            // Gọi hàm thêm thanh toán khi checkbox thay đổi trạng thái
+            this.addThanhToan(id, sl, gia);
         },
 
         showThanhToan() {
@@ -267,8 +281,9 @@ export default {
                     <tbody class="text-white">
                         <tr v-for="(item, index) in count" :key="item.MaSach">
                             <td>
-                                <input type="checkbox"  @change="addThanhToan(index, item.CTGH_SoLuong, SachGia[index])"  name="" id="">
-                  
+                                <input type="checkbox" @change="handleCheckboxChange(index, item.CTGH_SoLuong, SachGia[index])"
+                                    name="" id="">
+
 
 
                             </td>
@@ -306,7 +321,7 @@ export default {
                     </VCol>
                     <VCol cols="2"></VCol>
                     <VCol cols="2">
-                        <!-- <VBtn class="btn btn-primary" @click="showThanhToan">Thanh toán</VBtn> -->
+                        <!-- <VBtn class="btn btn-primary" @click="showThanhToan">show Thanh toán</VBtn> -->
 
                         <v-button class="btn w-100 btn-success" @click="toThanhToan">Thanh toán</v-button>
                     </VCol>

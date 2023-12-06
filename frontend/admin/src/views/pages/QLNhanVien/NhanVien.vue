@@ -177,12 +177,12 @@ height: 800px;">
                                 <div class="row w-100 mt-2">
                                   <div class="col-8"></div>
                                   <div class="d-flex gap-4 col-2">
-                                    <VBtn class="ms-5" type="Thêm">
+                                    <VBtn class="ms-5" type="Thêm" :disabled="!imageFile">
                                       Cập nhật
                                     </VBtn>
                                   </div>
                                   <div class="d-flex gap-4 col-1">
-                                    <VBtn class="ms-5 bg bg-secondary" @click="cancel()">
+                                    <VBtn class="ms-5 bg bg-secondary" @click="dialog5 = false">
                                       Hủy
                                     </VBtn>
                                   </div>
@@ -199,11 +199,11 @@ height: 800px;">
                         <VRow>
 
                           <VCol cols="12">
-                            <VTextField v-model="NV.NV_HoTen" label="Tên Nhân viên" placeholder="johndoe@example.com" />
+                            <VTextField v-model="NV.NV_HoTen" :error-messages="errors.Ten" label="Tên Nhân viên" placeholder="johndoe@example.com" />
                           </VCol>
 
                           <VCol cols="12">
-                            <VTextField v-model="NV.NV_NgaySinh" label="Ngày Sinh" placeholder="+1 123 456 7890" />
+                            <VTextField v-model="NV.NV_NgaySinh"   :error-messages="errors.NgaySinh" label="Ngày Sinh" placeholder="+1 123 456 7890" />
                           </VCol>
 
                           <VCol cols="12">
@@ -211,27 +211,28 @@ height: 800px;">
                             <select class="form-control" v-model="NV.NV_GioiTinh">
                               <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}</option>
                             </select>
+                            <small><p class="text-danger text-center">{{ errors.GioiTinh }}</p></small>
                           </VCol>
                           <VCol cols="4">
-                            <VTextField v-model="NV.NV_CCCD" label="Căn cước công dân" placeholder="············" />
+                            <VTextField v-model="NV.NV_CCCD"  :error-messages="errors.CCCD" label="Căn cước công dân" placeholder="············" />
                           </VCol>
                           <VCol cols="4">
-                            <VTextField v-model="NV.NV_Email" label="Email" placeholder="············" />
+                            <VTextField v-model="NV.NV_Email"  :error-messages="errors.Email" label="Email" placeholder="············" />
                           </VCol>
                           <VCol cols="4 ">
-                            <VTextField v-model="NV.NV_SoDienThoai" label="Số diện thoại" placeholder="············" />
+                            <VTextField v-model="NV.NV_SoDienThoai"  :error-messages="errors.SoDienThoai" label="Số diện thoại" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
+                            <VTextField v-model="DC.DC_DiaChi"  :error-messages="errors.DiaChi" label="Địa chỉ" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" placeholder="············" />
+                            <VTextField v-model="DC.DC_PhuongXa"  :error-messages="errors.PhuongXa" label="Phường/Xã" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_QuanHuyen" label="Quận/Huyện" placeholder="············" />
+                            <VTextField v-model="DC.DC_QuanHuyen"  :error-messages="errors.QuanHuyen" label="Quận/Huyện" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
+                            <VTextField v-model="DC.DC_TinhTP"  :error-messages="errors.TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
                             <VTextField v-model="NV.NV_NgayTao" label="Ngày tạo" readonly placeholder="············" />
@@ -243,7 +244,7 @@ height: 800px;">
                           <div class="row w-100 mb-2">
                             <div class="col-10"></div>
                             <div class="col-2">
-                              <VBtn class="bg bg-primary" @click="CapNhatThongTin()">Cập nhật</VBtn>
+                              <VBtn class="bg bg-primary" @click="onSubmit()">Cập nhật</VBtn>
                             </div>
                           </div>
                         </VRow>
@@ -313,6 +314,7 @@ export default defineComponent({
       FitlerNVs: "",
       DC: "",
       GT: "",
+      imageFile: "",
       dialog3: false,
       dialog4: false,
       dialog5: false,
@@ -328,8 +330,21 @@ export default defineComponent({
           name: "Nam",
           value: "2"
         },
-      ]
-
+      ],
+      errors: ref({
+        Ten: "",
+        Email: "",
+        SoDienThoai: "",
+        Email: "",
+        NgaySinh: "",
+        GioiTinh: "",
+        CCCD: "",
+        DiaChi:"",
+        PhuongXa:"",
+        QuanHuyen: "",
+        TinhTP: "",
+      }),
+      DaDayDu: ref()
     }
 
   },
@@ -350,6 +365,64 @@ export default defineComponent({
   },
 
   methods: {
+    async validateInput() {
+      this.errors.Ten = "";
+      this.errors.Email = "";
+      this.errors.SoDienThoai = "";
+      this.errors.NgaySinh = "";
+      this.errors.VaiTro = "";
+      this.errors.GioiTinh = "";
+      this.errors.CCCD = "";
+      this.errors.DiaChi = "";
+      this.errors.PhuongXa = "";
+      this.errors.QuanHuyen = "";
+      this.errors.TinhTP = "";
+      this.errors.Image = "";
+
+      if (!this.NV.NV_HoTen) {
+        this.errors.Ten = "Vui lòng nhập tên nhân viên";
+      }
+      if (!this.NV.NV_Email) {
+        this.errors.Email = "Vui lòng nhập email";
+      } else if (!/^\S+@\S+\.\S+$/.test(this.NV.NV_Email)) {
+        this.errors.Email = "Email không hợp lệ";
+      }
+      if (!this.NV.NV_SoDienThoai) {
+        this.errors.SoDienThoai = "Vui lòng nhập số điện thoại";
+      }
+      if (!this.NV.NV_NgaySinh) {
+        this.errors.NgaySinh = "Vui lòng nhập ngày sinh";
+      }
+      if (!this.NV.NV_GioiTinh) {
+        this.errors.GioiTinh = "Vui lòng chọn giới tính";
+      }
+      if (!this.NV.NV_CCCD) {
+        this.errors.CCCD = "Vui lòng nhập Căn cước công dân";
+      }
+
+      if (!this.DC.DC_DiaChi.trim()) {
+        this.errors.DiaChi = "Vui lòng nhập địa chỉ";
+      }
+
+      if (!this.DC.DC_PhuongXa.trim()) {
+        this.errors.PhuongXa = "Vui lòng nhập phường xã";
+      }
+      if (!this.DC.DC_QuanHuyen.trim()) {
+        this.errors.QuanHuyen = "Vui lòng nhập quận huyện";
+      }
+
+      if (!this.DC.DC_TinhTP.trim()) {
+        this.errors.TinhTP = "Vui lòng nhập tỉnh thành phố";
+      }
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.CapNhatThongTin();
+      }
+
+    },
     cancel() {
       this.dialog4 = false
     },
@@ -390,14 +463,14 @@ export default defineComponent({
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
 
       axios.put("http://localhost:3000/api/diachi/" + this.NV.NV_MaNV, this.DC).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng về trang danh sách sản phẩm
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       this.dialog4 = false
       this.dialog7 = true
@@ -460,23 +533,48 @@ export default defineComponent({
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/diachi/" + NV_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
-      axios.delete("http://localhost:3000/api/thongtinnhanvien/" + NV_Ma).then(response => {
+      axios.delete("http://localhost:3000/api/bìnhluan/deleteKH" + NV_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
+        console.log("Xóa thành công bình luận");
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
+      axios.delete("http://localhost:3000/api/thongtinnhanvien/" + NV_Ma).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("Xóa thành công");
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+      
+      axios.delete("http://localhost:3000/api/binhluan/deleteKH/" + NV_Ma).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("Xóa thành công bình luận");
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+      axios.delete(`http://localhost:3000/api/thumbnail/xoaanh/NV_` + NV_Ma +`.png`)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công bình luận của sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
       window.location.reload();
     }
   }

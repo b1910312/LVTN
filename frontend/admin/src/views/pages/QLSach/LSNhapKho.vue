@@ -17,7 +17,7 @@
             <Vrow>
               <div class="row w-100 mb-3">
                 <div class="col-6 ms-3">
-                  <h4>Nhập kho sách: <br> {{ sach.S_Ten }}</h4>
+                  <h4>Nhập kho sách</h4>
                 </div>
                 <div class=col-4></div>
                 <div class=col-1>
@@ -32,21 +32,22 @@
                   </VCol>
                   <VCol cols="11">
                     <select class="form-control h-100" v-model="NK.NK_MaSach">
-                      <option v-for="gt in Sach" :value="gt.S_Ma">{{ gt.S_Ten }} ({{ gt.S_Ma }})</option>
+                      <option v-for="gt in Sach" :value="gt.S_Ma">({{ gt.S_Ma }}) {{ gt.S_Ten }}</option>
                     </select>
+                    <small><p class="text-danger text-center">{{ errors.MaSach }}</p></small>
                   </VCol>
                   <VCol cols="12">
-                    <VTextField v-model="NK.NK_SoLuong" label="Số lượng" type="number" placeholder="············" />
+                    <VTextField v-model="NK.NK_SoLuong" :error-messages="errors.SoLuong" label="Số lượng" type="number" placeholder="············" />
                   </VCol>
                   <VCol cols="12">
-                    <VTextField v-model="NK.NK_Gia" label="Giá" type="number" placeholder="············" />
+                    <VTextField v-model="NK.NK_Gia" :error-messages="errors.Gia" label="Giá" type="number" placeholder="············" />
                   </VCol>
                 </VRow>
               </div>
               <div class="row w-100 mt-3">
                 <div class="col-10"></div>
                 <div class="col-2">
-                  <VBtn class="bg bg-primary" @click="NhapKho()">Cập nhật</VBtn>
+                  <VBtn class="bg bg-primary" @click="onsubmit()">Cập nhật</VBtn>
                 </div>
               </div>
             </Vrow>
@@ -126,14 +127,14 @@ export default defineComponent({
       NewID: "",
       So: "",
       Chu: "",
-      NK: {
+      NK: ref({
         NK_Ma: "",
         NK_MaSach: "",
         NK_MaNV: "",
         NK_Gia: "",
         NK_SoLuong: "",
         NK_NgayNhap: "",
-      },
+      }),
       Sach: [],
       FitlerNKs: "",
       NK_MaActive: "",
@@ -141,7 +142,12 @@ export default defineComponent({
       dialog5: false,
       dialog9: false,
       nhanvien: {},
-
+      DaDayDu: ref(),
+      errors:ref({
+        MaSach: "",
+        Gia: "",
+        SoLuong: ""
+      })
     }
 
   },
@@ -164,6 +170,27 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    async validateInput() {
+      this.errors.MaSach = ""
+      this.errors.Gia = ""
+      this.errors.SoLuong = ""
+      if(!this.NK.NK_MaSach){
+        this.errors.MaSach = "Bạn chưa chọn sách muốn nhập kho"
+      }
+      if(!this.NK.NK_Gia){
+        this.errors.Gia = "Bạn chưa nhập giá nhập kho"
+      }
+      if(!this.NK.NK_SoLuong){
+        this.errors.SoLuong = "Bạn chưa nhập số lượng nhập kho"
+      }
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onsubmit(){
+      this.validateInput()
+      if(this.DaDayDu) {
+        this.NhapKho()
+      }
+    },
     GetSachMa() {
       axios.get('http://localhost:3000/api/sach')
         .then((response) => {

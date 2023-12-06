@@ -20,5 +20,9 @@ module.exports = (app) => {
 
     router.delete("/:DG_Ma", danhgia.delete);
 
+    router.delete("/deleteSach/:DG_MaSach", danhgia.deleteSach);
+
+    router.delete("/deleteKH/:DG_MaKH", danhgia.deleteKH);
+
     app.use("/api/danhgia", router);
 };

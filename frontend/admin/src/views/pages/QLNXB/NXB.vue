@@ -135,9 +135,9 @@ height: 800px;">
                   <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button>
                   <v-dialog v-model="dialog5" class="w-50 h-25">
                   <div class="card text-start bg bg-white p-5">
-                    <h2>Bạn có chắc muốn xóa thể loại này không?</h2>
-                    <p class="mt-3">Thể loại sẽ bị xóa và không thể khôi phục lại, hãy chắc
-                      chắn rằng bạn muốn xóa thể loại này</p>
+                    <h2>Bạn có chắc muốn xóa nhà xuất bản này không?</h2>
+                    <p class="mt-3">Nhà xuất bản sẽ bị xóa và không thể khôi phục lại, hãy chắc
+                      chắn rằng bạn muốn xóa nhà xuất bản này</p>
                     <div class="row w-100">
                       <div class="col-2"></div>
                       <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
@@ -161,8 +161,8 @@ height: 800px;">
   </div>
   <v-dialog v-model="dialog6" class="w-50 h-25">
     <div class="card text-start bg bg-white p-5">
-      <h2 class="text-center">Không thể xóa thể loại</h2>
-      <p class="mt-3">Thể loại bạn muốn xóa còn tồn tại sách, không thể tiếp tục xóa, hãy đảm bảo rằng không còn sách trực
+      <h2 class="text-center">Không thể xóa nhà xuất bản</h2>
+      <p class="mt-3">Nhà xuất bản bạn muốn xóa còn tồn tại sách, không thể tiếp tục xóa, hãy đảm bảo rằng không còn sách trực
         thuộc trước khi xóa</p>
       <div class="row w-100">
         <div class="col-4"></div>

@@ -21,7 +21,16 @@ export default {
       },
       dialog9: false,
       TL: [],
-      NXB: []
+      NXB: [],
+      DaDayDu: ref(),
+      errors: ref({
+        TenSach: "",
+        TacGia: "",
+        SoLuong: "",
+        Gia: "",
+        TheLoai: "",
+        NXB: "",
+      }),
     };
   },
   mounted() {
@@ -34,6 +43,48 @@ export default {
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    async validateInput() {
+      
+      this.errors.TenSach = "";
+      this.errors.TacGia = "";
+      this.errors.SoLuong = "";
+      this.errors.Gia = "";
+      this.errors.TheLoai = "";
+      this.errors.NXB = "";
+
+      if (!this.Sachs.S_Ten) {
+        this.errors.TenSach = "Vui lòng nhập tên sách";
+      }
+
+      if (!this.Sachs.S_TacGia) {
+        this.errors.TacGia = "Vui lòng nhập tên tác giả";
+      } 
+
+      if (!this.Sachs.S_SoLuong) {
+        this.errors.SoLuong = "Vui lòng nhập số lượng sách";
+      } 
+      if (!this.Sachs.S_Gia) {
+        this.errors.Gia = "Vui lòng nhập giá bán của sách";
+      } 
+      if (!this.Sachs.S_SoLuong) {
+        this.errors.S_SoLuong = "Vui lòng nhập số lượng sách";
+      } 
+
+      if (!this.Sachs.S_TheLoai) {
+        this.errors.TheLoai = "Vui lòng nhập chọn thể loại";
+      } 
+      if (!this.Sachs.S_NXB) {
+        this.errors.NXB = "Vui lòng nhập chọn nhà xuất bản";
+      } 
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      console.log(this.DaDayDu)
+      if(this.DaDayDu == true) {
+        this.updateSach()
+      }
+    },
     GetTL() {
       axios.get('http://localhost:3000/api/theloai')
         .then((response) => {
@@ -86,26 +137,26 @@ export default {
 
 <template>
   <div class="m-1 mx-3 ">
-    <VForm @submit.prevent="updateSach">
+    <VForm @submit.prevent="onSubmit()">
       <VRow>
         <VCol cols="12">
-          <VTextField readonly v-model="Sachs.S_Ma" label="Mã sách" placeholder="John" />
+          <VTextField readonly v-model="Sachs.S_Ma"  label="Mã sách" placeholder="John" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="Sachs.S_Ten" label="Tên sách" placeholder="johndoe@example.com" />
+          <VTextField v-model="Sachs.S_Ten" :error-messages="errors.TenSach" label="Tên sách" placeholder="johndoe@example.com" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="Sachs.S_TacGia" label="Tác giả" placeholder="+1 123 456 7890" />
+          <VTextField v-model="Sachs.S_TacGia" :error-messages="errors.TacGia" label="Tác giả" placeholder="+1 123 456 7890" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="Sachs.S_SoLuong" label="Số lượng" type="number" placeholder="············" />
+          <VTextField v-model="Sachs.S_SoLuong" :error-messages="errors.S_SoLuong" label="Số lượng" type="number" placeholder="············" />
         </VCol>
 
         <VCol cols="12">
-          <VTextField v-model="Sachs.S_Gia" label="Gia" type="number" placeholder="············" />
+          <VTextField v-model="Sachs.S_Gia" :error-messages="errors.Gia" label="Gia" type="number" placeholder="············" />
         </VCol>
 
         <VCol cols="1">
@@ -115,6 +166,8 @@ export default {
           <select class="form-control h-100" v-model="Sachs.S_TheLoai">
             <option v-for="gt in TL" :value="gt.TL_Ma">{{ gt.TL_Ten }}</option>
           </select>
+          <small><p class="text-danger text-center">{{ errors.TheLoai }}</p></small>
+
         </VCol>
         <!-- <VCol cols="12">
           <VTextField v-model="Sach.S_NXB" label="Nhà xuất bản" placeholder="+1 123 456 7890" />
@@ -126,6 +179,7 @@ export default {
           <select class="form-control h-100" v-model="Sachs.S_NXB">
             <option v-for="gt in NXB" :value="gt.NXB_Ma">{{ gt.NXB_Ten }}</option>
           </select>
+          <small><p class="text-danger text-center">{{ errors.TheLoai }}</p></small>
         </VCol>
         <VCol cols="10"></VCol>
         <VCol cols="2" class="d-flex gap-4">

@@ -170,7 +170,7 @@ height: 800px;">
                                 <div class="row w-100 mt-2">
                                   <div class="col-8"></div>
                                   <div class="d-flex gap-4 col-2">
-                                    <VBtn class="ms-5" type="Thêm">
+                                    <VBtn class="ms-5" type="Thêm" :disabled="!imageFile">
                                       Cập nhật
                                     </VBtn>
                                   </div>
@@ -192,33 +192,42 @@ height: 800px;">
                         <VRow>
 
                           <VCol cols="12">
-                            <VTextField v-model="KH.KH_HoTen" label="Tên Nhân viên" placeholder="johndoe@example.com" />
+                            <VTextField v-model="KH.KH_HoTen" :error-messages="errors.Ten" label="Tên Nhân viên" placeholder="johndoe@example.com" />
                           </VCol>
 
                           <VCol cols="12">
-                            <VTextField v-model="KH.KH_NgaySinh" label="Ngày Sinh" placeholder="+1 123 456 7890" />
+                            <VTextField v-model="KH.KH_NgaySinh" :error-messages="errors.NgaySinh" label="Ngày Sinh" placeholder="+1 123 456 7890" />
                           </VCol>
 
-                          <VCol cols="4">
-                            <VTextField v-model="GT" label="Giới tính" placeholder="············" />
+                          <VCol cols="4" class="d-flex">
+                            <label for="" class="my-3  w-100">Giới tính</label>
+                        
+
+                 
+                            <select class="form-control h-100" v-model="KH.KH_GioiTinh">
+                              <option v-for="gt in GioiTinh" :value="gt.value">{{ gt.name }}</option>
+                            </select>
+                            <small>
+                              <p class="text-danger text-center">{{ errors.GioiTinh }}</p>
+                            </small>
                           </VCol>
                           <VCol cols="4">
-                            <VTextField v-model="Email" label="Email" placeholder="············" />
+                            <VTextField v-model="Email"  :error-messages="errors.Email" label="Email" placeholder="············" />
                           </VCol>
                           <VCol cols="4 ">
-                            <VTextField v-model="KH.KH_SoDienThoai" label="Số diện thoại" placeholder="············" />
+                            <VTextField v-model="KH.KH_SoDienThoai" :error-messages="errors.SoDienThoai" label="Số diện thoại" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_DiaChi" label="Địa chỉ" placeholder="············" />
+                            <VTextField v-model="DC.DC_DiaChi" :error-messages="errors.DiaChi" label="Địa chỉ" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_PhuongXa" label="Phường/Xã" placeholder="············" />
+                            <VTextField v-model="DC.DC_PhuongXa" :error-messages="errors.PhuongXa" label="Phường/Xã" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_QuanHuyen" label="Quận/Huyện" placeholder="············" />
+                            <VTextField v-model="DC.DC_QuanHuyen" :error-messages="errors.QuanHuyen" label="Quận/Huyện" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
-                            <VTextField v-model="DC.DC_TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
+                            <VTextField v-model="DC.DC_TinhTP" :error-messages="errors.TinhTP" label="Tỉnh/Thành phố" placeholder="············" />
                           </VCol>
                           <VCol cols="6">
                             <VTextField v-model="KH.KH_NgayTao" label="Ngày tạo" readonly placeholder="············" />
@@ -230,7 +239,7 @@ height: 800px;">
                           <div class="row w-100 mb-2">
                             <div class="col-10"></div>
                             <div class="col-2">
-                              <VBtn class="bg bg-primary" @click="CapNhatThongTin()">Cập nhật</VBtn>
+                              <VBtn class="bg bg-primary" @click="onSubmit()">Cập nhật</VBtn>
                             </div>
                           </div>
                         </VRow>
@@ -267,20 +276,19 @@ height: 800px;">
     </VTable>
   </div>
   <v-dialog v-model="dialog6" class="w-50 h-25">
-      <div class="card text-center bg bg-white p-5">
-        <h3 class="text-success">Bạn đã cập nhật thông tin khách hàng thành công</h3>
-        <div class="row w-100">
-          <div class="col-4"></div>
-          <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
-              @click="dialog6 = false">
-              <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
-          <div class="col-4"></div>
+    <div class="card text-center bg bg-white p-5">
+      <h3 class="text-success">Bạn đã cập nhật thông tin khách hàng thành công</h3>
+      <div class="row w-100">
+        <div class="col-4"></div>
+        <div class="col-4"> <button class="dropdown-item btn bg bg-primary text-white text-center"
+            @click="dialog6 = false">
+            <font-awesome-icon :icon="['fas', 'check']" /> Xác nhận</button></div>
+        <div class="col-4"></div>
 
-        </div>
       </div>
+    </div>
 
-    </v-dialog>
-    
+  </v-dialog>
 </template>
 
 <script>
@@ -307,6 +315,33 @@ export default defineComponent({
       dialog7: false,
       GHID: "",
       imageFile: "",
+      MaGH: "",
+      DaDayDu: ref(),
+      errors: ref({
+        Ten: "",
+        Email: "",
+        SoDienThoai: "",
+        Email: "",
+        NgaySinh: "",
+        GioiTinh: "",
+        DiaChi: "",
+        PhuongXa: "",
+        QuanHuyen: "",
+        TinhTP: "",
+        Image: "",
+        
+      }),
+      GioiTinh: [
+          {
+            name: "Nữ",
+            value: "1"
+          },
+          {
+            name: "Nam",
+            value: "2"
+          },
+        ],
+
     }
 
   },
@@ -327,6 +362,60 @@ export default defineComponent({
     // Lưu ngày hiện tại vào biến ngày cập nhật
   },
   methods: {
+    async validateInput() {
+      this.errors.Ten = "";
+      this.errors.Email = "";
+      this.errors.SoDienThoai = "";
+      this.errors.NgaySinh = "";
+      this.errors.GioiTinh = "";
+      this.errors.DiaChi = "";
+      this.errors.PhuongXa = "";
+      this.errors.QuanHuyen = "";
+      this.errors.TinhTP = "";
+      this.errors.Image = "";
+
+      if (!this.KH.KH_HoTen) {
+        this.errors.Ten = "Vui lòng nhập tên khách hàng";
+      }
+      if (!this.Email) {
+        this.errors.Email = "Vui lòng nhập email";
+      } else if (!/^\S+@\S+\.\S+$/.test(this.Email)) {
+        this.errors.Email = "Email không hợp lệ";
+      }
+      if (!this.KH.KH_SoDienThoai) {
+        this.errors.SoDienThoai = "Vui lòng nhập số điện thoại";
+      }
+      if (!this.KH.KH_NgaySinh) {
+        this.errors.NgaySinh = "Vui lòng nhập ngày sinh";
+      }
+      if (!this.KH.KH_GioiTinh) {
+        this.errors.GioiTinh = "Vui lòng chọn giới tính";
+      }
+
+      if (!this.DC.DC_DiaChi.trim()) {
+        this.errors.DiaChi = "Vui lòng nhập địa chỉ";
+      }
+
+      if (!this.DC.DC_PhuongXa.trim()) {
+        this.errors.PhuongXa = "Vui lòng nhập phường xã";
+      }
+      if (!this.DC.DC_QuanHuyen.trim()) {
+        this.errors.QuanHuyen = "Vui lòng nhập quận huyện";
+      }
+
+      if (!this.DC.DC_TinhTP.trim()) {
+        this.errors.TinhTP = "Vui lòng nhập tỉnh thành phố";
+      }
+   
+      this.DaDayDu = !Object.values(this.errors).some((error) => error);
+    },
+    async onSubmit() {
+      this.validateInput()
+      if (this.DaDayDu == true) {
+        this.CapNhatThongTin();
+      }
+
+    },
     cancel() {
       this.dialog4 = false
     },
@@ -360,7 +449,6 @@ export default defineComponent({
       const now = moment();
       this.KH.KH_NgayCapNhat = now.format("DD-MM-YYYY");
       this.DC.DC_NgayCapNhat = now.format("DD-MM-YYYY");
-
       // Gọi API để cập nhật sản phẩm
       axios.put("http://localhost:3000/api/thongtinkhachhang/" + this.KH.KH_MaKH, this.KH).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
@@ -468,7 +556,7 @@ export default defineComponent({
       }).catch(error => {
         console.log(error);
       });
-      axios.delete("http://localhost:3000/api/giohang/deleteKH" + KH_MaKH).then(response => {
+      axios.delete("http://localhost:3000/api/giohang/deleteKH/" + KH_MaKH).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
@@ -476,6 +564,58 @@ export default defineComponent({
       }).catch(error => {
         console.log(error);
       });
+
+      axios.delete("http://localhost:3000/api/binhluan/deleteKH/" + KH_MaKH).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("Xóa thành công bình luận");
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+      axios.delete("http://localhost:3000/api/danhgiacuahang/deleteKH/" + KH_MaKH).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        console.log("Xóa thành đánh giá cửa hàng thành công");
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+      axios.get("http://localhost:3000/api/giohang/GetByKH/" + KH_MaKH).then(response => {
+        // Nếu cập nhật thành công, thì hiển thị thông báo
+        this.MaGH = response.data.GH_Ma
+        console.log("MaGh")
+        console.log(this.MaGH)
+        // Sau đó, chuyển hướng người dùng
+
+      }).catch(error => {
+        console.log(error);
+      });
+      axios.delete("http://localhost:3000/api/chitietgiohang/deleteGH/" + this.MaGH)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công chi tiet gio hang");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
+
+      axios.delete("http://localhost:3000/api/danhgia/deleteKH/" + KH_MaKH)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
+      axios.delete(`http://localhost:3000/api/thumbnail/xoaanh/KH_` + KH_MaKH + `.png`)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công bình luận của sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
       window.location.reload();
     }
   }

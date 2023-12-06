@@ -88,7 +88,55 @@ exports.findOneByID = async (req, res, next) => {
     }
     return res.send(documents);
 };
+exports.findOneByMaNV = async (req, res, next) => {
+    const condition = {
+        TKNV_MaNV: req.params.TKNV_MaNV,
 
+    };
+    const [error, documents] = await handle(
+        NhanVien.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất tài khoản khách hàng!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy tài khoản khách hàng");
+    }
+    return res.send(documents);
+};
+
+exports.findPassByMaNV = async (req, res, next) => {
+    const condition = {
+        TKNV_MaNV: req.params.TKNV_MaNV,
+
+    };
+    const [error, documents] = await handle(
+        NhanVien.findOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, "Lỗi trong quá trình truy xuất tài khoản khách hàng!")
+        );
+    }
+    if (!documents) {
+        return res.send("Không tìm thấy tài khoản khách hàng");
+    }
+
+    // Lấy mật khẩu từ req.body
+    const password = req.params.TKNV_MatKhau;
+
+    // Hash mật khẩu
+
+    // So sánh mật khẩu đã hash với mật khẩu trong documents
+    const isCorrect = bcrypt.compareSync(password, documents.TKNV_MatKhau);
+
+    // Trả về kết quả so sánh
+    return res.send(isCorrect);
+};
 exports.updateTrangThai = async (req, res, next) => {
 
     const condition = {

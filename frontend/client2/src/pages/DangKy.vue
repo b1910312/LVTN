@@ -74,6 +74,7 @@ export default {
             pass1: "",
             pass2: "",
             Email: "",
+            OkeAll: ref()
         }
     },
     mounted() {
@@ -279,17 +280,13 @@ export default {
             }
 
 
-            return !Object.values(this.errors).some((error) => error);
+            this.OkeAll = !Object.values(this.errors).some((error) => error);
         },
         async onSubmit() {
-            if (await this.validateInput()) {
+            this.validateInput()
+            if(this.OkeAll == true){
                 this.addKhachHang();
             }
-            else {
-                return;
-            }
-
-            // this.handleLogin(this.TKKH);
 
         },
     }

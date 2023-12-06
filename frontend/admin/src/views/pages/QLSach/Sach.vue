@@ -29,6 +29,9 @@
             Tên Sách
           </th>
           <th>
+            Thumbnail
+          </th>
+          <th>
             Tác giả
           </th>
           <th>
@@ -59,6 +62,7 @@
         <tr v-for="(item, i) in filteredSachs" :key="S_Ma">
           <td>{{ i + 1 }}</td>
           <td>{{ item.S_Ma }}</td>
+          <td><img :src="GetThumNail(item.S_Ma)" class="img-fluid" style="width: 300px;" alt="" srcset=""></td>
           <td>{{ item.S_Ten }}</td>
           <td>{{ item.S_TacGia }}</td>
           <td>{{ item.S_SoLuong }}</td>
@@ -76,97 +80,36 @@
                 <font-awesome-icon :icon="['fas', 'gears']" />
               </button>
               <div class="dropdown-menu p-2 border border-primary" aria-labelledby="triggerId">
-                <button class="dropdown-item btn bg bg-primary text-white mb-1" @click="dialog3 = true">
-                  <font-awesome-icon :icon="['fas', 'eye']" /> Chi tiết</button>
-                <v-dialog v-model="dialog3" class="w-75">
-                  <div class="card text-start bg bg-white p-5" style="overflow-y: scroll;
-height: 800px;">
-                    <Vrow>
-                      <div class="row w-100 mb-3">
-                        <div class="col-6">
-                          <h4>Chi tiết sách: {{ sach.S_Ten }}</h4>
+                <button class="dropdown-item btn bg bg-primary text-white mb-1" @click="dialog6 = true">
+                  <font-awesome-icon :icon="['fas', 'eye']" /> Cập nhật thumbnail</button>
+                <v-dialog v-model="dialog6">
+                  <div class="card w-75 mx-auto text-start bg bg-white p-5">
+                    <div class="col-11">
+                      <h4>Cập nhật ThumbNail sách: {{ sach.S_Ten }}</h4>
+                    </div>
+
+                    <VCol cols="12">
+                      <VForm @submit.prevent="UpdateThumbNail">
+                        <VFileInput label="ThumbNail" type="file" ref="imageInput" @change="setImageThumbNail" />
+                        <div class="row w-100 mt-2">
+                          <div class="col-8"></div>
+                          <div class="d-flex gap-4 col-2">
+                            <VBtn class="ms-5" type="Thêm" :disabled="!imageThumbnail">
+                              Cập nhật
+                            </VBtn>
+                          </div>
+                          <div class="d-flex gap-4 col-1">
+                            <VBtn class="ms-5 bg bg-secondary" @click="dialog6 = false">
+                              Hủy
+                            </VBtn>
+                          </div>
                         </div>
-                        <div class=col-5></div>
-                        <div class=col-1>
-                          <VBtn class="bg bg-danger" @click="dialog3 = false">Đóng</VBtn>
-                        </div>
-                      </div>
-                      <div class="row w-100">
-                        <div class="col-12 col-md-6">
-                          <h6> THUMBNAIL&nbsp;&nbsp; <button class="btn btn-outline-success h-50"
-                              @click="dialog6 = true">Cập nhật</button>
-                          </h6>
-                          <v-dialog v-model="dialog6">
-                            <div class="card w-75 mx-auto text-start bg bg-white p-5">
-                              <div class="col-11">
-                                <h4>Cập nhật ThumbNail sách: {{ sach.S_Ten }}</h4>
-                              </div>
-
-                              <VCol cols="12">
-                                <VForm @submit.prevent="UpdateThumbNail">
-                                  <VFileInput label="ThumbNail" type="file" ref="imageInput"
-                                    @change="setImageThumbNail" />
-                                  <div class="row w-100 mt-2">
-                                    <div class="col-8"></div>
-                                    <div class="d-flex gap-4 col-2">
-                                      <VBtn class="ms-5" type="Thêm">
-                                        Cập nhật
-                                      </VBtn>
-                                    </div>
-                                    <div class="d-flex gap-4 col-1">
-                                      <VBtn class="ms-5 bg bg-secondary" @click="dialog6 = false">
-                                        Hủy
-                                      </VBtn>
-                                    </div>
-                                  </div>
-                                </VForm>
-                              </VCol>
-                            </div>
-
-                          </v-dialog>
-                          <img :src="GetThumNail(sach.S_Ma)" class="img-fluid mt-2 mb-4" style="height: 350px;" alt=""
-                            srcset="">
-                        </div>
-
-
-                        <VRow>
-                          <VCol cols="12">
-                            <VTextField v-model="sach.S_Ma" label="Mã sách" readonly placeholder="John" />
-                          </VCol>
-
-                          <VCol cols="12">
-                            <VTextField v-model="sach.S_Ten" label="Tên Sách" readonly
-                              placeholder="johndoe@example.com" />
-                          </VCol>
-
-                          <VCol cols="12">
-                            <VTextField v-model="TenNXB" label="Nhà xuất bản" readonly placeholder="+1 123 456 7890" />
-                          </VCol>
-
-                          <VCol cols="12">
-                            <VTextField v-model="TenTheLoai" label="Thể loại sách" readonly placeholder="············" />
-                          </VCol>
-                          <VCol cols="6">
-                            <VTextField v-model="sach.S_Gia" label="Giá bán (VNĐ)" readonly placeholder="············" />
-                          </VCol>
-                          <VCol cols="6">
-                            <VTextField v-model="sach.S_SoLuong" label="Số lượng" readonly placeholder="············" />
-                          </VCol>
-
-                          <VCol cols="6">
-                            <VTextField v-model="sach.S_NgayNhap" label="Ngày nhập kho" readonly
-                              placeholder="············" />
-                          </VCol>
-                          <VCol cols="6">
-                            <VTextField v-model="sach.S_NgayCapNhat" label="Ngày cập nhật" readonly
-                              placeholder="············" />
-                          </VCol>
-                        </VRow>
-                      </div>
-                    </Vrow>
+                      </VForm>
+                    </VCol>
                   </div>
+
                 </v-dialog>
-        
+
                 <RouterLink :to="{ name: 'SachSua', params: { id: item.S_Ma } }">
                   <button class="dropdown-item btn bg bg-success text-white mb-1"><font-awesome-icon
                       :icon="['fas', 'pen']" /> Chỉnh sửa</button>
@@ -181,7 +124,7 @@ height: 800px;">
                     <div class="row w-100">
                       <div class="col-2"></div>
                       <div class="col-4"> <button class="dropdown-item btn bg bg-danger text-white text-center"
-                          @click="XoaSach(item.S_Ma)">
+                          @click="XoaSach(sach.S_Ma)">
                           <font-awesome-icon :icon="['fas', 'trash']" /> Xóa</button></div>
                       <div class="col-4"> <button class="dropdown-item btn bg bg-secondary text-white text-center"
                           @click="dialog8 = false">
@@ -239,9 +182,7 @@ export default defineComponent({
       dialog5: false,
       nhanvien: {},
 
-
-      imageThumbnail: null
-
+      imageThumbnail: null,
     }
 
   },
@@ -280,10 +221,10 @@ export default defineComponent({
             "Content-Type": "multipart/form-data"
           }
         });
-        alert('Thêm dữ liệu thành công!')
+        console.log('Thêm dữ liệu thành công!')
         console.log("Tệp ảnh đã được tải lên thành công:", response.data);
       } catch (error) {
-        alert('LỖI!' + error)
+        console.log('LỖI!' + error)
 
         console.error("Lỗi khi tải lên tệp ảnh:", error);
       }
@@ -354,7 +295,7 @@ export default defineComponent({
       // Chuyển đổi số nguyên thành chuỗi
       this.chuỗi = String(so_nguyen);
     },
-  
+
     setActiveSach(data) {
       this.S_MaActive = data;
       console.log("S_Ma" + this.S_MaActive)
@@ -421,21 +362,51 @@ export default defineComponent({
       console.log(this.S_NgayXoa)
       axios.post("http://localhost:3000/api/sachngungkinhdoanh/", this.sachNKD).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
-        alert("Xóa thành công");
+        console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng
 
       }).catch(error => {
-        alert(error);
+        console.log(error);
       });
       axios.delete("http://localhost:3000/api/sach/" + Sach_ma)
         .then(response => {
           // Nếu cập nhật thành công, thì hiển thị thông báo
-          alert("Xóa thành công");
+          console.log("Xóa thành công sách");
           // Sau đó, chuyển hướng người dùng
-          this.GetSach();
-
         }).catch(error => {
-          alert(error);
+          console.log(error);
+        });
+      axios.delete("http://localhost:3000/api/danhgia/deleteSach/" + Sach_ma)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công đánh giá của sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
+      axios.delete("http://localhost:3000/api/binhluan/deleteSach/" + Sach_ma)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công bình luận của sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
+      axios.delete("http://localhost:3000/api/chitietgiohang/deleteSach/" + Sach_ma)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công bình luận của sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
+        });
+      axios.delete(`http://localhost:3000/api/thumbnail/xoaanh/TB_` + Sach_ma +`.png`)
+        .then(response => {
+          // Nếu cập nhật thành công, thì hiển thị thông báo
+          console.log("Xóa thành công bình luận của sách");
+          // Sau đó, chuyển hướng người dùng
+        }).catch(error => {
+          console.log(error);
         });
       const data = {
         S_Ma: Sach_ma
@@ -453,6 +424,9 @@ export default defineComponent({
           console.log("Lưu sách vào csv không thành công")
           console.log(error)
         })
+      this.dialog8 = false
+      this.GetSach();
+
     }
   }
 });

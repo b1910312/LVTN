@@ -407,7 +407,7 @@ export default defineComponent({
       }).catch(error => {
         console.log(error);
       });
-      axios.delete("http://localhost:3000/api/chitietdonhang//deletebyDH/" + DH_Ma).then(response => {
+      axios.delete("http://localhost:3000/api/chitietdonhang/deletebyDH/" + DH_Ma).then(response => {
         // Nếu cập nhật thành công, thì hiển thị thông báo
         console.log("Xóa thành công");
         // Sau đó, chuyển hướng người dùng

@@ -15,15 +15,15 @@
       <v-dialog v-model="dialog" class="w-50">
         <VCard>
           <VCardText>
-            <H4>Thêm vai trò mới</H4>
+            <H4>Thêm hạng mức mới</H4>
             <VRow>
               <VCol cols="12">
-                <VTextField v-model="TenHangMuc" label="Tên vài trò mới" placeholder="Tên vai trò" />
+                <VTextField v-model="TenHangMuc" label="Tên vài trò mới" placeholder="Tên hạng mức" />
               </VCol>
               <VCol cols="10">
               </VCol>
               <VCol cols="2" class="d-flex gap-4">
-                <VBtn type="submit" @click="AddHangMuc()">
+                <VBtn type="submit" :disabled="!TenHangMuc" @click="AddHangMuc()">
                   Thêm
                 </VBtn>
               </VCol>
@@ -171,7 +171,7 @@ export default defineComponent({
   mounted() {
     setInterval(() => {
       this.GetLastID();
-    }, 1000);
+    }, 5000);
     this.GetHM()
     // Lấy ngày hiện tại
     // Lưu ngày hiện tại vào biến ngày cập nhật

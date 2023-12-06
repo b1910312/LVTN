@@ -82,16 +82,11 @@ exports.findAllByID = async (req, res) => {
     console.log('');
 
     const condition = {
-        ownerId: req.userId
+        CTGH_MaGH: req.params.CTGH_MaGH,
     };
-    const CTGH_MaGH = req.params.CTGH_MaGH;
-
-    if (CTGH_MaGH) {
-        condition = condition.and({ CTGH_MaGH: CTGH_MaGH });
-    }
 
     const [error, documents] = await handle(
-        ChiTietGioHang.find(condition, '-ownerId').sort({ 'CTGH_MaGH': 1 })
+        ChiTietGioHang.find(condition ).sort({ 'CTGH_MaGH': 1 })
     );
 
     if (error) {
@@ -208,6 +203,47 @@ exports.delete = async (req, res) => {
 
     const [error, document] = await handle(
         ChiTietGioHang.deleteOne(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Không xóa được chi tiết giỏ hàng có mã ${req.params.id}`)
+        );
+    }
+
+    if (document) {
+        return res.send({ message: "Xóa chi tiết giỏ hàng thành công" });
+    }
+
+};
+//Xóa một sách bằng mã sách
+exports.deleteDH = async (req, res) => {
+    const condition = {
+        CTGH_MaDH: req.params.CTGH_MaDH
+    };
+
+    const [error, document] = await handle(
+        ChiTietGioHang.deleteMany(condition)
+    );
+
+    if (error) {
+        return next(
+            new BadRequestError(500, `Không xóa được chi tiết giỏ hàng có mã ${req.params.id}`)
+        );
+    }
+
+    if (document) {
+        return res.send({ message: "Xóa chi tiết giỏ hàng thành công" });
+    }
+
+};
+exports.deleteSach = async (req, res) => {
+    const condition = {
+        CTGH_MaSach: req.params.CTGH_MaSach
+    };
+
+    const [error, document] = await handle(
+        ChiTietGioHang.deleteMany(condition)
     );
 
     if (error) {
